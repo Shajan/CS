@@ -1,2 +1,2 @@
 javac Serialization.java
-java Serialization
+java Test
