@@ -1,17 +1,18 @@
 /*
- * A light weight version of S3 client to get/put files on S3.
+ * A light weight S3 client library to get/put files on S3.
  *
- * Amazon S3 is a store in the cloud where you can save files. It
- * is a paid service.
+ * Amazon S3 is a cloud based file store. It is a paid service.
  *
- * This class is useful when you want to have a thin wrapper of
- * code to access S3 REST APIs. Amazon provides a set of java client
- * libraries, they are very generic, and comes with of code. I found
- * the amazon provided library to be very large, and wrote this class
- * to understand how the basic request/response actually works.
+ * This is a thin wrapper that uses S3 REST APIs, to read and write
+ * files. Amazon provides a set of java client libraries as well,
+ * they are generic, and comes with a ton of code. I found the amazon
+ * provided library to be very large, and wrote this class to understand
+ * how the basic request/response actually works.
  *
  * This class has been tested on Android, but can be easily ported to
  * be used from other OS.
+ *
+ * Dec 25, 2013 : Shajan Dasan (twitter @sdasan, sdasan@gmail.com)
  *
  * Usage:
  *     boolean success = S3.upload("bar.txt", "/data/bar.txt");
