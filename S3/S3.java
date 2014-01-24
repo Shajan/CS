@@ -15,7 +15,10 @@
  * Dec 25, 2013 : Shajan Dasan (twitter @sdasan, sdasan@gmail.com)
  *
  * Usage:
- *     boolean success = S3.upload("bar.txt", "/data/bar.txt");
+ *     To upload local file /tmp/bar.txt --> bar.txt
+ *     boolean success = S3.upload("/tmp/bar.txt", "bar.txt");
+ *
+ *     To download bar.txt from S3
  *     InputStream is = S3.download("bar.txt");
  *
  */
@@ -75,8 +78,8 @@ public class S3 {
     private static final String S3_BUCKET = "myBucketName";                     // <-- Change to your bucket Name
     private static final String S3_ID = "Your account ID goes here";            // <-- Get an account ID from Amazon
     private static final String S3_KEY = "Key for your S3 Account goes here";   // <-- Add your account's key
-    private static final String S3_BUCKET = S3_BUCKET + ".s3.amazonaws.com";
-    private static final String S3_BUCKET_FOLDER = "/Folder/";
+    private static final String S3_HOST = S3_BUCKET + ".s3.amazonaws.com";
+    private static final String S3_FOLDER = "/MyFolder/";                       // <-- Change to any folder name
 
     private static SimpleDateFormat sRfc822DateFormat;
     private static boolean sDebug = true;
@@ -87,16 +90,16 @@ public class S3 {
         sRfc822DateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
     }
 
-    public static InputStream download(String resource) {
+    public static InputStream download(String s3FileName) {
         InputStream in = null;
         try {
             final String date = sRfc822DateFormat.format(new Date());
-            final String hash = getReadHash(S3_BUCKET, resource, date);
-            final String url = "https://" + S3_BUCKET + resource;
+            final String hash = getReadHash(S3_BUCKET, s3FileName, date);
+            final String url = "https://" + S3_HOST + s3FileName;
 
             final DefaultHttpClient httpClient = new DefaultHttpClient();
             final HttpGet httpGet = new HttpGet(url);
-            httpGet.addHeader("Host", S3_BUCKET);
+            httpGet.addHeader("Host", S3_HOST);
             httpGet.addHeader("Date", date);
             httpGet.addHeader("Authorization", "AWS " + S3_ID + ":" + hash);
 
@@ -136,24 +139,24 @@ public class S3 {
         return in;
     }
 
-    public static boolean upload(String resource, String file) {
+    public static boolean upload(String localFileName, String s3FileName) {
         final S3 s3 = new S3();
-        return s3.doUploadTask(resource, file);
+        return s3.doUploadTask(localFileName, s3FileName);
     }
 
-    private boolean doUploadTask(String resource, String file) {
+    private boolean doUploadTask(String localFileName, String s3FileName) {
         final UploadTask ut = new UploadTask();
-        ut.execute(resource, file);
+        ut.execute(localFileName, s3FileName);
         return true;
     }
 
     private class UploadTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            final String resource = params[0];
-            final String file = params[1];
+            final String localFileName = params[0];
+            final String s3FileName = params[1];
             try {
-                upload(S3_BUCKET_FOLDER + resource, new File(file));
+                upload(S3_FOLDER + s3FileName, new File(localFileName));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -173,13 +176,12 @@ public class S3 {
         }
     }
 
-    private void upload(String resource, File file)
+    private void upload(String localFileName, File s3FileName)
             throws IOException {
         final String date = sRfc822DateFormat.format(new Date());
-        final String hash = getWriteHash(S3_BUCKET, resource, date);
-        // final String url = "https://" + S3_BUCKET + resource;
-        final String urlStr = "http://" + S3_BUCKET + resource;
-        final String mimeType = mimeType(resource);
+        final String hash = getWriteHash(S3_BUCKET, s3FileName, date);
+        final String urlStr = "http://" + S3_HOST + s3FileName;
+        final String mimeType = mimeType(s3FileName);
 
         if (sDebug) {
             android.util.Log.d("S3", "url " + urlStr);
@@ -200,15 +202,16 @@ public class S3 {
             }
             connection.setRequestMethod("PUT");
             connection.setRequestProperty("Content-Type", mimeType);
-            connection.setRequestProperty("Host", S3_BUCKET);
+            connection.setRequestProperty("Host", S3_HOST);
             connection.setRequestProperty("Date", date);
             connection.setRequestProperty("Authorization", "AWS " + S3_ID + ":" + hash);
-            connection.setRequestProperty("Content-Length", Long.toString(file.length()));
+            // should this be file conent length instead?
+            connection.setRequestProperty("Content-Length", Long.toString(localFileName.length()));
             connection.setUseCaches(false);
             connection.setDoOutput(true);
 
             out = new BufferedOutputStream(connection.getOutputStream());
-            in = new FileInputStream(file);
+            in = new FileInputStream(localFileName);
             final byte[] buffer = new byte[1024];
             int nBytes = in.read(buffer);
             while (nBytes != -1) {
@@ -246,14 +249,14 @@ public class S3 {
      *         Tue, 27 Mar 2007 21:15:45 +0000\n
      *         /myBucket/foo/image.jpg")
      */
-    private static String getReadHash(String bucket, String resource, String date) {
+    private static String getReadHash(String bucket, String s3FileName, String date) {
         final StringBuilder sb = new StringBuilder();
         sb.append(S3_READ);
         sb.append("\n\n\n");
         sb.append(date);
         sb.append("\n/");
         sb.append(bucket);
-        sb.append(resource);
+        sb.append(s3FileName);
         return hashAndBase64Encode(S3_KEY, sb.toString(), S3_HASH_ALGORITHM);
     }
 
@@ -266,16 +269,16 @@ public class S3 {
      *         Tue, 27 Mar 2007 21:15:45 +0000\n
      *         /myBucket/foo/image.jpg")
      */
-    private static String getWriteHash(String bucket, String resource, String date) {
+    private static String getWriteHash(String bucket, String s3FileName, String date) {
         final StringBuilder sb = new StringBuilder();
         sb.append(S3_WRITE);
         sb.append("\n\n");
-        sb.append(mimeType(resource));
+        sb.append(mimeType(s3FileName));
         sb.append("\n");
         sb.append(date);
         sb.append("\n/");
         sb.append(bucket);
-        sb.append(resource);
+        sb.append(s3FileName);
         return hashAndBase64Encode(S3_KEY, sb.toString(), S3_HASH_ALGORITHM);
     }
 
@@ -293,11 +296,11 @@ public class S3 {
      *  : Windows Media  .wmv      video/x-ms-wmv       :
      *  -------------------------------------------------
      */
-    private static String mimeType(String resource) {
+    private static String mimeType(String s3FileName) {
         String mimeType = "video/mp4";
-        final int i = resource.lastIndexOf('.');
+        final int i = s3FileName.lastIndexOf('.');
         if (i > 0) {
-            final String extension = resource.substring(i + 1);
+            final String extension = s3FileName.substring(i + 1);
             switch (extension) {
             case "flv" : mimeType = "video/x-flv"; break;
             case "mp4" : mimeType = "video/mp4"; break;
