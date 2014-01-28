@@ -12,26 +12,26 @@ object Number {
 abstract class Operator {
   def apply(lhs: Int, rhs: Int): Int
 }
-class Add extends Operator {
+object Add extends Operator {
   def apply(lhs: Int, rhs: Int): Int = lhs + rhs
 }
-class Subtract extends Operator {
+object Subtract extends Operator {
   def apply(lhs: Int, rhs: Int): Int = lhs - rhs
 }
-class Multiply extends Operator {
+object Multiply extends Operator {
   def apply(lhs: Int, rhs: Int): Int = lhs * rhs
 }
-class Divide extends Operator {
+object Divide extends Operator {
   def apply(lhs: Int, rhs: Int): Int = lhs / rhs
 }
 
 object Operator {
   def unapply(token: String): Option[Operator] =
     token match {
-      case "+" => Some(new Add)
-      case "-" => Some(new Subtract)
-      case "*" => Some(new Multiply)
-      case "/" => Some(new Divide)
+      case "+" => Some(Add)
+      case "-" => Some(Subtract)
+      case "*" => Some(Multiply)
+      case "/" => Some(Divide)
       case _   => None
     }
 }
