@@ -1,13 +1,5 @@
 import collection.mutable
 
-sealed abstract class Expression
-case class NumberExpression(value: Int) extends Expression
-case class OperationExpression(
-  op: Operator,
-  lhs: Expression,
-  rhs: Expression
-) extends Expression
-
 object Number {
   def unapply(token: String): Option[Int] =
     try {
@@ -44,28 +36,35 @@ object Operator {
     }
 }
 
+sealed abstract class Expression
+case class NumberExpression(value: Int) extends Expression
+case class OperationExpression(
+  op: Operator,
+  lhs: Expression,
+  rhs: Expression
+) extends Expression
+
 object Calculator {
+  // Create the tree of expressoin
   def parse(expression: String): Expression = {
     val tokens: Array[String] = expression.split(" ")
-
     val stack = mutable.Stack.empty[Expression]
-
     for (token <- tokens) {
       token match {
         case Number(n) =>
           stack.push(NumberExpression(n))
         case Operator(op) =>
-          val rhs = stack.pop()
+          val rhs = stack.pop() // rhs is top of stack
           val lhs = stack.pop()
           stack.push(OperationExpression(op, lhs, rhs))
         case _ =>
           throw new IllegalArgumentException("garbage token: " + token)
       }
     }
-
     stack.pop()
   }
 
+  // reccursively evaluate the expression tree
   def calculate(expression: Expression) : Int =
     expression match {
       case NumberExpression(value) => value
@@ -73,6 +72,7 @@ object Calculator {
         op(calculate(lhs), calculate(rhs))
     }
 
+  // usage : Calculator.main(Array("1 1 +"))
   def main(args: Array[String]): Unit =
     println(calculate(parse(args(0))))
 }
