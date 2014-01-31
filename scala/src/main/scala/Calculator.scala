@@ -1,5 +1,13 @@
 import collection.mutable
 
+sealed abstract class Expression
+case class NumberExpression(value: Int) extends Expression
+case class OperationExpression(
+  op: Operator,
+  lhs: Expression,
+  rhs: Expression
+) extends Expression
+
 object Number {
   def unapply(token: String): Option[Int] =
     try {
@@ -37,19 +45,19 @@ object Operator {
 }
 
 object Calculator {
-  def calculate(expression: String): Int = {
+  def parse(expression: String): Expression = {
     val tokens: Array[String] = expression.split(" ")
 
-    val stack = mutable.Stack.empty[Int]
+    val stack = mutable.Stack.empty[Expression]
 
     for (token <- tokens) {
       token match {
         case Number(n) =>
-          stack.push(n)
+          stack.push(NumberExpression(n))
         case Operator(op) =>
           val rhs = stack.pop()
           val lhs = stack.pop()
-          stack.push(op(lhs, rhs))
+          stack.push(OperationExpression(op, lhs, rhs))
         case _ =>
           throw new IllegalArgumentException("garbage token: " + token)
       }
@@ -58,7 +66,13 @@ object Calculator {
     stack.pop()
   }
 
-  def main(args: Array[String]): Unit =
-    println(calculate(args(0)))
+  def calculate(expression: Expression) : Int =
+    expression match {
+      case NumberExpression(value) => value
+      case OperationExpression(op, lhs, rhs) =>
+        op(calculate(lhs), calculate(rhs))
+    }
 
+  def main(args: Array[String]): Unit =
+    println(calculate(parse(args(0))))
 }
