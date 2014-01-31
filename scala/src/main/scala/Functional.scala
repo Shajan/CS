@@ -14,9 +14,15 @@ object Functional {
       case Nil => Nil
     }
 
+  // a function that transforms A to B
+  trait Function[A, B] {
+    def apply(a: A): B
+  }
+
   def transformHugeStack[A, B](list: List[A], f: Function[A, B]): List[B] =
     list match {
       case head :: tail => f(head) :: transformHugeStack(tail, f)
+                        // not tail recursive rhs is the object on which '::' is called
       case Nil => Nil
     }
 
