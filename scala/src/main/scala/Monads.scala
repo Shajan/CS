@@ -45,11 +45,30 @@ object Monads {
 
   def test2 = {
     // returns List(ax, ay, az, bx, by, bz, cx, cy, cz) - same as above
-    List("a", "b", "c") flatMap { a => List("x", "y", "z") map { z => a + z }}
+    List("a", "b", "c") flatMap { a => List("x", "y", "z") map { z => a + z } }
   }
 
   def test3 = {
     // returns List(List(ax, ay, az), List(bx, by, bz), List(cx, cy, cz))
-    List("a", "b", "c") map { a => List("x", "y", "z") map { z => a + z }}
+    List("a", "b", "c") map { a => List("x", "y", "z") map { z => a + z } }
+  }
+
+  // Deffered or lazy computation.. 
+  class Future[+A](val run: () => A) {
+    def map[B](f: A => B): Future[B] =
+      new Future(() => f(run()))
+    def flatMap[B](f: A => Future[B]): Future[B] =
+      // (run andThen f)() // runs immediately
+      new Future(() => f(run()).run())
+  }
+
+  // Synchronous execution
+  def slowIncrement1(n: Int): Int = {
+    Thread.sleep(1000)
+    n + 1
+  }
+  // Deffered execution
+  def slowIncrement2(n: Int): Future[Int] = {
+    new Future({() => Thread.sleep(1000); n + 1}) 
   }
 }
