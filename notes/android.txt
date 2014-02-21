@@ -28,12 +28,21 @@ Serialization
 
 	Java classes implementing Parcelable interface can be serialized and send send to other services or activities where it can be deserialized. 
 
-	Example Usage for using parcels : A screen is an Activity. An android applicaiton can have many screens. Data can be passed to Activities when it is created using an Intent. Intents can store parcelable objects as name/value pairs.
+	Example Usage for using parcels : A screen is an Activity. An android applicaiton can have many screens. Data can be passed to Activities when it is created using an Intent. Intents contain a Bundle, which can store parcelable objects as name/value pairs.
 
 .......................................
 // Example : Creating an Activity and passing it a parcelable object
 Intent intent = new Intent(this, MyActivity.class);
 intent.putExtra("myData", myData);
+/* 
+....OR...
+Bundle bundle = new Bundle();
+bundle.putParcelable("myData, myData);
+intent.putExtras(bundle);
+....OR...
+Bundle bundle = intent.getExtras();
+bundle.putParcelable("myData, myData);
+*/
 startActivity(in);
 
 // Example : The newly created activity getting it's data
