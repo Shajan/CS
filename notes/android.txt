@@ -1,0 +1,85 @@
+=======================================
+Message processing
+
+	A thread can optionally have a message processer (Looper). Looper can be created on the current thread by calling Looper.prepare(). Looper object is created (if not already present) and stored in a thread local storage. A thread can have atmost one Looper object. A MessageQueue is associated with a Looper. To start processing messages, call Looper.loop() to start the looper's message processing. This call won't return till Looper.quit() is called.
+
+	Handler objects can used to send, post and handle messages. Post/Send methods of Handler objects can be called from any thread. Handler gets associated with the Looper on the current thread, when it is constructed. Handler's handleMessage method is called by the Looper on the Looper thread.
+
+	MessageQueue contains Message objects. A message can be created and added to the MessageQueue by calling Handler.post(Runnable). The message object will have a reference to it's Handler (message.target) and Runnable object (among other things). Looper will call into the Message object's Handler.dispatchMessage with the message object. Which will eventually get to Handler.handleMessage() which can be overriden by applciations. Handler can then call into the Message object's getCallback() method to get the Runnable object, which can be executed (Runnable.run()).
+
+	More than one handler can be associated with a Looper. Only one Looper is allowed per thread. Each looper is associated with one MessageQueue.
+
+	Handler offers a convenient way to post a message to a Looper thread as well as to execute code in the Looper thread when the message is processed.
+
+Looper Thread:
+	Looper.prepare();       // Create a Looper for this thread
+	handler = new Handler();// will associate to current thread's Looper
+	Looper.loop();          // Start a while (true) loop that will process messages
+
+	handler.dispatchMessage();// Looper uses message.target (which is handler) to call dispatch
+	handler.handleMessage();  // handleMessage() can be overriden
+	runnable.Run();           // Executed on the Looper thread
+
+Any Thread:
+	handler.post(runnable);
+
+=======================================
+Serialization
+
+	Java classes implementing Parcelable interface can be serialized and send send to other services or activities where it can be deserialized. 
+
+	Example Usage for using parcels : A screen is an Activity. An android applicaiton can have many screens. Data can be passed to Activities when it is created using an Intent. Intents can store parcelable objects as name/value pairs.
+
+.......................................
+// Example : Creating an Activity and passing it a parcelable object
+Intent intent = new Intent(this, MyActivity.class);
+intent.putExtra("myData", myData);
+startActivity(in);
+
+// Example : The newly created activity getting it's data
+Intent intent = this.getIntent();
+MyData myData = (MyData) intent.getParcelableExtra("myData");
+
+// Example : Class that can be Parceled
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class MyData implements Parcelable {
+  private long longVal;
+  private int intVal;
+  private String stringVal;
+  private boolean boolVal;
+
+  // Ignore
+  @Override
+  public int describeContents() { return 0; }
+
+  // Serialize
+  @Override
+  public void writeToParcel(Parcel parcel, int flags) {
+    parcel.writeLong(longVal);
+    parcel.writeInt(intVal);
+    parcel.writeString(stringVal);
+    parcel.writeInt(boolVal ? 1 : 0);
+  }
+
+  // DeSerialize
+  public MyData(Parcel parcel){
+    longVal = parcel.readLong();
+    intVal = parcel.readInt();
+    stringVal = parcel.readString();
+    boolVal = (parcel.readInt() == 1);
+  }
+
+  // static CREATOR required by interface
+  public static final Parcelable.Creator<MyData> CREATOR = new Parcelable.Creator<MyData>() {
+         public MyData createFromParcel(Parcel parcel) { return new MyData(parcel); }
+         public MyData[] newArray(int size) { return new MyData[size]; }
+  };
+}
+.......................................
+
+Reference:
+	http://mobile.dzone.com/articles/using-android-parcel
+
+=======================================
