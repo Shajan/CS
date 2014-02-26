@@ -1,7 +1,10 @@
 =========================================================================
 Module pattern 
+
     Helps with creating namespaces (helps contain scope of variables).
-    Reference:http://yuiblog.com/blog/2007/06/12/module-pattern/
+
+Reference: http://yuiblog.com/blog/2007/06/12/module-pattern/
+
 Example
 
 // Create null object if it is not already created
@@ -11,7 +14,7 @@ var GLOBAL_NAMESPACE = GLOBAL_NAMESPACE || {};
 GLOBAL_NAMESPACE.MY_MODULE = GLOBAL_NAMESPACE.MY_MODULE || {};
 
 GLOBAL_NAMESPACE.MY_MODULE.myState = function () {
-        // private variables accessible only in this function
+    // private variables accessible only in this function
     var myPrivateString = "My private string";
     var myPrivateFunction = function () {
         retrun myPrivateString;
@@ -28,6 +31,74 @@ GLOBAL_NAMESPACE.MY_MODULE.myState = function () {
             return this.myString;
         }
     }
-}(); // Execute the anonymous function and use it's return values
+}(); // Execute anonymous function, store return values to myState
 
 =========================================================================
+prototype
+
+    Allows programmers to attach fields and methods to java objects.
+    In javascript, you create an object, then add methods and fields
+    to it to make it act like a C++/Java class. Objects have a special
+    field called .prototype which holds the field/method defintions.
+    Type inheritence can be achieved by creating a new object of base type,
+    then adding more fields/methods to the new object.
+
+Reference: http://stackoverflow.com/questions/572897/how-does-javascript-prototype-work
+
+Example
+
+    // Define a functional object to hold persons in JavaScript
+    var Person = function(name) {
+        this.name = name;
+    };
+
+    // Add dynamically to the already defined object a new getter
+    Person.prototype.getName = function() {
+        return this.name;
+    };
+
+    // Create a new object of type Person
+    var john = new Person("John");
+
+    // Try the getter
+    alert(john.getName());
+
+    // If now I modify Person, John gets the updates as well
+    Person.prototype.sayMyName = function() {
+        alert('Hello, my name is ' + this.getName());
+    };
+
+    // Call the new method on john
+    john.sayMyName();
+
+    // Create a new object of type Customer by defining its constructor. It's not 
+    // related to Person for now.
+    var Customer = function(name) {
+        this.name = name;
+    };
+
+    // Now link the objects and to do so, we link the prototype of Customer to 
+    // a new instance of Person. The prototype is the base that will be used to 
+    // construct all new instances and also, will modify dynamically all already 
+    // constructed objects because in JavaScript objects retain a pointer to the 
+    // prototype
+    Customer.prototype = new Person();     
+
+    // Now I can call the methods of Person on the Customer, let's try, first 
+    // I need to create a Customer.
+    var myCustomer = new Customer('Dream Inc.');
+    myCustomer.sayMyName();
+
+    // If I add new methods to Person, they will be added to Customer, but if I
+    // add new methods to Customer they won't be added to Person.
+    Customer.prototype.setAmountDue = function(amountDue) { this.amountDue = amountDue; };
+    Customer.prototype.getAmountDue = function() { return this.amountDue; };
+
+    myCustomer.setAmountDue(2000);
+    alert(myCustomer.getAmountDue());
+
+    // The following statement generates an error.
+    john.setAmountDue(1000);
+
+=========================================================================
+
