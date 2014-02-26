@@ -1,0 +1,33 @@
+=========================================================================
+Module pattern 
+    Helps with creating namespaces (helps contain scope of variables).
+    Reference:http://yuiblog.com/blog/2007/06/12/module-pattern/
+Example
+
+// Create null object if it is not already created
+var GLOBAL_NAMESPACE = GLOBAL_NAMESPACE || {};
+
+// My private namespace, create it if necessary
+GLOBAL_NAMESPACE.MY_MODULE = GLOBAL_NAMESPACE.MY_MODULE || {};
+
+GLOBAL_NAMESPACE.MY_MODULE.myState = function () {
+        // private variables accessible only in this function
+    var myPrivateString = "My private string";
+    var myPrivateFunction = function () {
+        retrun myPrivateString;
+    }
+
+    return {
+        // Public GLOBAL_NAMESPACE.MY_MODULE.myState.myString
+        myString : "My public string";
+        // Public GLOBAL_NAMESPACE.MY_MODULE.myState.myFunction()
+        myFunction = function () {
+            // Private variables of myState are accessible here
+            myPrivateFunction();
+            // use 'this' to access public members of myState
+            return this.myString;
+        }
+    }
+}(); // Execute the anonymous function and use it's return values
+
+=========================================================================
