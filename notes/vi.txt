@@ -1,0 +1,4 @@
+Replace leading white space with '.', repeat last command by :@, then @@ till there are no matches
+	%s/^[ ]\+\zs \ze[^ ]/./
+	\zs is when the replacement starts
+	\ze is where the replacement ends
