@@ -1,4 +1,5 @@
-Replace leading white space with '.', repeat last command by :@, then @@ till there are no matches
+Replace leading white space with '.', 
 	%s/^[ ]\+\zs \ze[^ ]/./
 	\zs is when the replacement starts
 	\ze is where the replacement ends
+Repeat last :command by @: then @@ to repeat again
