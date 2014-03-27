@@ -1,5 +1,102 @@
-Replace leading white space with '.', 
-	%s/^[ ]\+\zs \ze[^ ]/./
-	\zs is when the replacement starts
-	\ze is where the replacement ends
-Repeat last :command by @: then @@ to repeat again
+.........................................................................
+Regex
+
+{n} Match excatly n times
+{n, } Match atleast n times
+{n,m} Match between n and m times
+* matches 0 or more times (equivalent to {0,})
++ matches 1 or more times (equivalent to {1,})
+? Match 0 or 1 times (equivalent to {0,1})
+
+. any char except new line
+\a Alpabet
+\A Non Alpabet
+\d Digits
+\D Not digits
+\s Space or tab
+\_s Space tab or newline
+\S Not Space or tab
+\w Word Chars
+\W Not Word Chars
+\l lower case
+\u upper case
+
+Match a char not in this list [^xyz]
+	q[^u] does not match "Iraq", it matches "Iraq "
+	Read : q followed by a char that is not u	
+
+Words
+	\w\+ match a word
+	\<is\> word does not match list, matches is.
+	/<is matches all words starting with 'is'
+	is\> matches all words ending with 'is'
+
+Parenthesis
+	Grouping : \(abc\)+ one or more 'abc' abcabcabc
+	OR : \(a\|b\) matches a or b
+	Remembering match :
+		\(.\)b\(.\)d\2 matches abcdc '2' is the second paranthesis
+		a(.*)b\1c matches aXYbXYc, abc
+		:s/\(\w\+\)\(\s\+\)\(\w\+\)/\3\2\1/ flip word pairs
+
+.........................................................................
+Substitution
+	\0 whole matched pattern (same as &)
+	\1 first matched pattern.. \9 ninenth match
+	~ previous substitute string
+	\l next char is made lower case
+	\u next char is made lower case
+	\L following characters are made lowercase 
+	\U following characters are made uppercase 
+	\E end of \U or \L
+	\r split line into two
+
+	s/.*/\L\0/ : Make all characters lower case in this line
+
+.........................................................................
+Alternations
+	/\(abc\|def\) : matches abc or def
+
+.........................................................................
+Negation
+	@! negates the previous atom - last char or item in parenthesis 
+	/Foo\(bar\)\@! Finds Foo without a bar following it
+	:v/pattern/p [Prints all the lines not containing pattern]
+.........................................................................
+Behavior
+
+Default greedy : Match as much text as possible to get a match
+Use '-' to match as few as possible
+	\{-} instead of * to match 0 or more chars 
+	Example : Match text in quotes ".\{-}" two matches in "foo" and "bar"
+
+.........................................................................
+Find, Replace
+	Find one or other word \<\(red\|green\|blue\)\>
+	Find one or other select last (.*bar) if both found /.*foo\&.*bar
+	Find trailing zeros in fraction \(\.\d\+\)\@<=0\+\>
+		\@<= causes selection of 0\+\>, then finds the previous atom
+
+	Replace using last search :%s//replace/g
+
+	Delete blank lines :g/^$/d
+	Reduce multiple blank lines to one blank line :g/^$/,/./-j
+
+	Find duplicate words : \(\<\w\+\>\)\_s*\1
+		\<\w\+\> start of word followed by one or more chars then end of word
+		_s* matches one or more space,tab,newline
+		'1' first match in parenthesis
+
+	Replace leading white space with '.', :%s/^[ ]\+\zs \ze[^ ]/./
+		\zs is when the replacement starts
+		\ze is where the replacement ends
+
+	Use & in replace to mean the full match, use \1 or \2.. for subset
+		:%s/red\|green/"&"/g will quote red or green
+
+.........................................................................
+Utility
+
+	Repeat last :command by @: then @@ to repeat again
+	Highlight searches :set hlsearch [:nohlsearch to turn off]
+.........................................................................
