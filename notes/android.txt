@@ -92,3 +92,5 @@ Reference:
 	http://mobile.dzone.com/articles/using-android-parcel
 
 =======================================
+Install app in emulator : goto 4shared.com
+=======================================
