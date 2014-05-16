@@ -1,0 +1,10 @@
+Local grunt shell
+	pig -x local
+	A = load 'data.csv' using PigStorage(',');
+	dump A;
+	B = foreach A generate $0 as c1;
+	store B into col1;
+
+Local using java
+	javac -cp <path>/pig-0.12.1.jar filterData.java 
+        java -cp .:<path>/pig-0.12.1.jar filterData 
