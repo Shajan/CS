@@ -1,10 +1,50 @@
 Local grunt shell
 	pig -x local
-	A = load 'data.csv' using PigStorage(',');
-	dump A;
-	B = foreach A generate $0 as c1;
-	store B into col1;
+        A = LOAD 'data.csv' USING PigStorage(',') AS (name:chararray, age:int, status:chararray, state:chararray);
+        DESCRIBE A;
+        EXPLAIN A;
+	DUMP A;
+	B = FOREACH A GENERATE name, age;
+	STORE B INTO 'out';
+        ILLUSTRATE;
+
+        -- Find the number of records from each state
+        C = GROUP A by state;
+	D = FOREACH C GENERATE $0, COUNT($1);
+        DUMP D;
+
+        -- Find the records with age > 30
+	E = FILTER A BY age > 30;
+        DUMP E;
+
+        -- Join to Expand state names 
+        F = LOAD 'state.csv' USING PigStorage(',') AS (state:chararray, stateName:chararray);
+        G = JOIN A by state, F by state; -- G will have all cols or A and F
+	H = FOREACH G GENERATE name, age, status, stateName;
 
 Local using java
 	javac -cp <path>/pig-0.12.1.jar filterData.java 
         java -cp .:<path>/pig-0.12.1.jar filterData 
+
+Pig Latin (http://pig.apache.org/docs/r0.7.0/piglatin_ref2.html)
+	DUMP : display results to a screen.
+	STORE : write results to a file on the file system.
+
+	DESCRIBE : view the schema of a relation.
+	EXPLAIN : view the logical, physical, or map reduce execution plans to compute a relation.
+	ILLUSTRATE : view the step-by-step execution of a series of statements.
+
+	FILTER : work with tuples or rows of data.
+	FOREACH : work with columns of data.
+
+	GROUP : group data in a single relation.
+	COGROUP and JOIN : group or join data in two or more relations.
+
+	UNION : merge the contents of two or more relations.
+	SPLIT : partition the contents of a relation into multiple relations.
+
+	Comments :
+		/* multiline */ 
+		-- to end of line
+
+	EXEC : force execution, useful when pig can't figure out depenency 
