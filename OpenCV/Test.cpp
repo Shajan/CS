@@ -7,24 +7,28 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
-    {
-        cout <<" Usage: display_image ImageToLoadAndDisplay" << endl;
+    if (argc != 2) {
+        cout <<" Usage: Test <FileName>" << endl;
         return -1;
     }
 
     Mat image;
-    image = imread(argv[1], IMREAD_COLOR); // Read the file
+    image = imread(argv[1], IMREAD_COLOR);
 
-    if (!image.data) // Check for invalid input
-    {
+    // Check for invalid input
+    if (!image.data) {
         cout << "Could not open or find the image" << std::endl;
         return -1;
     }
 
-    namedWindow("Display window", WINDOW_AUTOSIZE); // Create a window for display.
-    imshow("Display window", image); // Show our image inside it.
+    // Create a window for display.
+    namedWindow("Test Window", WINDOW_AUTOSIZE);
 
-    waitKey(0); // Wait for a keystroke in the window
+    // Show image inside the window
+    imshow("Test Window", image);
+
+    // Wait for a keystroke in the window
+    waitKey(0);
+
     return 0;
 }
