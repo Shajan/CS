@@ -5,7 +5,7 @@
 using namespace cv;
 using namespace std;
 
-int main(int argc, char** argv)
+int testMain(int argc, char** argv)
 {
     if (argc != 2) {
         cout <<" Usage: Test <FileName>" << endl;
