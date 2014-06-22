@@ -2,7 +2,9 @@
 using namespace std;
 
 int render(const char* fileName);
-char* image = "..\\opencv-logo.png";
+int transform(const char* fileName);
+
+char* image = "..\\test-image.jpg";
 char* video = "..\\test-video.mov";
 
 int main(int argc, char **argv) {
@@ -10,9 +12,11 @@ int main(int argc, char **argv) {
     if (argc == 2) {
         fileName = argv[1];
     } else {
-        fileName = video;
+        //fileName = video;
+        fileName = image;
     }
-    return render(fileName);
+    //return render(fileName);
+    return transform(fileName);
 }
 
 extern int TestMain(const char* fileName);
@@ -25,4 +29,10 @@ int render(const char* fileName) {
     //return ReadImageMain(fileName);
     //return PlayMovie(fileName);
     return PlayMovieWithSlider(fileName);
+}
+
+extern int GaussianFilter(const char* fileName);
+
+int transform(const char* fileName) {
+    return GaussianFilter(fileName);
 }

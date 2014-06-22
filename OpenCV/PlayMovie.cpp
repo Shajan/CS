@@ -43,8 +43,8 @@ int PlayMovieWithSlider(const char* fileName) {
         cvShowImage("MovieWithSlider", frame);
         
         // Move the slider
-        g_slider_position = (int) cvGetCaptureProperty(g_capture, CV_CAP_PROP_POS_FRAMES);
-        cvSetTrackbarPos("Position", "MovieWithSlider", g_slider_position);
+        int pos = (int) cvGetCaptureProperty(g_capture, CV_CAP_PROP_POS_FRAMES);
+        cvSetTrackbarPos("Position", "MovieWithSlider", pos);
 
         // 'ESC' key for exit
         // Assuming at 30fps, check frame rate to be sure
