@@ -18,10 +18,8 @@ int testMain(const char* fileName)
 
     // Create a window for display.
     namedWindow("Test Window", WINDOW_AUTOSIZE);
-
     // Show image inside the window
     imshow("Test Window", image);
-
     // Wait for a keystroke in the window
     waitKey(0);
 

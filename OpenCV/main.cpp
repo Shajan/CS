@@ -1,10 +1,7 @@
 #include <iostream>
 using namespace std;
 
-extern int TestMain(const char* fileName);
-extern int ReadImageMain(const char* fileName);
-extern int PlayMovie(const char* fileName);
-
+int render(const char* fileName);
 char* image = "..\\opencv-logo.png";
 char* video = "..\\test-video.mov";
 
@@ -15,8 +12,17 @@ int main(int argc, char **argv) {
     } else {
         fileName = video;
     }
-    
+    return render(fileName);
+}
+
+extern int TestMain(const char* fileName);
+extern int ReadImageMain(const char* fileName);
+extern int PlayMovie(const char* fileName);
+extern int PlayMovieWithSlider(const char* fileName);
+
+int render(const char* fileName) {
     //return TestMain(fileName);
     //return ReadImageMain(fileName);
-    return PlayMovie(fileName);
+    //return PlayMovie(fileName);
+    return PlayMovieWithSlider(fileName);
 }
