@@ -5,15 +5,10 @@
 using namespace cv;
 using namespace std;
 
-int testMain(int argc, char** argv)
+int testMain(const char* fileName)
 {
-    if (argc != 2) {
-        cout <<" Usage: Test <FileName>" << endl;
-        return -1;
-    }
-
     Mat image;
-    image = imread(argv[1], IMREAD_COLOR);
+    image = imread(fileName, IMREAD_COLOR);
 
     // Check for invalid input
     if (!image.data) {
