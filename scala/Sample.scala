@@ -1,8 +1,7 @@
 
 object Sample {
   def main(args: Array[String]) {
-    ArraySample.Run(args)
-    //Precondition.Run(args)
+    MyArray.Run(args)
   }
 }
 
@@ -16,7 +15,7 @@ sealed trait Executable {
   def Run(args: Array[String])
 }
 
-object ArraySample extends Executable {
+object MyArray extends Executable {
   def Run(args: Array[String]) = {
     val a = Array(10, 20, 30, 40, 50)
     //basic(a)
@@ -81,15 +80,3 @@ object ArraySample extends Executable {
     Seperator.line("a.foldRight(\"\")((e, t) => if (t.length > e.toString.length) t else e.toString)")
   }
 }
-
-object Precondition extends Executable {
-  def Run(args: Array[String]) = {
-    println(Divide(1, 1))
-    println(Divide(1, 0))
-  }
-  def Divide(i:Int, j:Int):Double = {
-    require(j != 0)
-    i/j
-  }
-}
-
