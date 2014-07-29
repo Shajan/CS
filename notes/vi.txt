@@ -100,3 +100,9 @@ Utility
 	Repeat last :command by @: then @@ to repeat again
 	Highlight searches :set hlsearch [:nohlsearch to turn off]
 .........................................................................
+Split window
+	ctrl+ws - Split windows
+	ctrl+ww - switch between windows
+	ctrl+wq - Quit a window
+	ctrl+wv - Split windows vertically
+.........................................................................
