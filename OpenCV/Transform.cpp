@@ -4,7 +4,7 @@ int GaussianFilter(const char* fileName) {
     IplImage* input = cvLoadImage(fileName);
     IplImage* output = cvCreateImage(cvGetSize(input), IPL_DEPTH_8U, 3);
 
-    cvSmooth(input, output, CV_GAUSSIAN, 23, 23);
+    cvSmooth(input, output, CV_GAUSSIAN, 47, 47);
     IplImage* img = input;
 
     while (true) {
