@@ -6,3 +6,11 @@ echo $PATH | tr ":" "\n" | sort
 # using find -print0 xargs -0 takes care of spaces and other chars in filenames
 # ingnoring '*.git' reduces noise/duplicates from git
 find . -not -iwholename '*.git*' -type f -print0 | xargs -0 egrep foobar 
+
+# Redirect stderr to 'error.txt'
+# stdin:0, stdout:1, stderr:2
+foo 2> error.txt
+# Redirect stdin and stderr to 'all.txt'
+foo &> all.txt
+# Redirect stderr to stdin
+foo 2>&1
