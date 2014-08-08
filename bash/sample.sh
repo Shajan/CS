@@ -31,3 +31,4 @@ function foo_bar()
 RESULT=""
 foo_bar abc
 echo $RESULT
+

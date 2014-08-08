@@ -1,0 +1,8 @@
+# tr: Translate one char to another
+# print a sorted list of folders in your path
+echo $PATH | tr ":" "\n" | sort
+
+# Search for 'foobar' any file in a local git repository
+# using find -print0 xargs -0 takes care of spaces and other chars in filenames
+# ingnoring '*.git' reduces noise/duplicates from git
+find . -not -iwholename '*.git*' -type f -print0 | xargs -0 egrep foobar 
