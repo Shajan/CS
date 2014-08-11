@@ -1,0 +1,16 @@
+Setup for C++ [from https://thrift.apache.org/docs/install/os_x]
+	Install boost
+		Download from boost.org, untar
+		./bootstrap.sh
+		sudo ./b2 threading=multi address-model=64 variant=release stage install
+	Intall libevent
+		Download from libevent.org, untar
+		./configure --prefix=/usr/local 
+		make
+		sudo make install
+	Install thrift
+		Download from thrift.apache.org, untar
+		Use --without-<PACKAGE> to prevent broken builds to block progress, also much faster
+		./configure --prefix=/usr/local/ --with-boost=/usr/local --with-libevent=/usr/local --without-php --without-php_extension --without-ruby --without-perl --without-python
+		make
+		sudo make install
