@@ -10,8 +10,7 @@ fi
 # generate cpp files
 thrift --gen cpp sample.thrift
 
-# -g : source level debug info
-# thrift include folder : /usr/local/include/thrift
-# boost include folder : /usr/local/include/boost
-cc -g -I /usr/local/include/thrift -I /usr/local/include/boost -o sample sample.cpp
-
+# -g : Source level debug info
+# -I : Include folders
+# -L : Lib folder
+clang++ -g -I /usr/local/include/thrift -I /opt/twitter/Cellar/boost/1.54.0/include/boost/ -o sample sample.cpp -L/opt/twitter/Cellar/boost/1.54.0/lib
