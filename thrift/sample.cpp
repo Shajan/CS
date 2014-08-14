@@ -12,7 +12,7 @@
 #include <transport/TFileTransport.h>
 
 // Thrift generated code
-#include "gen-cpp/KeyValService.h"
+#include "gen-cpp/sample_types.h"
 
 // File to read/write serilaized data
 #define FILE_NAME "data.bin"
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 
     if (read) {
       read_from(file_name, kv);
-      printf("key(%s), val(%s)", kv.key.c_str(), kv.val.c_str());
+      printf("key(%s), val(%s)\n", kv.key.c_str(), kv.val.c_str());
     } else {
       kv.key = "Name";
       kv.val = "Shajan Dasan";

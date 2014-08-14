@@ -26,7 +26,3 @@ struct KeyVal {
   2: string val 
 }
 
-service KeyValService {
-  string getVal(1:KeyVal keyVal)
-}
-
