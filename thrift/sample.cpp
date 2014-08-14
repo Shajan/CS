@@ -27,8 +27,6 @@ void read_from(const char* file_name, KeyVal& kv);
 void write_to(const char* file_name, KeyVal& kv);
 
 int main(int argc, char* argv[]) {
-    getchar();
-
     bool read=true;
     const char * file_name = FILE_NAME;
     KeyVal kv;
@@ -49,18 +47,14 @@ int main(int argc, char* argv[]) {
 }
 
 void read_from(const char* file_name, KeyVal& kv) {
-	shared_ptr<TFileTransport> transport(new TFileTransport(file_name, true));
-	TJSONProtocol protocol(transport);
-	transport->open();
-	kv.read(&protocol);
-	transport->close();
+    shared_ptr<TFileTransport> transport(new TFileTransport(file_name, true));
+    TJSONProtocol protocol(transport);
+    kv.read(&protocol);
 }
 
 void write_to(const char* file_name, KeyVal& kv) {
-	shared_ptr<TFileTransport> transport(new TFileTransport(file_name, false));
-	TJSONProtocol protocol(transport);
-	transport->open();
-	kv.write(&protocol);
-	transport->close();
+    shared_ptr<TFileTransport> transport(new TFileTransport(file_name, false));
+    TJSONProtocol protocol(transport);
+    kv.write(&protocol);
 }
 
