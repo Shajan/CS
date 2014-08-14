@@ -23,6 +23,9 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
+// To consume thrift generated code
+using namespace serializer;
+
 void read_from(const char* file_name, KeyVal& kv);
 void write_to(const char* file_name, KeyVal& kv);
 

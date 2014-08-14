@@ -17,9 +17,12 @@
  *     string ping(1:string str)
  *   }
  *
- * Generate CPP files (in gen-cpp folder)
- *   thrift --gen cpp sample.thrift 
+ * Generate CPP and java files (in gen-cpp & gen-java folder)
+ *   thrift -r --gen cpp java sample.thrift 
  */
+
+namespace cpp serializer
+namespace java serializer
 
 struct KeyVal {
   1: string key,
