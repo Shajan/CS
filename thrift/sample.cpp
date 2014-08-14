@@ -1,19 +1,20 @@
+/*
+ * Sample to demonstrate serialization / deserialization using thrift
+ */
 #include <stdio.h>
 #include <iostream>
 
+// Thrift requires boost
 #include <boost/shared_ptr.hpp>
-/*
-#include <protocol/TBinaryProtocol.h>
-#include <protocol/TDenseProtocol.h>
-#include <transport/TTransportUtils.h>
-#include <transport/TFDTransport.h>
-*/
 
+// Thrift libraries
 #include <protocol/TJSONProtocol.h>
 #include <transport/TFileTransport.h>
 
+// Thrift generated code
 #include "gen-cpp/KeyValService.h"
 
+// File to read/write serilaized data
 #define FILE_NAME "/tmp/data.bin"
 
 using namespace boost;
