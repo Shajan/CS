@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [ "$1" == "clean" ]; then
-  rm sample
+  rm -f sample
+  rm -f data.bin
   rm -rf gen-cpp
   rm -rf sample.dSYM
   exit 0

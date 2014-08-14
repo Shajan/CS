@@ -15,7 +15,7 @@
 #include "gen-cpp/KeyValService.h"
 
 // File to read/write serilaized data
-#define FILE_NAME "/tmp/data.bin"
+#define FILE_NAME "data.bin"
 
 using namespace boost;
 using namespace std;

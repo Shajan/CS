@@ -3,9 +3,9 @@ To compile, execute 'mk.sh'
 	'./mk.sh clean' to celean up
 	Thrift generated files go to ./gen-cpp/*, binary is './sample'
 To create serialized data run: ./sample write
-	Data file is created in /tmp/data.bin
+	Data file is created in ./data.bin
 To read serialized data run: ./sample
-	Reads data from /tmp/data.bin
+	Reads data from ./data.bin
 
 Thrift:
 	To play with thrift, change sample.thrift then run ./mk.sh to regenerate ./sample
