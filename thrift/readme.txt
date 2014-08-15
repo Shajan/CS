@@ -1,10 +1,9 @@
-Setup:
+Setup: [C++, java]
+	Install java, c++ compiler
 	Install Thrift
-		download, build and install http://thrift.apache.org/
+		http://thrift.apache.org/ Download, build and install
 	Install slf4j required for java
 		http://www.slf4j.org/download.html slf4j-api-1.5.8.jar,slf4j-log4j12-1.5.8.jar,log4j-1.2.14.jar
-	Install scrooge required for scala
-		'git clone https://github.com/twitter/scrooge && cd scroonge && ./sbt +publish-local'
 
 To compile: 'mk.sh'
 	Avoiding a makefile on purpose to keep things simple and transparent.
@@ -29,4 +28,8 @@ Serialization:
 Versioning:
 	To understand versioning, change sample.thrift with optional fields. Read and write using code generated from different versions of sample.thrift (ones with optional fields defined and ones without). Try both cases ('old client reading new data' as well as 'new client reading old data')
 
-Scala:
+Scala: [Optional]
+	Install scala compiler
+	Install scrooge required for scala
+		'mkdir -p ~/src/tools && cd ~/src/tools && git clone https://github.com/twitter/scrooge && cd scroonge && ./sbt +publish-local'
+

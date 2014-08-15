@@ -5,10 +5,10 @@ if [ "$1" == "clean" ]; then
   rm -f data.bin
   rm -rf gen-cpp
   rm -rf gen-java
+  rm -rf gen-scala
   rm -f *.class
   rm -rf sample.dSYM
   rm -rf serializer
-  rm -rf target
   exit 0
 fi
 
@@ -39,6 +39,10 @@ if [ "$1" == "j2c" ]; then
   exit 0
 fi
 
+if [ "$1" == "s" ]; then
+  scala Sample
+  exit 0
+fi
 # generate cpp & java files
 thrift -r --gen cpp --gen java sample.thrift
 
@@ -54,11 +58,19 @@ javac -cp .:/usr/local/lib/libthrift-0.9.1.jar:/usr/local/lib/slf4j-api-1.5.8.ja
 
 # Generate scala files
 # Assuming scrooge is present at ~/src/tools/scrooge
-# Output goes to /tmp/serailizer
-cp sample.thrift ~/src/tools/scrooge
-cd ~/src/tools/scrooge
-PWD=`pwd`
-./sbt "scrooge-generator/run-main com.twitter.scrooge.Main sample.thrift -d $PWD"
-cd -
-#cp -r /tmp/serializer .
+SCROOGE=~/src/tools/scrooge
+cp sample.thrift $SCROOGE
+if [ -d $SCROOGE ]; then 
+  pushd ~/src/tools/scrooge
+  ./sbt "scrooge-generator/run-main com.twitter.scrooge.Main sample.thrift"
+  rm sample.thrift
+  popd
+  rm -rf gen-scala
+  mkdir gen-scala
+  mv $SCROOGE/serializer gen-scala 
+# see http://randonom.com/blog/tag/scrooge/
+#  scalac -cp .:$SCROOGE/target/scala-2.10/scrooge_2.10-3.16.3.jar gen-scala/serializer/KeyVal.scala Sample.scala
+else
+  echo "Unable to find scrooge at $SCROOGE see https://github.com/Shajan/CS/blob/master/thrift/readme.txt"
+fi
 

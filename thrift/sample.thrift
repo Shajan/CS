@@ -24,6 +24,10 @@
 namespace cpp serializer
 namespace java serializer
 
+# Reguar thrift compiler does not understand scala and will fail
+# on the next line. scrooge thrift compiler will pick up '#@'
+#@namespace scala serializer
+
 struct KeyVal {
   1: string key,
   2: string val 
