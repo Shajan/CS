@@ -1,10 +1,19 @@
-To compile, execute 'mk.sh'
+Setup
+	Install thrift
+	Install slf4j-api-1.5.8.jar,slf4j-log4j12-1.5.8.jar,log4j-1.2.14.jar
+
+To compile: 'mk.sh'
 	Avoiding a makefile on purpose to keep things simple and transparent.
-	'./mk.sh clean' to celean up
+	'./mk.sh clean' to clean up
 	Thrift generated files go to ./gen-cpp/*, binary is './sample'
-To create serialized data run: ./sample write
+
+Cross Language: First compile using ./mk.sh, then..
+	./mk.sh c2j [Writes using C++, reads using java]
+	./mk.sh j2c [Writes using java, reads using c++]
+
+To create serialized data using C++ run: ./sample write
 	Data file is created in ./data.bin
-To read serialized data run: ./sample
+To read serialized data using C++ run: ./sample
 	Reads data from ./data.bin
 
 Thrift:
