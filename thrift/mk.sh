@@ -7,6 +7,8 @@ if [ "$1" == "clean" ]; then
   rm -rf gen-java
   rm -f *.class
   rm -rf sample.dSYM
+  rm -rf serializer
+  rm -rf target
   exit 0
 fi
 
@@ -49,4 +51,14 @@ clang++ -g -I /usr/local/include/thrift -I /opt/twitter/Cellar/boost/1.54.0/incl
 
 # Compile using java sources
 javac -cp .:/usr/local/lib/libthrift-0.9.1.jar:/usr/local/lib/slf4j-api-1.5.8.jar gen-java/serializer/KeyVal.java ./Sample.java
+
+# Generate scala files
+# Assuming scrooge is present at ~/src/tools/scrooge
+# Output goes to /tmp/serailizer
+cp sample.thrift ~/src/tools/scrooge
+cd ~/src/tools/scrooge
+PWD=`pwd`
+./sbt "scrooge-generator/run-main com.twitter.scrooge.Main sample.thrift -d $PWD"
+cd -
+#cp -r /tmp/serializer .
 
