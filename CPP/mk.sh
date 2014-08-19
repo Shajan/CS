@@ -17,5 +17,5 @@ fi
 # -I : Include folders
 # -L : Lib folder
 # -l : link with library
-clang++ -g -o sample sample.cpp
+clang++ -g -o sample Sample.cpp FileIO.cpp Unary.cpp Function.cpp
 
