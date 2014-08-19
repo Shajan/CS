@@ -1,145 +1,61 @@
-/*
- * Sample to demonstrate serialization / deserialization using thrift
- */
 #include <stdio.h>
-//#include <iostream>
-//#include <fstream>
 
-// Thrift requires boost
-#include <boost/shared_ptr.hpp>
-
-// Thrift libraries
-#include <protocol/TJSONProtocol.h>
-#include <transport/TFileTransport.h>
-
-// Thrift generated code
-#include "gen-cpp/sample_types.h"
-
-// File to read/write serilaized data
-#define FILE_NAME "data.bin"
-
-using namespace boost;
-using namespace std;
-using namespace apache::thrift;
-using namespace apache::thrift::protocol;
-using namespace apache::thrift::transport;
-
-// To consume thrift generated code
-using namespace serializer;
-
-typedef unsigned char byte;
-
-bool read_from(const char* file_name, KeyVal& kv);
-bool read(const char* file_name, byte** ppb, int* pcb);
-bool write_to(const char* file_name, KeyVal& kv);
-bool write(const char* file_name, byte* pb, int cb);
+void unary_operator();
+bool file_io(const char* file_name);
 
 int main(int argc, char* argv[]) {
-    bool read=true;
-    const char * file_name = FILE_NAME;
-    KeyVal kv;
-
-    if (argc > 1 && (strcmp(argv[1], "write") == 0)) {
-        read = false; 
-    }
-
-    if (read) {
-      if (!read_from(file_name, kv))
-          return 1;
-      printf("key(%s), val(%s)\n", kv.key.c_str(), kv.val.c_str());
-    } else {
-      kv.key = "Name";
-      kv.val = "Shajan Dasan";
-      if (!write_to(file_name, kv))
-          return 1;
-    }
+    unary_operator();
+    file_io("test.data");
     return 0;
 }
 
-bool read_from(const char* file_name, KeyVal& kv) {
-    // Read from file
-    byte* pb=NULL;
-    int cb=0;
-    if (!read(file_name, &pb, &cb))
-        return false;
+// Test Unary operator
+class A {
+    friend void operator >> (int i, A& obj) {
+        printf("%d >> A\n", i);
+    }
+    friend void operator << (int i, A& obj) {
+        printf("%d << A\n", i);
+    }
+};
 
-    // Deserialize
-    shared_ptr<TMemoryBuffer> transport(new TMemoryBuffer(pb, cb));
-    TJSONProtocol protocol(transport);
-    kv.read(&protocol);
-
-    return true;
+void unary_operator() {
+    A a;
+    10 >> a;
+    25 << a;
 }
 
-bool write_to(const char* file_name, KeyVal& kv) {
-    // Serialize
-    shared_ptr<TMemoryBuffer> transport(new TMemoryBuffer());
-    TJSONProtocol protocol(transport);
-    kv.write(&protocol);
-
-    // Write to file
-    byte* pb=NULL;
-    unsigned int cb=0;
-    transport->getBuffer(&pb, &cb);
-    return write(file_name, pb, cb);
-}
-
-bool read(const char* file_name, byte** ppb, int* pcb) {
-    // FileTrasport appears to not interoperate with java code
-    //shared_ptr<TFileTransport> transport(new TFileTransport(file_name, true));
-
-    FILE* in = NULL;
-    
-    if ((in = fopen(file_name, "rb")) == NULL) {
-        printf("Error unable to open file %s\n", file_name);
+bool file_io(const char* file_name) {
+    FILE* f = fopen(file_name, "w");
+    if (f == NULL) {
+        printf("Unable to create file %s\n", file_name);
         return false;
     }
-
-    fseek(in, 0, SEEK_END); 
-    int cb = ftell(in);
-    fseek(in, 0, SEEK_SET); 
-
-    if (cb == 0) {
-        printf("Error empty file %s\n", file_name);
-        fclose(in);
+    if (fputs("Hello World!\nSecond Line\n", f) < 0) {
+        printf("Unable to write to file %s\n", file_name);
+        fclose(f);
         return false;
     }
+    fclose(f);
 
-    *ppb = new byte[cb];
-    *pcb = fread(*ppb, sizeof(byte), cb, in); 
-    fclose(in);
-
-    if (*pcb != cb) {
-        printf("Error reading file %s, bytes read:%d ,expected:%d\n", file_name, *pcb, cb);
-        delete [] *ppb;
-        *ppb = NULL;
-        *pcb = 0;
+    f = fopen(file_name, "r");
+    char buffer[20];
+    // Read the first 5 chars, appends a null char at the end
+    if (fgets(buffer, 6, f) == NULL) {
+        printf("Unable to read from file %s\n", file_name);
+        fclose(f);
         return false;
     }
+    printf("First 5 chars :%s\n", buffer);
 
-    return true;
-}
-
-bool write(const char* file_name, byte* pb, int cb) {
-    // FileTrasport appears to not interoperate with java code
-    //shared_ptr<TFileTransport> transport(new TFileTransport(file_name, false));
-
-    FILE* out = NULL;
-    
-    if ((out = fopen(file_name, "wb")) == NULL) {
-        printf("Error unable to open file %s\n", file_name);
+    // Read the first line, including new line, appends null char at end
+    if (fgets(buffer, 20, f) == NULL) {
+        printf("Unable to read from file %s\n", file_name);
+        fclose(f);
         return false;
     }
-
-    int bytes = fwrite(pb, sizeof(byte), cb, out); 
-    fclose(out);
-
-    if (bytes != cb) {
-        printf("Error writing file %s, bytes written:%d ,expected:%d\n", file_name, bytes, cb);
-        return false;
-    }
-
-    fclose(out);
+    printf("Rest of the first line :%s", buffer);
+    fclose(f);
     return true;
 }
 
