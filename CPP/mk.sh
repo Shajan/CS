@@ -17,5 +17,7 @@ fi
 # -I : Include folders
 # -L : Lib folder
 # -l : link with library
-clang++ -g -o sample Sample.cpp FileIO.cpp Unary.cpp Function.cpp
+# -stdlib=libc++ : use clang headers in /usr/lib/c++/v1 example <functional>
+#  -std=c++11 : Use c++11
+clang++ -std=c++11 -stdlib=libc++ -g -o sample Sample.cpp FileIO.cpp Unary.cpp Function.cpp
 
