@@ -7,6 +7,7 @@ function clean {
   rm -rf h264
   rm -rf h264.dSYM
   rm -rf $DATA_FOLDER/output.*
+  rm -rf $DATA_FOLDER/debug.*
 }
 
 function build {
@@ -24,6 +25,12 @@ function run {
   $BIN_FOLDER/ffmpeg -f h264 -i $DATA_FOLDER/output.264 -vcodec copy $DATA_FOLDER/output.mp4
 }
 
+function debug {
+  # Get h264_analyze from http://sourceforge.net/projects/h264bitstream/
+  $BIN_FOLDER/ffmpeg -i $DATA_FOLDER/input.mp4 -vcodec copy -vbsf h264_mp4toannexb -an $DATA_FOLDER/debug.h264
+  $BIN_FOLDER/h264_analyze $DATA_FOLDER/debug.h264
+}
+
 if [ "$1" == "clean" ]; then
   clean
   exit 0
@@ -36,6 +43,11 @@ fi
 
 if [ "$1" == "run" ]; then
   run
+  exit 0
+fi
+
+if [ "$1" == "debug" ]; then
+  debug
   exit 0
 fi
 
