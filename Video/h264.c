@@ -46,8 +46,7 @@
 #define CHROMA_HEIGHT LUMA_HEIGHT / 2
 
 /* YUV planar data, as written by ffmpeg */
-typedef struct
-{
+typedef struct {
   uint8_t Y[LUMA_HEIGHT][LUMA_WIDTH];
   uint8_t Cb[CHROMA_HEIGHT][CHROMA_WIDTH];
   uint8_t Cr[CHROMA_HEIGHT][CHROMA_WIDTH];
@@ -62,45 +61,63 @@ const uint8_t slice_header[] = { 0x00, 0x00, 0x00, 0x01, 0x05, 0x88, 0x84, 0x21,
 const uint8_t macroblock_header[] = { 0x0d, 0x00 };
 
 /* Write a macroblock's worth of YUV data in I_PCM mode */
-void macroblock(const int i, const int j)
-{
+void macroblock(const int i, const int j, FILE* out) {
   int x, y;
 
-  if (! ((i == 0) && (j == 0)))
-  {
-    fwrite(&macroblock_header, 1, sizeof(macroblock_header), stdout);
+  if (!((i == 0) && (j == 0))) {
+    fwrite(&macroblock_header, sizeof(macroblock_header), 1, out);
   }
 
   for(x = i*16; x < (i+1)*16; x++)
     for (y = j*16; y < (j+1)*16; y++)
-      fwrite(&frame.Y[x][y], 1, 1, stdout);
+      fwrite(&frame.Y[x][y], 1, 1, out);
   for (x = i*8; x < (i+1)*8; x++)
     for (y = j*8; y < (j+1)*8; y++)
-      fwrite(&frame.Cb[x][y], 1, 1, stdout);
+      fwrite(&frame.Cb[x][y], 1, 1, out);
   for (x = i*8; x < (i+1)*8; x++)
     for (y = j*8; y < (j+1)*8; y++)
-      fwrite(&frame.Cr[x][y], 1, 1, stdout);
+      fwrite(&frame.Cr[x][y], 1, 1, out);
 }
 
 /* Write out PPS, SPS, and loop over input, writing out I slices */
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   int i, j;
+  FILE* in=stdin;
+  FILE* out=stdout;
 
-  fwrite(sps, 1, sizeof(sps), stdout);
-  fwrite(pps, 1, sizeof(pps), stdout);
+  if (argc == 3) {
+    in = fopen(argv[1], "r");
+    if (in == NULL) {
+      printf("Error reading file %s\n", argv[1]);
+      return 1;
+    }
+
+    out = fopen(argv[2], "w");
+    if (out == NULL) {
+      fclose(in);
+      printf("Error writing to file %s\n", argv[2]);
+      return 1;
+    }
+  }
+
+  fwrite(sps, sizeof(sps), 1, out);
+  fwrite(pps, sizeof(pps), 1, out);
   
-  while (! feof(stdin))
-  {
-    fread(&frame, 1, sizeof(frame), stdin);
-    fwrite(slice_header, 1, sizeof(slice_header), stdout);
+  while (!feof(in)) {
+    fread(&frame, sizeof(frame), 1, in);
+    fwrite(slice_header, sizeof(slice_header), 1, out);
 
     for (i = 0; i < LUMA_HEIGHT/16 ; i++)
       for (j = 0; j < LUMA_WIDTH/16; j++)
-				macroblock(i, j);
+        macroblock(i, j, out);
 
-    fputc(0x80, stdout); /* slice stop bit */
+    fputc(0x80, out); /* slice stop bit */
   }
 
+  if (in != stdin)
+    fclose(in);
+  if (out != stdout)
+    fclose(out);
   return 0;
 }
+
