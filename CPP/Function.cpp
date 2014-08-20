@@ -29,5 +29,5 @@ void lambda() {
 
     // Compiler figures out the retun type
     auto incr = [] (int i) { return ++i; };
-    printf("incr = [] (int i) { return ++i; }; incr(10);\n-->%d", incr(10));
+    printf("incr = [] (int i) { return ++i; }; incr(10);\n-->%d\n", incr(10));
 }
