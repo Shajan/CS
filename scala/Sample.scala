@@ -1,7 +1,8 @@
 
 object Sample {
   def main(args: Array[String]) {
-    ControlSample.Run(args)
+    OptionSample.Run(args)
+    //ControlSample.Run(args)
     //ArraySample.Run(args)
     //Precondition.Run(args)
   }
@@ -17,10 +18,42 @@ sealed trait Executable {
   def Run(args: Array[String])
 }
 
+object OptionSample extends Executable {
+  def Run(args: Array[String]) = {
+    Seperator.line("Option")
+    val lCase = Map("A" -> "a", "B" -> "b")
+    basic(lCase)
+    controlled(lCase)
+    default(lCase)
+  }
+  def basic(lCase: Map[String, String]) {  
+    val a = lCase.get("A")
+    val x = lCase.get("X")
+    println("lCase of A isEmpty? : " + a.isEmpty)
+    println("lCase of A : " + a)
+    println("lCase of X isEmpty? : " + x.isEmpty)
+    println("lCase of X : " + x)
+  }
+  def controlled(lCase: Map[String, String]) {  
+    def convert(o: Option[String]) = o match {
+      case Some(s) => s
+      case None => "None" 
+    } 
+    println("lCase of A : " + convert(lCase.get("A")))
+    println("lCase of X : " + convert(lCase.get("X")))
+  }
+  def default(lCase: Map[String, String]) {
+    val a = lCase.get("A")
+    val x = lCase.get("X")
+    println("lCase of A : " + a.getOrElse("?"))
+    println("lCase of X : " + x.getOrElse("?"))
+  }
+}
+
 object ControlSample extends Executable {
   def Run(args: Array[String]) = {
     exceptions()
-    //loops()
+    loops()
   }
 
   def exceptions() = {
@@ -34,6 +67,9 @@ object ControlSample extends Executable {
     }
 
     Seperator.line("Return values")
+
+/*  Comment to avoid warning in finally
+
     def f() = try { 1 } finally { 2 }
     val a = f()  // a == 1
     if (a != 1) println("Error! a should be 1")
@@ -47,6 +83,7 @@ object ControlSample extends Executable {
     }
     val b = g() // b == 2
     if (b != 2) println("Error! b should be 2")
+*/
 
     // If we have return statement, return type need to be declared
     def h(): Int = try {
