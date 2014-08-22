@@ -23,8 +23,8 @@ object OptionSample extends Executable {
     Seperator.line("Option")
     val lCase = Map("A" -> "a", "B" -> "b")
     basic(lCase)
-    controlled(lCase)
-    default(lCase)
+    //controlled(lCase)
+    //default(lCase)
   }
   def basic(lCase: Map[String, String]) {  
     val a = lCase.get("A")
@@ -33,6 +33,10 @@ object OptionSample extends Executable {
     println("lCase of A : " + a)
     println("lCase of X isEmpty? : " + x.isEmpty)
     println("lCase of X : " + x)
+    print("a.foreach( println _ ) : ")
+    a.foreach( println _ )
+    print("x.foreach( println _ ) : ")
+    x.foreach( println _ )
   }
   def controlled(lCase: Map[String, String]) {  
     def convert(o: Option[String]) = o match {
