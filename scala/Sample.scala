@@ -1,8 +1,12 @@
+// Imports for feature
+import scala.concurrent._
+import scala.concurrent.duration._
+import ExecutionContext.Implicits.global
 
 object Sample {
   def main(args: Array[String]) {
     FutureSample.Run(args)
-    FlatMapSample.Run(args)
+    //FlatMapSample.Run(args)
     //OptionSample.Run(args)
     //ControlSample.Run(args)
     //ArraySample.Run(args)
@@ -23,6 +27,61 @@ sealed trait Executable {
 object FutureSample extends Executable {
   def Run(args: Array[String]) = {
     Seperator.line("Future")
+    println("1.Defining f")
+    val f = future {
+      println("....Start f....")
+      Thread.sleep(10)
+      println("....End   f....")
+      "f"
+    }
+    println("2.Defining f.onSuccess")
+    // Async call
+    f.onSuccess { case s => println(".... onSuccess: " + s) }
+
+    println("3.Defining f.foreach")
+    // see http://stackoverflow.com/questions/2173373/scala-foreach-strange-behaviour
+    // Process value 
+    f.foreach(s => (println(".... foreach Result: " + s )))
+
+    // Create a new feature by applying a function to success results
+    println("4.Defining f.map")
+    val fMap = f.map(x => {
+      println("....Start fMap....")
+      Thread.sleep(10)
+      println("....End   fMap....")
+      "(m)" + _
+    })
+
+    // Create a new feature by applying a function to success results
+    // return new feature
+    println("5.Defining f.flatMap")
+    val fFlatMap = f.flatMap(x => {
+      future {
+        println("....Start fFlatMap....")
+        Thread.sleep(10)
+        println("....End   fFlatMap....")
+        "(fm)" + _ 
+      }
+    })
+
+    // Create a new feature by filtering value
+    println("6.Defining f.filter")
+    val fFilter = f.filter(x => {
+      println("....Start filter....")
+      Thread.sleep(10)
+      println("....End   filter....")
+      true
+    })
+
+    println("7.Start Wait all")
+    val r = for {
+      r1 <- f
+      r2 <- fMap
+      r3 <- fFlatMap
+    } yield (r1, r2, r3)
+    val (a, b, c) = Await.result(r, Duration.Inf)
+    //Await.ready(f, Duration.Inf)
+    println("Last.End Wait All")
   }
 }
 
