@@ -1,0 +1,9 @@
+Case Class
+	http://stackoverflow.com/questions/2312881/what-is-the-difference-between-scalas-case-class-and-class
+	Case classes can be seen as plain and immutable data-holding objects that should exclusively depend on their constructor arguments.
+
+Apply Method
+	http://stackoverflow.com/questions/9737352/what-is-the-apply-function-in-scala
+	Calling apply on a function pionter object just calls that function.
+	Adding an apply method to a type allows an instance of that type to act like a function pointer, and be called.
+		Example List(1,2,3) // Instead of List.apply(1,2,3)
