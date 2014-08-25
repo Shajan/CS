@@ -1,7 +1,9 @@
 
 object Sample {
   def main(args: Array[String]) {
-    OptionSample.Run(args)
+    FutureSample.Run(args)
+    FlatMapSample.Run(args)
+    //OptionSample.Run(args)
     //ControlSample.Run(args)
     //ArraySample.Run(args)
     //Precondition.Run(args)
@@ -18,9 +20,68 @@ sealed trait Executable {
   def Run(args: Array[String])
 }
 
+object FutureSample extends Executable {
+  def Run(args: Array[String]) = {
+    Seperator.line("Future")
+  }
+}
+
+object FlatMapSample extends Executable {
+  def Run(args: Array[String]) = {
+    Seperator.line("FlatMap")
+    val l = List(1,2,3,4,5)
+    println("List: " + l.mkString(","))
+    val m = Map(1->3, 2->6, 3->9)
+    println("Map: " + m.mkString(","))
+    basic(l, m)
+  }
+  def basic(l:List[Int], m:Map[Int,Int]) = {
+    val by2 = l.map(_*2)
+    println("l.map(_*2) : " + by2.mkString(",")) // 2,4,6,8,10
+
+    def even(x:Int) = if ((x%2)==0) Some(x) else None
+    val some = l.map( even _ ) 
+    println("l.map( even _ ) : " + some.mkString(","))
+    // None,Some(2),None,Some(4),None
+
+    val lfm = l.flatMap( even _ ) 
+    println("l.flatMap( even _) : " + lfm.mkString(",")) // 2,4
+
+    val ll = l.map(x=>List(x-1, x, x+1))
+    println("l.map(x=>List(x-1, x, x+1)): " + ll.mkString(","))
+    // List(0, 1, 2),List(1, 2, 3),List(2, 3, 4),List(3, 4, 5),List(4, 5, 6)
+
+    val fm = l.flatMap(x=>List(x-1, x, x+1))
+    println("l.flatMap(x=>List(x-1, x, x+1)): " + fm.mkString(","))
+    // 0,1,2,1,2,3,2,3,4,3,4,5,4,5,6
+
+
+    val ml = m.toList
+    println("m.toList: " + ml.mkString(",")) // (1,3),(2,6),(3,9)
+    println("m.mapValues(_*2): " + m.mapValues(_*2).mkString(",")) // 1 -> 6,2 -> 12,3 -> 18
+    println("m.mapValues : m.mapValues { even _ }: " + m.mapValues { even _ } )
+    // Map(1 -> None, 2 -> Some(6), 3 -> None)
+
+    def evenMap(k:Int, v:Int) = if ((k%2)==0) Some(k->v) else None
+    // _1, _2 first, second fileds of a touple : 
+    // m.flatMap { e => f(e._1, e_2) }
+    // m.flatMap { (k,v) => f(k,v) } Syntax not supported in scala
+    println("m.flatMap { case (k,v) => evenMap(k,v) }: " + m.flatMap { case (k,v) => evenMap(k,v) })
+    // Map(2 -> 6)
+
+    // Using filter
+    println("m.filter(e => even(e._2)) != None: " +  m.filter(e => even(e._2) != None))
+    println("m.filter{ case (k,v)=> even(v) != None }: " + m.filter{ case (k,v)=> even(v) != None })
+    println("m.filter{ case (k,v)=> even(v).isDefined }: " + m.filter{ case (k,v)=> even(v).isDefined })
+    // All three above gives same result Map(1 -> 2, 2 -> 4, 3 -> 6)
+    // Map(2 -> 6)
+  }
+}
+
 object OptionSample extends Executable {
   def Run(args: Array[String]) = {
     Seperator.line("Option")
+    // lCase.get returns Option { Some[String] or None }
     val lCase = Map("A" -> "a", "B" -> "b")
     basic(lCase)
     //controlled(lCase)
