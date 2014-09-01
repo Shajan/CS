@@ -27,6 +27,10 @@ sealed trait Executable {
 object FutureSample extends Executable {
   def Run(args: Array[String]) = {
     Seperator.line("Future")
+    Basic()
+  }
+
+  def Basic() = {
     println("1.Defining f")
     val f = future {
       println("....Start f....")
