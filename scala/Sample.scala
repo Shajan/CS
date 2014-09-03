@@ -5,7 +5,8 @@ import ExecutionContext.Implicits.global
 
 object Sample {
   def main(args: Array[String]) {
-    FutureSample.Run(args)
+    CmdLineSample.Run(args)
+    //FutureSample.Run(args)
     //FlatMapSample.Run(args)
     //OptionSample.Run(args)
     //ControlSample.Run(args)
@@ -22,6 +23,27 @@ object Seperator {
 
 sealed trait Executable {
   def Run(args: Array[String])
+}
+
+object CmdLineSample extends Executable {
+  def parse(args: List[String], K: Set[String], KV: Set[String],
+            parsed: Map[String, String]): Map[String, String] = {
+    args match {
+      case Nil => parsed // Return parsed
+      case key :: value :: tail if KV.contains(key) => parse(tail, K, KV, parsed ++ Map(key -> value))
+      case value :: tail if K.contains(value) => parse(tail, K, KV, parsed ++ Map(value -> value))
+      case _ => {
+        println("Unknown option: " + args.mkString(","))
+        Map() 
+      }
+    }
+  }
+
+  def Run(args: Array[String]) = {
+    Seperator.line("CmdLine")
+    val cmd = parse(args.toList, Set("Help", "--?"), Set("-n", "-age"), Map())
+    for ((k,v) <- cmd) { println(k + "=" + v) }
+  }
 }
 
 object FutureSample extends Executable {
@@ -44,7 +66,7 @@ object FutureSample extends Executable {
 
     println("3.Defining f.foreach")
     // see http://stackoverflow.com/questions/2173373/scala-foreach-strange-behaviour
-    // Process value 
+    // Process value
     f.foreach(s => (println(".... foreach Result: " + s )))
 
     // Create a new feature by applying a function to success results
@@ -64,7 +86,7 @@ object FutureSample extends Executable {
         println("....Start fFlatMap....")
         Thread.sleep(10)
         println("....End   fFlatMap....")
-        "(fm)" + _ 
+        "(fm)" + _
       }
     })
 
@@ -103,11 +125,11 @@ object FlatMapSample extends Executable {
     println("l.map(_*2) : " + by2.mkString(",")) // 2,4,6,8,10
 
     def even(x:Int) = if ((x%2)==0) Some(x) else None
-    val some = l.map( even _ ) 
+    val some = l.map( even _ )
     println("l.map( even _ ) : " + some.mkString(","))
     // None,Some(2),None,Some(4),None
 
-    val lfm = l.flatMap( even _ ) 
+    val lfm = l.flatMap( even _ )
     println("l.flatMap( even _) : " + lfm.mkString(",")) // 2,4
 
     val ll = l.map(x=>List(x-1, x, x+1))
@@ -126,7 +148,7 @@ object FlatMapSample extends Executable {
     // Map(1 -> None, 2 -> Some(6), 3 -> None)
 
     def evenMap(k:Int, v:Int) = if ((k%2)==0) Some(k->v) else None
-    // _1, _2 first, second fileds of a touple : 
+    // _1, _2 first, second fileds of a touple :
     // m.flatMap { e => f(e._1, e_2) }
     // m.flatMap { (k,v) => f(k,v) } Syntax not supported in scala
     println("m.flatMap { case (k,v) => evenMap(k,v) }: " + m.flatMap { case (k,v) => evenMap(k,v) })
@@ -150,7 +172,7 @@ object OptionSample extends Executable {
     //controlled(lCase)
     //default(lCase)
   }
-  def basic(lCase: Map[String, String]) {  
+  def basic(lCase: Map[String, String]) {
     val a = lCase.get("A")
     val x = lCase.get("X")
     println("lCase of A isEmpty? : " + a.isEmpty)
@@ -162,11 +184,11 @@ object OptionSample extends Executable {
     print("x.foreach( println _ ) : ")
     x.foreach( println _ )
   }
-  def controlled(lCase: Map[String, String]) {  
+  def controlled(lCase: Map[String, String]) {
     def convert(o: Option[String]) = o match {
       case Some(s) => s
-      case None => "None" 
-    } 
+      case None => "None"
+    }
     println("lCase of A : " + convert(lCase.get("A")))
     println("lCase of X : " + convert(lCase.get("X")))
   }
@@ -206,7 +228,7 @@ object ControlSample extends Executable {
       throw new RuntimeException
     } catch {
       case e: RuntimeException => 2
-    } finally { 
+    } finally {
       3
     }
     val b = g() // b == 2
@@ -218,8 +240,8 @@ object ControlSample extends Executable {
       throw new RuntimeException
     } catch {
       case e: RuntimeException => return 2
-    } finally { 
-      return 3 
+    } finally {
+      return 3
     }
     val c = h() // b == 3
     if (c != 3) println("Error! c should be 3")
@@ -252,7 +274,7 @@ object ControlSample extends Executable {
       i <- 1 to 5 if (i % 2 == 1); // Need ';' here as for condition is in '(' ')'
       j <- 6 to 10 if (j % 2 == 0);
       k = i*j
-    ) print(i.toString + "x" + j.toString + "->" + k.toString + " ")  // i odd, j even 
+    ) print(i.toString + "x" + j.toString + "->" + k.toString + " ")  // i odd, j even
     println
 
     Seperator.line("Multiple generators inside {}")
@@ -260,7 +282,7 @@ object ControlSample extends Executable {
       i <- 1 to 5 if (i % 2 == 0) // ';' not required here as for condition is in '{' '}'
       j <- 6 to 10 if (j % 2 == 1)
       k = i*j
-    } print(i.toString + "x" + j.toString + "->" + k.toString + " ")  // i even, j odd 
+    } print(i.toString + "x" + j.toString + "->" + k.toString + " ")  // i even, j odd
     println
 
     Seperator.line("yield")
@@ -305,7 +327,7 @@ object ArraySample extends Executable {
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Can be wrapped to collection.mutable.WrappedArray which is a Sequence and can be compared
-    // for content equality 
+    // for content equality
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     print("(Array(1, 2, 3) : Seq[Int]) == (Array(1, 2, 3) : Seq[Int]) : ")
