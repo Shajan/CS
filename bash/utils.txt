@@ -2,6 +2,10 @@
 # print a sorted list of folders in your path
 echo $PATH | tr ":" "\n" | sort
 
+# cut: Get part of a string
+# edit scala files that contain "foo"
+vi `find . -name *.scala | xargs egrep "foo" | cut -f1 -d ":"`
+
 # Search for 'foobar' any file in a local git repository
 # using find -print0 xargs -0 takes care of spaces and other chars in filenames
 # ingnoring '*.git' reduces noise/duplicates from git
