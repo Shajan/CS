@@ -1,2 +1,2 @@
 scalac Sample.scala
-scala Sample --? name shajan
+scala Sample

@@ -5,13 +5,14 @@ import ExecutionContext.Implicits.global
 
 object Sample {
   def main(args: Array[String]) {
-    CmdLineSample.Run(args)
+    //FunctionSample.Run(args)
     //FutureSample.Run(args)
     //FlatMapSample.Run(args)
     //OptionSample.Run(args)
     //ControlSample.Run(args)
     //ArraySample.Run(args)
     //Precondition.Run(args)
+    //CmdLineSample.Run(args)
   }
 }
 
@@ -25,24 +26,20 @@ sealed trait Executable {
   def Run(args: Array[String])
 }
 
-object CmdLineSample extends Executable {
-  def parse(args: List[String], K: Set[String], KV: Set[String],
-            parsed: Map[String, String]): Map[String, String] = {
-    args match {
-      case Nil => parsed // Return parsed
-      case key :: value :: tail if KV.contains(key) => parse(tail, K, KV, parsed ++ Map(key -> value))
-      case value :: tail if K.contains(value) => parse(tail, K, KV, parsed ++ Map(value -> value))
-      case _ => {
-        println("Unknown option: " + args.mkString(","))
-        Map() 
-      }
-    }
-  }
-
+object FunctionSample extends Executable {
   def Run(args: Array[String]) = {
-    Seperator.line("CmdLine")
-    val cmd = parse(args.toList, Set("Help", "--?"), Set("-n", "-age"), Map())
-    for ((k,v) <- cmd) { println(k + "=" + v) }
+    Seperator.line("Function")
+    PartiallyApplied()
+  }
+  def PartiallyApplied() = {
+    val sum = (_: Int) + (_: Int) + (_: Int)
+    val add = sum
+    val add_three = sum(1, _: Int, 2)
+
+    println("sum(1,2,3):" + sum(1,2,3))
+    println("add(1,2,3):" + add(1,2,3))
+    println("add_three = sum(1, _: Int, 2)")
+    println("add_three(5):" + add_three(5))
   }
 }
 
@@ -56,8 +53,8 @@ object FutureSample extends Executable {
     println("1.Defining f")
     val f = future {
       println("....Start f....")
-      Thread.sleep(10)
-      println("....End   f....")
+      Thread.sleep(100)
+      println("....End f....")
       "f"
     }
     println("2.Defining f.onSuccess")
@@ -67,14 +64,12 @@ object FutureSample extends Executable {
     println("3.Defining f.foreach")
     // see http://stackoverflow.com/questions/2173373/scala-foreach-strange-behaviour
     // Process value
-    f.foreach(s => (println(".... foreach Result: " + s )))
+    f.foreach(s => (println(".... f.foreach: " + s )))
 
     // Create a new feature by applying a function to success results
     println("4.Defining f.map")
     val fMap = f.map(x => {
-      println("....Start fMap....")
-      Thread.sleep(10)
-      println("....End   fMap....")
+      println("....In f.Map....")
       "(m)" + _
     })
 
@@ -83,9 +78,9 @@ object FutureSample extends Executable {
     println("5.Defining f.flatMap")
     val fFlatMap = f.flatMap(x => {
       future {
-        println("....Start fFlatMap....")
-        Thread.sleep(10)
-        println("....End   fFlatMap....")
+        println("....Start f.FlatMap....")
+        Thread.sleep(100)
+        println("....End f.FlatMap....")
         "(fm)" + _
       }
     })
@@ -93,9 +88,7 @@ object FutureSample extends Executable {
     // Create a new feature by filtering value
     println("6.Defining f.filter")
     val fFilter = f.filter(x => {
-      println("....Start filter....")
-      Thread.sleep(10)
-      println("....End   filter....")
+      println("....In f.filter....")
       true
     })
 
@@ -108,6 +101,24 @@ object FutureSample extends Executable {
     val (a, b, c) = Await.result(r, Duration.Inf)
     //Await.ready(f, Duration.Inf)
     println("Last.End Wait All")
+/* 
+	1.Defining f
+	2.Defining f.onSuccess
+	....Start f....
+	3.Defining f.foreach
+	4.Defining f.map
+	5.Defining f.flatMap
+	6.Defining f.filter
+	7.Start Wait all
+	....End f....
+	....In f.filter....
+	....In f.Map....
+	.... onSuccess: f
+	....Start f.FlatMap....
+	.... f.foreach : f
+	....End f.FlatMap....
+	Last.End Wait All
+*/
   }
 }
 
@@ -125,12 +136,14 @@ object FlatMapSample extends Executable {
     println("l.map(_*2) : " + by2.mkString(",")) // 2,4,6,8,10
 
     def even(x:Int) = if ((x%2)==0) Some(x) else None
-    val some = l.map( even _ )
-    println("l.map( even _ ) : " + some.mkString(","))
+    println("def even(x:Int) = if ((x%2)==0) Some(x) else None")
+
+    val lm = l.map(even _)
+    println("l.map(even _) : " + lm.mkString(","))
     // None,Some(2),None,Some(4),None
 
-    val lfm = l.flatMap( even _ )
-    println("l.flatMap( even _) : " + lfm.mkString(",")) // 2,4
+    val lfm = l.flatMap(even _)
+    println("l.flatMap(even _) : " + lfm.mkString(",")) // 2,4
 
     val ll = l.map(x=>List(x-1, x, x+1))
     println("l.map(x=>List(x-1, x, x+1)): " + ll.mkString(","))
@@ -140,26 +153,29 @@ object FlatMapSample extends Executable {
     println("l.flatMap(x=>List(x-1, x, x+1)): " + fm.mkString(","))
     // 0,1,2,1,2,3,2,3,4,3,4,5,4,5,6
 
-
     val ml = m.toList
     println("m.toList: " + ml.mkString(",")) // (1,3),(2,6),(3,9)
     println("m.mapValues(_*2): " + m.mapValues(_*2).mkString(",")) // 1 -> 6,2 -> 12,3 -> 18
-    println("m.mapValues : m.mapValues { even _ }: " + m.mapValues { even _ } )
+    println("m.mapValues {even _}: " + m.mapValues {even _} )
     // Map(1 -> None, 2 -> Some(6), 3 -> None)
 
-    def evenMap(k:Int, v:Int) = if ((k%2)==0) Some(k->v) else None
-    // _1, _2 first, second fileds of a touple :
-    // m.flatMap { e => f(e._1, e_2) }
+    def evenKey(k:Int, v:Int) = if ((k%2)==0) Some(k->v) else None
+    println("def evenKey(k:Int, v:Int) = if ((k%2)==0) Some(k->v) else None")
+
     // m.flatMap { (k,v) => f(k,v) } Syntax not supported in scala
-    println("m.flatMap { case (k,v) => evenMap(k,v) }: " + m.flatMap { case (k,v) => evenMap(k,v) })
+    // _1, _2 first, second fileds of a touple
+    println("m.flatMap { e => evenKey(e._1, e._2) }: " + m.flatMap { e => evenKey(e._1,e._2) })
+    // Map(2 -> 6)
+
+    // Equivalent to above
+    println("m.flatMap { (k,v) => evenKey(k,v) }: " + m.flatMap { case (k,v) => evenKey(k,v) })
     // Map(2 -> 6)
 
     // Using filter
     println("m.filter(e => even(e._2)) != None: " +  m.filter(e => even(e._2) != None))
-    println("m.filter{ case (k,v)=> even(v) != None }: " + m.filter{ case (k,v)=> even(v) != None })
-    println("m.filter{ case (k,v)=> even(v).isDefined }: " + m.filter{ case (k,v)=> even(v).isDefined })
+    println("m.filter{ case (k,v) => even(v) != None }: " + m.filter{ case (k,v) => even(v) != None })
+    println("m.filter{ case (k,v) => even(v).isDefined }: " + m.filter{ case (k,v) => even(v).isDefined })
     // All three above gives same result Map(1 -> 2, 2 -> 4, 3 -> 6)
-    // Map(2 -> 6)
   }
 }
 
@@ -169,20 +185,20 @@ object OptionSample extends Executable {
     // lCase.get returns Option { Some[String] or None }
     val lCase = Map("A" -> "a", "B" -> "b")
     basic(lCase)
-    //controlled(lCase)
-    //default(lCase)
+    controlled(lCase)
+    default(lCase)
   }
   def basic(lCase: Map[String, String]) {
     val a = lCase.get("A")
     val x = lCase.get("X")
     println("lCase of A isEmpty? : " + a.isEmpty)
-    println("lCase of A : " + a)
+    println("lCase of A : " + a)  // Some(a)
     println("lCase of X isEmpty? : " + x.isEmpty)
-    println("lCase of X : " + x)
+    println("lCase of X : " + x)  // Nothing
     print("a.foreach( println _ ) : ")
-    a.foreach( println _ )
+    a.foreach( println _ )        // 'a'
     print("x.foreach( println _ ) : ")
-    x.foreach( println _ )
+    x.foreach( println _ )        // println won't be executed
   }
   def controlled(lCase: Map[String, String]) {
     def convert(o: Option[String]) = o match {
@@ -204,6 +220,7 @@ object ControlSample extends Executable {
   def Run(args: Array[String]) = {
     exceptions()
     loops()
+    for_yield()
   }
 
   def exceptions() = {
@@ -284,12 +301,25 @@ object ControlSample extends Executable {
       k = i*j
     } print(i.toString + "x" + j.toString + "->" + k.toString + " ")  // i even, j odd
     println
+  }
 
+  def for_yield() = {
     Seperator.line("yield")
+
+    val files = (new java.io.File(".")).listFiles
     val scalaFiles =
       for (file <- files if file.getName.endsWith(".scala"))
         yield file
     println(scalaFiles.mkString(", "))
+
+    val seq = for {
+      i <- 1 to 5 if (i % 2 == 0)
+      j <- 6 to 10 if (j % 2 == 1)
+      k = i*j
+    } yield(i, j, k)
+
+    println(seq.map(x => x._1.toString + " x " + x._2.toString + " = " + x._3.toString).mkString(", "))
+    // 2 x 7 = 14, 2 x 9 = 18, 4 x 7 = 28, 4 x 9 = 36
   }
 }
 
@@ -298,22 +328,25 @@ object ArraySample extends Executable {
     Seperator.line("Array")
     val a = Array(10, 20, 30, 40, 50)
     println(a.mkString(","))
-    //basic(a)
-    //arrayType()
-    //advanced(a)
+    basic(a)
+    arrayType()
+    advanced(a)
   }
 
   def basic(a: Array[Int]) = {
-    Seperator.line("foreach(x => println(x))")
+    println("foreach(x => println(x))")
     a.foreach(x => println(x))
 
-    Seperator.line("foreach(println _)")
+    println("foreach(println _)")
     a.foreach(println _)
 
-    Seperator.line("for (x <- a) println(x)")
+    println("foreach(println)")
+    a.foreach(println)
+
+    println("for (x <- a) println(x)")
     for (x <- a) println(x)
 
-    Seperator.line("a.filter(_>25)")
+    println("a.filter(_>25)")
     val b = a.filter(_>25)
     b.foreach(println _)
   }
@@ -353,6 +386,9 @@ object ArraySample extends Executable {
   }
 
   def advanced(a: Array[Int]) = {
+    // convert array of int to array of string
+    val c = a.map( _.toString )
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Reduce : Collection with element type A to element of type A
     //
@@ -366,9 +402,6 @@ object ArraySample extends Executable {
     Seperator.line("a.reduceRight(_+_)")
     val sumR = a.reduceRight(_+_)
     println("sumR = " + sumR)
-
-    // convert array of int to array of string
-    val c = a.map( _.toString )
 
     Seperator.line("c.reduceLeft(t, e) => if (t.length > e.length) t else e")
     val longerL = c.reduceLeft((t, e) => if (t.length > e.length) t else e)
@@ -403,6 +436,27 @@ object Precondition extends Executable {
   def Divide(i:Int, j:Int):Double = {
     require(j != 0)
     i/j
+  }
+}
+
+object CmdLineSample extends Executable {
+  def parse(args: List[String], K: Set[String], KV: Set[String],
+            parsed: Map[String, String]): Map[String, String] = {
+    args match {
+      case Nil => parsed // Return parsed
+      case key :: value :: tail if KV.contains(key) => parse(tail, K, KV, parsed ++ Map(key -> value))
+      case value :: tail if K.contains(value) => parse(tail, K, KV, parsed ++ Map(value -> value))
+      case _ => {
+        println("Unknown option: " + args.mkString(","))
+        Map() 
+      }
+    }
+  }
+
+  def Run(args: Array[String]) = {
+    Seperator.line("CmdLine")
+    val cmd = parse(args.toList, Set("Help", "--?"), Set("-n", "-age"), Map())
+    for ((k,v) <- cmd) { println(k + "=" + v) }
   }
 }
 
