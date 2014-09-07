@@ -5,6 +5,7 @@ import ExecutionContext.Implicits.global
 
 object Sample {
   def main(args: Array[String]) {
+    //ClosureSample.Run(args)
     //FunctionSample.Run(args)
     //FutureSample.Run(args)
     //FlatMapSample.Run(args)
@@ -24,6 +25,41 @@ object Seperator {
 
 sealed trait Executable {
   def Run(args: Array[String])
+}
+
+object ClosureSample extends Executable {
+  def Run(args: Array[String]) = {
+    Seperator.line("Closure")
+    basic()
+    advanced()
+  }
+  def basic() = {
+    var a = 10
+    def foo(b: Int) = {
+      if (a != b) 
+        println("Error! a:"+a+",b:"+b) 
+    }
+    foo(10)
+    a = 11
+    foo(11)
+  }
+  def advanced() = {
+    // Returns a function instance that increments by x
+    // 'Remembers' x for later use
+    def createIncrementer(x: Int) = (y: Int) => x + y
+
+    // Create a function that increments by 1
+    val incr1 = createIncrementer(1)
+
+    // Create a function that increments by 10
+    val incr10 = createIncrementer(10)
+
+    if (incr1(10) != 11)
+      println("Error! expected 11 :" + incr1(10))
+
+    if (incr10(50) != 60)
+      println("Error! expected 60 :" + incr10(50))
+  }
 }
 
 object FunctionSample extends Executable {
