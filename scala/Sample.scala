@@ -1,4 +1,3 @@
-// Imports for feature
 import scala.concurrent._
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
@@ -11,6 +10,7 @@ object Sample {
     //FlatMapSample.Run(args)
     //OptionSample.Run(args)
     //ControlSample.Run(args)
+    ListSample.Run(args)
     //ArraySample.Run(args)
     //Precondition.Run(args)
     //CmdLineSample.Run(args)
@@ -254,9 +254,9 @@ object OptionSample extends Executable {
 
 object ControlSample extends Executable {
   def Run(args: Array[String]) = {
-    exceptions()
-    loops()
-    for_yield()
+    //exceptions()
+    for_loops()
+    //for_yield()
   }
 
   def exceptions() = {
@@ -300,8 +300,9 @@ object ControlSample extends Executable {
     if (c != 3) println("Error! c should be 3")
   }
 
-  def loops() = {
+  def for_loops() = {
     Seperator.line("for loops")
+/*
     for (i <- 1 to 4)
       print(i.toString + " ") // 1,2,3,4
     println
@@ -337,6 +338,12 @@ object ControlSample extends Executable {
       k = i*j
     } print(i.toString + "x" + j.toString + "->" + k.toString + " ")  // i even, j odd
     println
+*/
+
+    // Group by n adjacent elements in a list
+    val l = List(1 to 10)
+    println("l:", l.mkString(","))
+//@TODO
   }
 
   def for_yield() = {
@@ -356,6 +363,54 @@ object ControlSample extends Executable {
 
     println(seq.map(x => x._1.toString + " x " + x._2.toString + " = " + x._3.toString).mkString(", "))
     // 2 x 7 = 14, 2 x 9 = 18, 4 x 7 = 28, 4 x 9 = 36
+  }
+}
+
+object ListSample extends Executable {
+  def Run(args: Array[String]) = {
+    Seperator.line("List")
+    //basic()
+    advanced()
+  }
+  def basic() = {
+    // Group by at most n elements
+    println(List(1,2,3,4,5,"six").grouped(4).toList) // List(List(1, 2, 3, 4), List(5, six))
+
+    // Create pairs with list item and index
+    println(List("a", "b", "c").zipWithIndex) // List((a,0), (b,1), (c,2))
+
+    // Transpose row <--> column
+    val abc123 = List(
+                   List('a','b','c'),
+                   List('1','2','3'))
+    val a1b2c3 = abc123.transpose 
+    println(abc123 + " -- transpose --> " + a1b2c3)
+    // List(List(a, b, c), List(1, 2, 3)) -- transpose --> List(List(a, 1), List(b, 2), List(c, 3))
+  }
+  def advanced() = {
+    // Reference http://aperiodic.net/phil/scala/s-99/
+    def groupRuns[A](l: List[A]): List[List[A]] = {
+      if (l.isEmpty) List(List())
+      else {
+        // span(p: (A) ⇒ Boolean): (List[A], List[A])
+        // Splits list into a prefix/suffix pair according to a predicate.
+        val (grouped, next) = l span { _ == l.head }
+        if (next == Nil) List(grouped)
+        else grouped :: groupRuns(next)
+      }
+    }
+    println(groupRuns(List(1, 1, 1, 2, 2, 5, 7, 7)))
+    // List(List(1, 1, 1), List(2, 2), List(5), List(7, 7))
+
+    def countRuns[A](l: List[A]): List[(Int, A)] = {
+      if (l.isEmpty) Nil
+      else {
+        val (simillar, next) = l span { _ == l.head }
+        (simillar.length, simillar.head) :: countRuns(next)
+      }
+    }
+    println(countRuns(List(1, 1, 1, 2, 2, 5, 7, 7)))
+    // List((3,1), (2,2), (1,5), (2,7))
   }
 }
 

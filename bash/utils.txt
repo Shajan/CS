@@ -6,10 +6,16 @@ echo $PATH | tr ":" "\n" | sort
 # edit scala files that contain "foo"
 vi `find . -name *.scala | xargs egrep "foo" | cut -f1 -d ":"`
 
+# cut: Get everyting beyond ':'
+cut -d ":" -f1-
+
 # Search for 'foobar' any file in a local git repository
 # using find -print0 xargs -0 takes care of spaces and other chars in filenames
 # ingnoring '*.git' reduces noise/duplicates from git
 find . -not -iwholename '*.git*' -type f -print0 | xargs -0 egrep foobar 
+
+# Find all files, ignoring '.git' and 'target' folders
+find . -type d -name target -prune -o -type d -name .git -prune -o -type f -name "*.scala" -print
 
 # Redirect stderr to 'error.txt'
 # stdin:0, stdout:1, stderr:2
