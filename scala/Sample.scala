@@ -4,6 +4,7 @@ import ExecutionContext.Implicits.global
 
 object Sample {
   def main(args: Array[String]) {
+    //ClassSample.Run(args)
     //ClosureSample.Run(args)
     //FunctionSample.Run(args)
     //FutureSample.Run(args)
@@ -25,6 +26,20 @@ object Seperator {
 
 sealed trait Executable {
   def Run(args: Array[String])
+}
+
+object ClassSample extends Executable {
+  def Run(args: Array[String]) = {
+    Seperator.line("Class")
+    applyMethod()
+  }
+  def applyMethod() = {
+    object A {
+      def apply(i: Int) = new A(i)
+    }
+    class A(i: Int)
+    val a = A(1)
+  }
 }
 
 object ClosureSample extends Executable {
@@ -370,7 +385,8 @@ object ListSample extends Executable {
   def Run(args: Array[String]) = {
     Seperator.line("List")
     //basic()
-    advanced()
+    //advanced()
+    listBuffer()
   }
   def basic() = {
     // Group by at most n elements
@@ -396,6 +412,7 @@ object ListSample extends Executable {
         // Splits list into a prefix/suffix pair according to a predicate.
         val (grouped, next) = l span { _ == l.head }
         if (next == Nil) List(grouped)
+        else if (grouped == Nil) List(next)
         else grouped :: groupRuns(next)
       }
     }
@@ -411,6 +428,28 @@ object ListSample extends Executable {
     }
     println(countRuns(List(1, 1, 1, 2, 2, 5, 7, 7)))
     // List((3,1), (2,2), (1,5), (2,7))
+
+    val minmax = List(10, 5, 9, 4, 7, 20, 3, 7, 16).
+      foldLeft((1000, -1000))((t, a) =>
+        ((if (a < t._1) a else t._1), (if (a > t._2) a else t._2)))
+    println("min:" + minmax._1 + " ,max:" + minmax._2) // min:3 ,max:20
+  }
+  def listBuffer() = {
+    import scala.collection.mutable.ListBuffer
+    Seperator.line("ListBuffer")
+    val l1 = ListBuffer(1, 2, 3)
+    val l2 = ListBuffer(4, 5, 6)
+    val l3 = l1 ++ l2
+
+    println(l3) // ListBuffer(1, 2, 3, 4, 5, 6)
+    println(l1) // ListBuffer(1, 2, 3)
+
+    l3 += 7
+    println(l3) // ListBuffer(1, 2, 3, 4, 5, 6, 7)
+
+    val l4 = l3.dropRight(1)
+    println(l3) // ListBuffer(1, 2, 3, 4, 5, 6, 7)
+    println(l4) // ListBuffer(1, 2, 3, 4, 5, 6)
   }
 }
 
