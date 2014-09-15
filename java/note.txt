@@ -1,0 +1,2 @@
+List files in a jar
+	jar tvf [file.jar]
