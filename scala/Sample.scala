@@ -447,9 +447,14 @@ object ListSample extends Executable {
     l3 += 7
     println(l3) // ListBuffer(1, 2, 3, 4, 5, 6, 7)
 
+    val l5 = l3 :+ 8
+    println(l3) // ListBuffer(1, 2, 3, 4, 5, 6, 7)
+    println(l5) // ListBuffer(1, 2, 3, 4, 5, 6, 7, 8)
+
     val l4 = l3.dropRight(1)
     println(l3) // ListBuffer(1, 2, 3, 4, 5, 6, 7)
     println(l4) // ListBuffer(1, 2, 3, 4, 5, 6)
+
   }
 }
 
