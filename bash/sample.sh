@@ -28,11 +28,16 @@ function foo_bar()
 {
   local var1=$1
   echo $var1
-  RESULT="test"
+  if [ "$var1" == "1971" ]
+  then
+    RESULT="$var1"
+  else
+    RESULT="test"
+  fi
 }
 
 RESULT=""
-foo_bar abc
+foo_bar $YEAR
 echo $RESULT
 
 #String operations ...........................
