@@ -3,10 +3,10 @@
 #set -x #echo lines for debugging
 #[ "$#" -eq 3 ] || { echo "Usage :" `basename $0` "YYYY MM DD" >&2; exit 1; }
 
-#Get command line args
-YEAR=$1
-MONTH=$2
-DAY=$3 
+#Get command line args, provide detaults
+YEAR=${1:-2014}
+MONTH=${2:-11}
+DAY=${3:-12}
 
 function sum() 
 {
