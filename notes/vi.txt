@@ -100,3 +100,13 @@ Utility
 	Repeat last :command by @: then @@ to repeat again
 	Highlight searches :set hlsearch [:nohlsearch to turn off]
 .........................................................................
+Split screen
+	:split 	[Split screen vertically]
+	:vsplit	[Splits screen horizontally]
+	:q	[Close the current screen]
+	CTRL-w	[Follow with command]
+		CTRL-w	[Jump between screens]
+		+/-	[Increase/Decrease Horizontal Size]
+		>/<	[Increase/Decrease Vertical Size]
+		Arrow 	[Jump between screens]
+.........................................................................
