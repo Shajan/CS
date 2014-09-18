@@ -96,17 +96,28 @@ Find, Replace
 
 .........................................................................
 Utility
-
 	Repeat last :command by @: then @@ to repeat again
 	Highlight searches :set hlsearch [:nohlsearch to turn off]
+	Tab completion of file/folder names :set wildmode=full
 .........................................................................
-Split screen
+Split screen http://vimcasts.org/episodes/working-with-windows/
 	:split 	[Split screen vertically]
+	:sp file[Split & open file]
 	:vsplit	[Splits screen horizontally]
+	:vsp file
 	:q	[Close the current screen]
-	CTRL-w	[Follow with command]
-		CTRL-w	[Jump between screens]
+	ctrl-w	[Follow with command]
+		:help ctrl-w
+		ctrl-w	[Jump between screens]
 		+/-	[Increase/Decrease Horizontal Size]
 		>/<	[Increase/Decrease Vertical Size]
-		Arrow 	[Jump between screens]
+		Arrow 	[Jump screens, hjkl navigation also works]
+		r	[Rotate windows]
+		x	[Exchange windows]
+                HJKL	[Move screen to top/bottom/left/right]
+	edit ~/.vimrc, add the following for easier navigation
+		map <C-h> <C-w>h
+		map <C-j> <C-w>j
+		map <C-k> <C-w>k
+		map <C-l> <C-w>l
 .........................................................................
