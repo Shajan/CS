@@ -8,6 +8,13 @@ YEAR=${1:-2014}
 MONTH=${2:-11}
 DAY=${3:-12}
 
+function sequence() 
+{
+  START=5
+  END=10
+  for i in $(seq $START $END); do echo $i; done
+}
+
 function sum() 
 {
   #Single digits left padded with 0
@@ -60,3 +67,5 @@ echo "Drop chars after last '/' in '$STR' : ${STR%/*}"
 
 echo "Drop chars before last '/' in '$STR' : ${STR##*/}"
 echo "Drop chars after first '/' in '$STR' : ${STR%%/*}"
+
+sequence

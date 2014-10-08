@@ -24,3 +24,7 @@ foo 2> error.txt
 foo &> all.txt
 # Redirect stderr to stdin
 foo 2>&1
+
+#read contents of lib files (elf format)
+readelf -a -W <file>
+readelf -d <file> | egrep SONAME # read version if present

@@ -7,11 +7,11 @@ object Sample {
     //ClassSample.Run(args)
     //ClosureSample.Run(args)
     //FunctionSample.Run(args)
-    //FutureSample.Run(args)
+    FutureSample.Run(args)
     //FlatMapSample.Run(args)
     //OptionSample.Run(args)
     //ControlSample.Run(args)
-    ListSample.Run(args)
+    //ListSample.Run(args)
     //ArraySample.Run(args)
     //Precondition.Run(args)
     //CmdLineSample.Run(args)
@@ -98,9 +98,52 @@ object FutureSample extends Executable {
   def Run(args: Array[String]) = {
     Seperator.line("Future")
     Basic()
+    //Timing()
   }
 
   def Basic() = {
+    Seperator.line("Future:Basic")
+    val f1 = future {
+      Thread.sleep(100)
+      "f1"
+    }
+    val r1 = Await.result(f1, 1 second)
+    println(r1)
+
+    val f2 = future {
+      println("f2")
+    }
+
+    val f3 = future {
+      Thread.sleep(100)
+      throw new Exception("Future exception")
+      "f3"
+    }
+
+    try {
+      val r3 = Await.result(f3, 1 second)
+      println("We never get here! " + r3)
+    } catch {
+      case e: Throwable => println(e)
+    }
+
+    val input = List(1,2,3,4,5)
+    val tasks: Seq[Future[String]] = input.map { i =>
+      future {
+        println(i + ":executing")
+        if (i%2 == 0) Thread.sleep(100)
+        println(i + ":done-executing")
+        i.toString + ":result"
+      }
+    }
+
+    // Combine Sequence of Future Strings to Future of Sequence of Strings
+    val aggregated: Future[Seq[String]] = Future.sequence(tasks)
+    val result: Seq[String] = Await.result(aggregated, 1 second)
+    result.foreach(println(_))
+  }
+
+  def Timing() = {
     println("1.Defining f")
     val f = future {
       println("....Start f....")
@@ -594,4 +637,3 @@ object CmdLineSample extends Executable {
     for ((k,v) <- cmd) { println(k + "=" + v) }
   }
 }
-
