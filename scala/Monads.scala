@@ -4,6 +4,7 @@
 object Monads {
   def main(args: Array[String]) {
      simple()
+     advanced()
   }
 
 /*
@@ -70,5 +71,42 @@ object Monads {
         }
       }
     }
+  }
+
+import scala.language.higherKinds
+
+  trait Monad[M[_]] {
+    def unit[A](a: A): M[A]
+    def bind[A, B](m: M[A])(f: A => M[B]): M[B]
+  }
+ 
+  implicit object ThingMonad extends Monad[Thing] {
+    def unit[A](a: A) = Thing(a)
+    def bind[A, B](thing: Thing[A])(f: A => Thing[B]) = thing bind f
+  }
+ 
+  implicit object OptionMonad extends Monad[Option] {
+    def unit[A](a: A) = Some(a) // <--- if a is null?
+    def bind[A, B](opt: Option[A])(f: A => Option[B]) = opt bind f
+  }
+ 
+  // Convert any List[M[A]] to M[List[A]]
+  def sequence[M[_], A](ms: List[M[A]])(implicit tc: Monad[M]) = {
+    ms.foldRight(tc.unit(List[A]())) { (m, acc) =>
+      tc.bind(m) { a =>
+        tc.bind(acc) { tail => 
+          tc.unit(a :: tail) 
+        } 
+      }
+    }
+  }
+
+  def advanced() = {
+    val lThings = List(Thing(1), Thing(2), Thing(3))
+    val tList = Monads.sequence(lThings)
+    println(tList) // Thing(List(1, 2, 3))
+    val lOptions: List[Option[Int]] = List(Some(1), Some(2), Some(3))
+    val oList = Monads.sequence(lOptions)
+    println(oList) // Some(List(1, 2, 3))
   }
 }
