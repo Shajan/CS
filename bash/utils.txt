@@ -31,3 +31,7 @@ readelf -d <file> | egrep SONAME # read version if present
 
 #find number of processors
 cat /proc/cpuinfo | grep processor | wc -l
+
+#join/combine two files line by line
+paste file1.txt file2.txt > join.txt
+
