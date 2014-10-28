@@ -3,7 +3,7 @@
 
 object Monads {
   def main(args: Array[String]) {
-     simple()
+     //simple()
      advanced()
   }
 
@@ -24,6 +24,13 @@ object Monads {
     def foo(i: Int) = Thing(i + 1)
     val a = Thing(1)
     val b = a bind foo
+    println(b) // Thing(2)
+    val c = a bind { value =>
+      println("value:" + value) // 1
+      Thing(value + 2)
+    }
+    println(c) // Thing(3)
+
     withoutMonad()
     usingMonad()
   }
@@ -90,7 +97,7 @@ import scala.language.higherKinds
     def bind[A, B](opt: Option[A])(f: A => Option[B]) = opt bind f
   }
  
-  // Convert any List[M[A]] to M[List[A]]
+  // Convert any List[M[A]] to M[List[A]], works on any monads
   def sequence[M[_], A](ms: List[M[A]])(implicit tc: Monad[M]) = {
     ms.foldRight(tc.unit(List[A]())) { (m, acc) =>
       tc.bind(m) { a =>
