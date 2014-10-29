@@ -1,2 +1,5 @@
 List files in a jar
 	jar tvf [file.jar]
+
+Get histogram of gc heap
+jmap -histo[:live] <pid>
