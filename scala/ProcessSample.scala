@@ -1,6 +1,6 @@
 import scala.sys.process._
 
-object Process {
+object ProcessSample {
   def main(args: Array[String]) {
     //simple
     advanced
