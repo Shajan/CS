@@ -1,11 +1,13 @@
-import java.util.concurrent.{Callable, Executors, ExecutorService}
+import java.util.concurrent._
+import java.util.concurrent.atomic.AtomicInteger
 
 // https://twitter.github.io/scala_school/concurrency.html
 
 object Concurrency {
   def main(args: Array[String]) {
-    simple()
-    threadpool()
+    //simple()
+    //threadpool()
+    blockingQueue()
   }
 
   class MyRunnable(s: String = "") extends Runnable {
@@ -49,6 +51,40 @@ object Concurrency {
     //	MyRunnable.run 4 pool-1-thread-2
     //	MyRunnable.run 3 pool-1-thread-1
     //	MyRunnable.run 5 pool-1-thread-2
+  }
+
+  // http://tutorials.jenkov.com/java-util-concurrent/blockingqueue.html
+  def blockingQueue() = {
+    arrayBlockingQueue
+  }
+
+  abstract class Producer(val queue: BlockingQueue[Int]) extends Runnable { val c = new AtomicInteger }
+  class BlockingProducer(queue: BlockingQueue[Int]) extends Producer(queue) { 
+    override def run() { queue.put(c.getAndIncrement) } }
+  class ThrowingProducer(queue: BlockingQueue[Int]) extends Producer(queue) { 
+    override def run() { queue.add(c.getAndIncrement) } }
+
+  abstract class Consumer(val queue: BlockingQueue[Int]) extends Runnable
+  class BlockingConsumer(queue: BlockingQueue[Int]) extends Consumer(queue) { 
+    override def run() { queue.take() } }
+  class ThrowingConsumer(queue: BlockingQueue[Int]) extends Consumer(queue) { 
+    override def run() { queue.remove() } }
+
+  def arrayBlockingQueue = {
+    // Array queue with capacity 1
+    val abq = new ArrayBlockingQueue[Int](1)
+    // Linked structure
+    //val lbq = new LinkedBlockingQueue[Int](1)
+
+    abq.put(1)
+    // abq.put(2) // will hang
+    // abq.add(2) // will throw
+    println(abq.offer(2)) // prints false
+
+/*
+    val producer = new BlockingProducer(abq)
+    val consumer = new BlockingConsumer(abq)
+*/
   }
 }
 

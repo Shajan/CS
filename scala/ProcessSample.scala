@@ -49,7 +49,7 @@ object ProcessSample {
   }
 
   def echoClient(p: Process) = {
-    sys.addShutdownHook(p.destroy); // works with ^C, but not with kill -9
+    sys.addShutdownHook(p.destroy) // works with ^C, but not with kill -9
     val is = p.getInputStream
     val out = p.getOutputStream
 
@@ -61,7 +61,7 @@ object ProcessSample {
 
     t.start
 
-    val ps: PrintStream = new PrintStream(out);
+    val ps: PrintStream = new PrintStream(out)
     ps.print("hello\n")
     ps.print("exit\n")
     ps.flush
