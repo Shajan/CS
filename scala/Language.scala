@@ -1,7 +1,8 @@
 object Language {
   def main(args: Array[String]) {
     //loops
-    traits
+    //traits
+    abstractmember
   }
 
   def loops = {
@@ -39,5 +40,15 @@ object Language {
 
   def traits = {
     println(new Ball with Shiny with Red) // It's a shiny, red ball
+  }
+
+  def abstractmember = {
+    abstract class A { def f:Unit }
+    class B extends A { override def f:Unit = {println("B.f")} }
+    class C extends A { override def f:Unit = {println("C.f")} }
+    abstract class Base { val a:A }
+    class Derived extends Base { val a:A  = new B() }
+    val d = new Derived
+    d.a.f
   }
 }
