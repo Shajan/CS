@@ -11,10 +11,19 @@ object Futures {
   //@volatile var where_is_main_thread: String = ""
   var where_is_main_thread: String = ""
   def main(args: Array[String]) {
+    reallySimple()
+/*
     where_is_main_thread = "main"
     simple()
     where_is_main_thread = "done sample"
     Thread.sleep(100)
+*/
+  }
+
+  def reallySimple() = {
+    val f1 = Future { 1 } 
+    println(f1.value) // prints None 
+    f1 map { i => println(i) } // prints 1
   }
 
   def log(s: String) = {
