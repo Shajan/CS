@@ -1,8 +1,10 @@
 class HelloWorld {
   static {
-    // Set JVM env to load correctly, for now loading with full path
-    //System.loadLibrary("HelloWorld.so");
-    System.load("/Users/sdasan/src/CS/java/jni/HelloWorld.so");
+    try {
+      System.load(new java.io.File( "." ).getCanonicalPath() + "/HelloWorld.so");
+    } catch (java.io.IOException e) {
+      System.out.println(e);
+    }
   }
 
   private native void print();
