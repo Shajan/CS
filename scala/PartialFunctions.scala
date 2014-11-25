@@ -4,6 +4,7 @@ object PartialFunctions {
     UsingCase 
     Collect
     Lists
+    Composition
   }
 
   def UsingIsDefinedAt = {
@@ -56,5 +57,17 @@ object PartialFunctions {
 
     println(l.lift(0)) // Some(a)
     println(l.lift(10)) // None
+  }
+
+  def Composition = {
+    val one: PartialFunction[Int, String] = { case 1 => "one" }
+    val two: PartialFunction[Int, String] = { case 2 => "two" }
+    val three: PartialFunction[Int, String] = { case 3 => "three" }
+    val unknown: PartialFunction[Int, String] = { case _ => "unknown" }
+
+    val partial = one orElse two orElse three orElse unknown
+
+    println(partial(1)) // one
+    println(partial(7)) // unknown
   }
 }
