@@ -20,9 +20,9 @@ find . -type d -name target -prune -o -type d -name .git -prune -o -type f -name
 # Redirect stderr to 'error.txt'
 # stdin:0, stdout:1, stderr:2
 foo 2> error.txt
-# Redirect stdin and stderr to 'all.txt'
+# Redirect stdout and stderr to 'all.txt'
 foo &> all.txt
-# Redirect stderr to stdin
+# Redirect stderr to stdout
 foo 2>&1
 
 #read contents of lib files (elf format)
@@ -35,3 +35,10 @@ cat /proc/cpuinfo | grep processor | wc -l
 #join/combine two files line by line
 paste file1.txt file2.txt > join.txt
 
+#join two files based on field equality.
+#(-1 2) second field of first file, (-2 1) first field of second file
+#files have to be sorted and unique on that field
+join file1.txt file2.txt -1 2 -2 1 -t"tab"
+
+#print n'th field
+cat foo.txt | awk '{print $6 }’
