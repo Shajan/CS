@@ -55,7 +55,8 @@ object Concurrency {
 
   // http://tutorials.jenkov.com/java-util-concurrent/blockingqueue.html
   def blockingQueue() = {
-    arrayBlockingQueue
+    //arrayBlockingQueue
+    simpleThreadPool
   }
 
   abstract class Producer(val queue: BlockingQueue[Int]) extends Runnable { val c = new AtomicInteger }
@@ -85,6 +86,22 @@ object Concurrency {
     val producer = new BlockingProducer(abq)
     val consumer = new BlockingConsumer(abq)
 */
+  }
+
+  def simpleThreadPool = {
+    val jobQueueSize = 0
+    val jobQueue: BlockingQueue[Runnable] = if (jobQueueSize == 0) new SynchronousQueue[Runnable]()
+      else new LinkedBlockingQueue[Runnable](jobQueueSize)
+    // 1 thread
+    val pool: ExecutorService = new ThreadPoolExecutor(1, 1, Long.MaxValue, TimeUnit.MILLISECONDS, jobQueue)
+
+    try {
+      1 to 2 foreach { i => pool.execute(new MyRunnable(i.toString)) }
+    } catch {
+      case e: RejectedExecutionException => println("Rejected second job, as expected")
+    } finally {
+      pool.shutdown()
+    }
   }
 }
 
