@@ -1,0 +1,25 @@
+% Read an image, One 2D array for black/white, 3 arrays R,G,B for color
+I = imread('foo.png');
+
+% Show the image
+imshow(I)
+
+% Save the image
+imwrite(I, 'foo.jpg')
+
+% Example, create a random 256x256 image
+I = rand(256)
+imshow(I)
+imwrite(I, 'foo.jpg')
+
+% Convert pixel values to double value, with range 0 to 1
+scaled = im2double(I)
+
+% Convert double to uint8
+im2uint8(scaled)
+
+% Creating and applying filters fspecial('type', parameters)
+h = fspecial('average', [3,3])
+j = imfilter(I, h)
+
+
