@@ -42,3 +42,7 @@ join file1.txt file2.txt -1 2 -2 1 -t"tab"
 
 #print n'th field
 cat foo.txt | awk '{print $6 }’
+
+#compute average
+awk '{ total += $2; count++ } END { print total/count }' 
+
