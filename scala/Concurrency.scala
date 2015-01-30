@@ -89,16 +89,17 @@ object Concurrency {
   }
 
   def simpleThreadPool = {
-    val jobQueueSize = 0
+    val jobQueueSize = 2
+    val threadCount = 3
     val jobQueue: BlockingQueue[Runnable] = if (jobQueueSize == 0) new SynchronousQueue[Runnable]()
       else new LinkedBlockingQueue[Runnable](jobQueueSize)
-    // 1 thread
-    val pool: ExecutorService = new ThreadPoolExecutor(1, 1, Long.MaxValue, TimeUnit.MILLISECONDS, jobQueue)
+    val pool: ExecutorService = new ThreadPoolExecutor(threadCount, threadCount, Long.MaxValue, TimeUnit.MILLISECONDS, jobQueue)
+    val overcapacity = jobQueueSize + threadCount + 1
 
     try {
-      1 to 2 foreach { i => pool.execute(new MyRunnable(i.toString)) }
+      1 to overcapacity foreach { i => pool.execute(new MyRunnable(i.toString)) }
     } catch {
-      case e: RejectedExecutionException => println("Rejected second job, as expected")
+      case e: RejectedExecutionException => println("Rejected second job, as expected : %s".format(e))
     } finally {
       pool.shutdown()
     }
