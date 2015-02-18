@@ -50,6 +50,10 @@ awk '{ total += $2; count++ } END { print total/count }'
 egrep -o EXPR file
 
 #reading file line by line
-while read p; do
-  echo $p
-done <fileName
+while read p; do echo $p done <fileName
+
+#process / list each file in folder
+for f in *.c; do echo "Processing $f file.."; done
+
+#filemon equivalent for mac
+sudo fs_usage
