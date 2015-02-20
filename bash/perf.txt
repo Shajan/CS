@@ -1,0 +1,7 @@
+#Mac/OSX only, improve perf when you open too many files
+	#check max vnodes
+	sysctl kern.maxvnodes
+	#increase number of vnodes cached by kernel
+	sudo sysctl -w kern.maxvnodes=1000000
+	#to persist after reboot
+	echo kern.maxvnodes=1000000 | sudo tee -a /etc/sysctl.conf
