@@ -1,10 +1,5 @@
-Case Class
-	http://stackoverflow.com/questions/2312881/what-is-the-difference-between-scalas-case-class-and-class
-	Case classes can be seen as plain and immutable data-holding objects that should exclusively depend on their constructor arguments.
-
-Apply Method
-	http://stackoverflow.com/questions/9737352/what-is-the-apply-function-in-scala
-	Syntatic shortcut, no need to type in 'apply'
-		Example List(1,2,3) // Instead of List.apply(1,2,3)
-	Calling 'apply' on a function pionter object just calls that function.
-	Defining an 'apply' method to a type allows an instance of that type to act like a function pointer, and be called.
+IsSorted:
+	!Seq(1,2).sliding(2).filter(_.size==2).exists{ case Seq(a, b) => a > b }
+	!Seq(1).sliding(2).filter(_.size==2).exists{ case Seq(a, b) => a > b }
+	!Seq(1,2,3).sliding(2).filter(_.size==2).exists{ case Seq(a, b) => a > b }
+	!Seq(2,3,1).sliding(2).filter(_.size==2).exists{ case Seq(a, b) => a > b }

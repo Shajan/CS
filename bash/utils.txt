@@ -22,8 +22,11 @@ find . -type d -name target -prune -o -type d -name .git -prune -o -type f -name
 foo 2> error.txt
 # Redirect stdout and stderr to 'all.txt'
 foo &> all.txt
+foo &> /dev/null
 # Redirect stderr to stdout
 foo 2>&1
+# Redirect stdout to stderr
+foo 1>&2
 
 #read contents of lib files (elf format)
 readelf -a -W <file>
