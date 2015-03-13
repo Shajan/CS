@@ -4,12 +4,15 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+#define STDIN 0
+#define STDOUT 1
+
 static void test();
 
-void pipe() {
-  printf("pipe start\n");
+void stdio() {
+  printf("stdio start\n");
   test();
-  printf("pipe end\n");
+  printf("stdio end\n");
 }
 
 static void test() {
@@ -25,14 +28,16 @@ static void test() {
   }
 
   if (childpid == 0) {
-    /* Child process closes up input side of pipe */
+    /* Child process writes */
+    dup2(fd[0], STDOUT_FILENO);
     close(fd[0]);
-    printf("Writing string: %s", string);
-    write(fd[1], string, strlen(string) + 1);
+    //printf("Writing string: %s", string);
+    write(STDOUT, string, strlen(string) + 1);
   } else {
-    /* Parent process closes up output side of pipe */
+    /* Parent process reads */
+    dup2(fd[1], STDIN_FILENO);
     close(fd[1]);
-    int nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
+    int nbytes = read(STDIN, readbuffer, sizeof(readbuffer));
     printf("Received %d bytes: %s", nbytes, readbuffer);
   }
 }
