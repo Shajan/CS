@@ -25,6 +25,8 @@ void print_call_stack(int frames_to_skip) {
   
   // +1 to skip this frame ('print_call_stack')
   for (int i = frames_to_skip + 1; i < frame_count; i++) {
+    printf("%s\n", raw_symbols[i]);
+#if 0 
     // find parantheses and +address offset surrounding mangled name
     char *mangled_name = 0, *offset_begin = 0, *offset_end = 0;
     for (char *p = raw_symbols[i]; *p; ++p) {
@@ -55,6 +57,7 @@ void print_call_stack(int frames_to_skip) {
     } else {
       printf("%s\n", raw_symbols[i]);
     }
+#endif
   }
   free(raw_symbols);
 }
