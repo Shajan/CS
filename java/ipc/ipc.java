@@ -1,13 +1,10 @@
 import java.io.*;
-import java.nio.*;
-import java.nio.channels.*;
 import java.util.Random;
 
 class ipc {
   private static int sBuffSize = 1024*1024;
-  private static int sDataMultiplier = 10;
-  private static int sIterations = 1;
-  private static String fileName = "data";
+  private static int sDataMultiplier = 20;
+  private static int sIterations = 10;
   private static boolean sDebug = false;
 
   public static void main(String args[]) {
