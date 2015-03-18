@@ -8,16 +8,15 @@ class ipc {
   private static int sDataMultiplier = 10;
   private static int sIterations = 1;
   private static String fileName = "data";
-  private static boolean sDebug = true;
+  private static boolean sDebug = false;
 
   public static void main(String args[]) {
     try {
       if (args.length == 0) {
         Process p = Runtime.getRuntime().exec("java ipc client");
-        logStream(p.getErrorStream(), true);
-        logStream(p.getInputStream(), false);
+        logInputStream(p.getErrorStream(), true);
+        logInputStream(p.getInputStream(), false);
         server(p.getOutputStream());
-        Thread.sleep(10000);
         p.destroy();
       } else if (args.length == 1) {
         if (args[0].equals("client")) {
@@ -27,7 +26,7 @@ class ipc {
         }
       }
     } catch (Exception e) {
-      errorLog(e.toString());
+      logException(e);
     }
   }
 
@@ -52,19 +51,21 @@ class ipc {
   }
 
   static void read(InputStream is, byte[] ba) throws IOException {
-    int len = ba.length;
-    int bytes = 0;
-    int pos = 0;
+    for (int i=0; i<sDataMultiplier; ++i) {
+      int len = ba.length;
+      int bytes = 0;
+      int pos = 0;
 
-    while (bytes != -1 && pos < len) {
-      bytes = is.read(ba, pos, len - pos);
-      if (bytes != -1) {
-        pos += bytes;
-        debugLog("Bytes read : " + bytes);
+      while (bytes != -1 && pos < len) {
+        bytes = is.read(ba, pos, len - pos);
+        if (bytes != -1) {
+          pos += bytes;
+          debugLog("Bytes read : " + bytes);
+        }
       }
+      if (pos != len)
+        errorLog("Read: Unexpected EOF");
     }
-    if (pos != len)
-      errorLog("Read: Unexpected EOF");
   }
 
   static void server(final OutputStream os) throws IOException {
@@ -99,7 +100,7 @@ class ipc {
       log(s);
   }
 
-  static void logStream(final InputStream is, final boolean fError) throws IOException {
+  static void logInputStream(final InputStream is, final boolean fError) throws IOException {
     new Thread() {
       @Override
       public void run() {
@@ -112,11 +113,19 @@ class ipc {
             else
               log(line);
           }
-        } catch (Exception ex) {
-          errorLog(ex.toString());
+        } catch (IOException e) {
+        } catch (Exception e) {
+          logException(e);
         }
       }
     }.start();
+  }
+
+  static void logException(Exception e) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    e.printStackTrace(pw);
+    errorLog(e + " " + sw.toString());
   }
 }
 
