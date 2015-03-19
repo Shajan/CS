@@ -12,6 +12,7 @@ import java.io.*;
 import java.nio.ByteBuffer;;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.concurrent.Semaphore;
 import java.util.Random;
 
 class ipc {
@@ -82,19 +83,22 @@ class ipc {
   static class memmap implements ITransport {
     @Override
     public void server(Process clientProcess) throws IOException {
-      FileChannel fc = new RandomAccessFile(new File(ipc.sFileName), "rw").getChannel();
+      File f = new File(ipc.sFileName);
+      FileChannel fc = new RandomAccessFile(f, "rw").getChannel();
       final MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_WRITE, 0, sBufferSize * sDataMultiplier);
       for (int i=0; i<sIterations; ++i)
         new ipc.timed("memmap.write"){{ write(mem.duplicate()); }}.end();
+      fc.close();
     }
 
     @Override
     public void client() throws IOException {
-      FileChannel fc = new RandomAccessFile(new File(ipc.sFileName), "r").getChannel();
+      File f = new File(ipc.sFileName);
+      FileChannel fc = new RandomAccessFile(f, "r").getChannel();
       final MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY, 0, sBufferSize * sDataMultiplier);
-      do {
+      for (int i=0; i<sIterations; ++i)
         new ipc.timed("memmap.read"){{ read(mem.duplicate()); }}.end();
-      } while (true);
+      fc.close();
     }
 
     private void write(ByteBuffer bb) throws IOException {
@@ -118,9 +122,8 @@ class ipc {
 
     @Override
     public void client() throws IOException {
-      do {
+      for (int i=0; i<sIterations; ++i)
         new ipc.timed("stdio.read"){{ read(System.in); }}.end();
-      } while (true);
     }
 
     private void write(OutputStream os) throws IOException {
