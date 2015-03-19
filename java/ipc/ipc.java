@@ -1,3 +1,13 @@
+/*
+ * Benchmark different ipc transports - stdio, shared memory
+ *
+ * NOTE:
+ *   Self contained single source file.
+ *   Commandline determines mode (client vs. server).
+ *   Server will launch the client.
+ *
+ * Author Shajan Dasan (sdasan@gmail.com)
+ */
 import java.io.*;
 import java.nio.ByteBuffer;;
 import java.nio.MappedByteBuffer;
@@ -5,13 +15,12 @@ import java.nio.channels.FileChannel;
 import java.util.Random;
 
 class ipc {
-  private static int sBufferSize = 1024*1024;
-  private static int sDataMultiplier = 1024;
-  private static int sIterations = 10;
-  private static String sFileName = "/dev/zero";
+  private static int sBufferSize = 1024*1024;// Static buffer size
+  private static int sDataMultiplier = 1024; // sBufferSize x sDataMultiplier gives the total payload
+  private static int sIterations = 10;       // Number of times to send total payload
+  private static String sFileName = "data";  // Used as backing file for shared memory
   private static boolean sDebug = false;
-  private static byte[] sWriteBuffer = null;
-  private static byte[] sReadBuffer = null;
+  private static byte[] sBuffer = null;      // Static buffer for read/write
 
   public static void main(String args[]) {
     ITransport transport = new stdio();
@@ -38,9 +47,8 @@ class ipc {
     }
 
     try {
-      byte[] buffer = new byte[sBufferSize];
+      sBuffer = new byte[sBufferSize];
       if (client) {
-        sReadBuffer = buffer;
         transport.client();
       } else { 
         // Launch client process with -client flag, in additon to whatever was passed in
@@ -54,8 +62,7 @@ class ipc {
         logInputStream(p.getErrorStream(), true);
         logInputStream(p.getInputStream(), false);
         Random random = new Random(System.currentTimeMillis());
-        sWriteBuffer = buffer;
-        random.nextBytes(sWriteBuffer);
+        random.nextBytes(sBuffer);
         ipc.debugLog("Start server..");
         transport.server(p);
         ipc.debugLog("End server..");
@@ -92,12 +99,12 @@ class ipc {
 
     private void write(ByteBuffer bb) throws IOException {
       for (int i=0; i<ipc.sDataMultiplier; ++i)
-        bb.put(ipc.sWriteBuffer);
+        bb.put(ipc.sBuffer);
     }
 
     private void read(ByteBuffer bb) throws IOException {
       for (int i=0; i<ipc.sDataMultiplier; ++i)
-        bb.get(ipc.sReadBuffer);
+        bb.get(ipc.sBuffer);
     }
   }
 
@@ -118,17 +125,17 @@ class ipc {
 
     private void write(OutputStream os) throws IOException {
       for (int i=0; i<ipc.sDataMultiplier; ++i)
-        os.write(sWriteBuffer);
+        os.write(sBuffer);
     }
 
     private void read(InputStream is) throws IOException {
       for (int i=0; i<ipc.sDataMultiplier; ++i) {
-        int len = sReadBuffer.length;
+        int len = sBuffer.length;
         int bytes = 0;
         int pos = 0;
   
         while (bytes != -1 && pos < len) {
-          bytes = is.read(sReadBuffer, pos, len - pos);
+          bytes = is.read(sBuffer, pos, len - pos);
           if (bytes != -1) {
             pos += bytes;
             ipc.debugLog("Bytes read : " + bytes);
