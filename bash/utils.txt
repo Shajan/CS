@@ -60,3 +60,7 @@ for f in *.c; do echo "Processing $f file.."; done
 
 #filemon equivalent for mac
 sudo fs_usage
+
+#summarize file size in folder (ls includes sparse space as well, du is actual space)
+du -hs <folder>
+ls -lRh <filder>
