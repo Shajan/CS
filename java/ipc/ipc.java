@@ -1,29 +1,142 @@
 import java.io.*;
+import java.nio.ByteBuffer;;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Random;
 
 class ipc {
-  private static int sBuffSize = 1024*1024;
+  private static int sBufferSize = 1024*1024;
   private static int sDataMultiplier = 1024;
   private static int sIterations = 10;
+  private static String sFileName = "/dev/zero";
   private static boolean sDebug = false;
+  private static byte[] sWriteBuffer = null;
+  private static byte[] sReadBuffer = null;
 
   public static void main(String args[]) {
+    ITransport transport = new stdio();
+    boolean client = false;
+
     try {
-      if (args.length == 0) {
-        Process p = Runtime.getRuntime().exec("java ipc client");
-        logInputStream(p.getErrorStream(), true);
-        logInputStream(p.getInputStream(), false);
-        new stdio().server(p);
-        p.destroy();
-      } else if (args.length == 1) {
-        if (args[0].equals("client")) {
-          new stdio().client();
-        } else {
-          errorLog("Unknown option " + args[0]);
+      for (int i=0; i<args.length; ++i) {
+        switch (args[i]) {
+          case "-client" : client = true; break;
+          case "-stdio" : transport = new stdio(); break;
+          case "-memmap" : transport = new memmap(); break;
+          case "-debug" : sDebug = true; break;
+          case "-b" : sBufferSize = Integer.parseInt(args[++i]); break;
+          case "-m" : sDataMultiplier = Integer.parseInt(args[++i]); break;
+          case "-i" : sIterations = Integer.parseInt(args[++i]); break;
+          case "-f" : sFileName = args[++i]; break;
+          default : throw new IllegalArgumentException("Unknown option : " + args[i]);
         }
       }
     } catch (Exception e) {
+      log("Usage : ipc [-client] [-stdio|-memmap] [-debug] [-f fileName] [-b bufferSize] [-m dataMultiplier] [-i iterations]");
       logException(e);
+      return;
+    }
+
+    try {
+      byte[] buffer = new byte[sBufferSize];
+      if (client) {
+        sReadBuffer = buffer;
+        transport.client();
+      } else { 
+        // Launch client process with -client flag, in additon to whatever was passed in
+        StringBuilder cmdLine = new StringBuilder("java ipc -client");
+        for (int i=0; i<args.length; ++i) {
+          cmdLine.append(" ");
+          cmdLine.append(args[i]);
+        }
+        ipc.debugLog("Start client..");
+        Process p = Runtime.getRuntime().exec(cmdLine.toString());
+        logInputStream(p.getErrorStream(), true);
+        logInputStream(p.getInputStream(), false);
+        Random random = new Random(System.currentTimeMillis());
+        sWriteBuffer = buffer;
+        random.nextBytes(sWriteBuffer);
+        ipc.debugLog("Start server..");
+        transport.server(p);
+        ipc.debugLog("End server..");
+        p.destroy();
+        ipc.debugLog("Kill client..");
+      }
+    } catch (Exception e) {
+      logException(e);
+    }
+  }
+
+  interface ITransport {
+    void server(Process clientProcess) throws IOException;
+    void client() throws IOException;
+  }
+
+  static class memmap implements ITransport {
+    @Override
+    public void server(Process clientProcess) throws IOException {
+      FileChannel fc = new RandomAccessFile(new File(ipc.sFileName), "rw").getChannel();
+      final MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_WRITE, 0, sBufferSize * sDataMultiplier);
+      for (int i=0; i<sIterations; ++i)
+        new ipc.timed("memmap.write"){{ write(mem.duplicate()); }}.end();
+    }
+
+    @Override
+    public void client() throws IOException {
+      FileChannel fc = new RandomAccessFile(new File(ipc.sFileName), "r").getChannel();
+      final MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_ONLY, 0, sBufferSize * sDataMultiplier);
+      do {
+        new ipc.timed("memmap.read"){{ read(mem.duplicate()); }}.end();
+      } while (true);
+    }
+
+    private void write(ByteBuffer bb) throws IOException {
+      for (int i=0; i<ipc.sDataMultiplier; ++i)
+        bb.put(ipc.sWriteBuffer);
+    }
+
+    private void read(ByteBuffer bb) throws IOException {
+      for (int i=0; i<ipc.sDataMultiplier; ++i)
+        bb.get(ipc.sReadBuffer);
+    }
+  }
+
+  static class stdio implements ITransport {
+    @Override
+    public void server(Process clientProcess) throws IOException {
+      final OutputStream os = clientProcess.getOutputStream();
+      for (int i=0; i<sIterations; ++i)
+        new ipc.timed("stdio.write"){{ write(os); }}.end();
+    }
+
+    @Override
+    public void client() throws IOException {
+      do {
+        new ipc.timed("stdio.read"){{ read(System.in); }}.end();
+      } while (true);
+    }
+
+    private void write(OutputStream os) throws IOException {
+      for (int i=0; i<ipc.sDataMultiplier; ++i)
+        os.write(sWriteBuffer);
+    }
+
+    private void read(InputStream is) throws IOException {
+      for (int i=0; i<ipc.sDataMultiplier; ++i) {
+        int len = sReadBuffer.length;
+        int bytes = 0;
+        int pos = 0;
+  
+        while (bytes != -1 && pos < len) {
+          bytes = is.read(sReadBuffer, pos, len - pos);
+          if (bytes != -1) {
+            pos += bytes;
+            ipc.debugLog("Bytes read : " + bytes);
+          }
+        }
+        if (pos != len)
+          ipc.errorLog("Read: Unexpected EOF");
+      }
     }
   }
 
@@ -39,58 +152,6 @@ class ipc {
     void end() {
       long duration = System.nanoTime() - start;
       ipc.log(tag + " " + duration/(1000*1000) + " ms");
-    }
-  }
-
-  interface IClientServer {
-    void server(Process clientProcess) throws IOException;
-    void client() throws IOException;
-  }
-
-  static class stdio implements IClientServer {
-    @Override
-    public void server(Process clientProcess) throws IOException {
-      ipc.debugLog("Start server..");
-      final OutputStream os = clientProcess.getOutputStream();
-      Random random = new Random(System.currentTimeMillis());
-      final byte[] ba = new byte[sBuffSize];
-      random.nextBytes(ba);
-  
-      for (int i=0; i<sIterations; ++i)
-        new ipc.timed("stdio.write"){{ write(os, ba); }}.end();
-      ipc.debugLog("End server..");
-    }
-
-    @Override
-    public void client() throws IOException {
-      ipc.debugLog("Start client..");
-      final byte[] ba = new byte[sBuffSize];
-      do {
-        new ipc.timed("stdio.read"){{ read(System.in, ba); }}.end();
-      } while (true);
-    }
-
-    private void write(OutputStream os, byte[] ba) throws IOException {
-      for (int i=0; i<ipc.sDataMultiplier; ++i)
-        os.write(ba);
-    }
-
-    private void read(InputStream is, byte[] ba) throws IOException {
-      for (int i=0; i<ipc.sDataMultiplier; ++i) {
-        int len = ba.length;
-        int bytes = 0;
-        int pos = 0;
-  
-        while (bytes != -1 && pos < len) {
-          bytes = is.read(ba, pos, len - pos);
-          if (bytes != -1) {
-            pos += bytes;
-            ipc.debugLog("Bytes read : " + bytes);
-          }
-        }
-        if (pos != len)
-          ipc.errorLog("Read: Unexpected EOF");
-      }
     }
   }
 
