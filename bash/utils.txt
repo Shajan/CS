@@ -64,3 +64,15 @@ sudo fs_usage
 #summarize file size in folder (ls includes sparse space as well, du is actual space)
 du -hs <folder>
 ls -lRh <filder>
+
+#true always set exit code 0, false sets 1, echo $? to see the code
+true
+echo $?
+false
+
+#double piple to execute only on fail && only on succes
+false || echo "This will print"
+true || echo "This won't print"
+false && echo "This won't print"
+true && echo "This will print"
+
