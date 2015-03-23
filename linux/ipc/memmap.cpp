@@ -3,13 +3,15 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/mman.h>
+#include "common.h"
 
 static void test();
 
 void memmap() {
-  printf("memmap start\n");
+  log("memmap start\n");
   test();
-  printf("memmap end\n");
+  log("memmap end\n");
 }
 
 /*
@@ -29,7 +31,8 @@ static void test() {
   char readbuffer[80];
 
   pipe(fd);
-  mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+  //mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+  mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
   if ((childpid = fork()) == -1) {
     perror("fork");
     exit(1);
@@ -38,12 +41,12 @@ static void test() {
   if (childpid == 0) {
     /* Child process closes up input side of pipe */
     close(fd[0]);
-    printf("Writing string: %s", string);
+    log("Writing string: %s", string);
     write(fd[1], string, strlen(string) + 1);
   } else {
     /* Parent process closes up output side of pipe */
     close(fd[1]);
     int nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
-    printf("Received %d bytes: %s", nbytes, readbuffer);
+    log("Received %d bytes: %s", nbytes, readbuffer);
   }
 }

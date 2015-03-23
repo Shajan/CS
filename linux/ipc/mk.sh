@@ -17,5 +17,5 @@ fi
 # -l : link with library
 # -stdlib=libc++ : use clang headers in /usr/lib/c++/v1 example <functional>
 #  -std=c++11 : Use c++11
-clang++ -std=c++11 -stdlib=libc++ -g -o benchmark benchmark.cpp stdio.cpp pipe.cpp memmap.cpp
+g++ -std=c++11 -stdlib=libc++ -g -o benchmark benchmark.cpp common.cpp payload.cpp stdio.cpp pipe.cpp memmap.cpp
 
