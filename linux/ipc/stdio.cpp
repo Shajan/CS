@@ -5,9 +5,6 @@
 #include <sys/types.h>
 #include "common.h"
 
-#define STDIN 0
-#define STDOUT 1
-
 static void test();
 
 void stdio() {
@@ -19,8 +16,6 @@ void stdio() {
 static void test() {
   int fd[2];
   pid_t childpid;
-  char string[] = "Hello, World!";
-  char readbuffer[80];
 
   pipe(fd);
   if ((childpid = fork()) == -1) {
@@ -33,8 +28,7 @@ static void test() {
     if (dup2(fd[1], STDOUT_FILENO) == -1) {
       error_exit("Child dup2");
     }
-    log("Writing string: %s\n", string);
-    int nbytes = write(STDOUT_FILENO, string, strlen(string) + 1); 
+    int nbytes = write(STDOUT_FILENO, get_payload(), payload_size()); 
     if (nbytes == -1) {
       error_exit("Child write");
     } else {
@@ -47,11 +41,15 @@ static void test() {
     if (dup2(fd[0], STDIN_FILENO) == -1) {
       error_exit("Parent dup2");
     }
-    int nbytes = read(STDIN_FILENO, readbuffer, sizeof(readbuffer));
-    if (nbytes <= 0) {
-      log_error("Error, recived %d bytes\n", nbytes);
-      readbuffer[0] = 0;
+    void* buffer = malloc(payload_size());
+    int nbytes = read(STDIN_FILENO, buffer, payload_size());
+    if (nbytes != payload_size()) {
+      log_error("Error, recived %d bytes, expected %d\n", nbytes, payload_size());
     }
-    log("Received %d bytes: %s\n", nbytes, readbuffer);
+    free(buffer);
+    if (!verify_payload(buffer)) {
+      error_exit("Payload corrupt");
+    }
+    log("Received %d bytes\n", nbytes);
   }
 }

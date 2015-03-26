@@ -24,6 +24,11 @@ void* get_payload() {
   return g_payload;
 }
 
+int payload_size() {
+  envelope* e = (envelope* ) g_payload;
+  return e->size + sizeof(envelope);
+}
+
 int verify_payload(const void* payload) {
   if (payload == g_payload) return 1;
   envelope* reference = (envelope* ) g_payload;

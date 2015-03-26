@@ -5,8 +5,7 @@
 #include <errno.h>
 
 #define ERRORSTREAM stderr
-//#define LOGSTREAM stdout
-#define LOGSTREAM stderr
+#define LOGSTREAM stdout
 
 void log_error(const char* fmt, ...) {
   va_list argptr;
