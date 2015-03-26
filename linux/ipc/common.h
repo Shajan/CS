@@ -1,5 +1,6 @@
-void logError(const char* fmt, ...);
+void log_error(const char* fmt, ...);
 void log(const char* fmt, ...);
+void error_exit(const char* msg);
 
 void init_payload(int size);
 void* get_payload();

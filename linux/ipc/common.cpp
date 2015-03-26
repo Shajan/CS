@@ -1,16 +1,28 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
+#include <errno.h>
 
-void logError(const char* fmt, ...) {
+#define ERRORSTREAM stderr
+//#define LOGSTREAM stdout
+#define LOGSTREAM stderr
+
+void log_error(const char* fmt, ...) {
   va_list argptr;
   va_start(argptr, fmt);
-  vfprintf(stderr, fmt, argptr);
+  vfprintf(ERRORSTREAM, fmt, argptr);
   va_end(argptr);
+}
+
+void error_exit(const char* msg) {
+  log_error("%s : %s\n", msg, strerror(errno));
+  exit(1);
 }
 
 void log(const char* fmt, ...) {
   va_list argptr;
   va_start(argptr, fmt);
-  vfprintf(stdout, fmt, argptr);
+  vfprintf(LOGSTREAM, fmt, argptr);
   va_end(argptr);
 }

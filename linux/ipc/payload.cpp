@@ -29,11 +29,11 @@ int verify_payload(const void* payload) {
   envelope* reference = (envelope* ) g_payload;
   envelope* p = (envelope*) payload;
   if (p->canary != reference->canary) {
-    logError("Canary : expected %d, found %d", reference->canary, p->canary);
+    log_error("Canary : expected %d, found %d", reference->canary, p->canary);
     return 0;
   }
   if (p->size != reference->size) {
-    logError("Payload size : expected %d, found %d", reference->size, p->size);
+    log_error("Payload size : expected %d, found %d", reference->size, p->size);
     return 0;
   }
 
