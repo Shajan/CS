@@ -41,7 +41,5 @@ int verify_payload(const void* payload) {
     log_error("Payload size : expected %d, found %d", reference->size, p->size);
     return 0;
   }
-
   return (memcmp(p->data, reference->data, p->size) == 0 ? 1 : 0);
 }
-
