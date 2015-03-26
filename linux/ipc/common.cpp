@@ -14,7 +14,15 @@ void log_error(const char* fmt, ...) {
   va_end(argptr);
 }
 
-void error_exit(const char* msg) {
+void error_exit(const char* fmt, ...) {
+  va_list argptr;
+  va_start(argptr, fmt);
+  log_error(fmt, argptr);
+  va_end(argptr);
+  exit(1);
+}
+
+void sys_error_exit(const char* msg) {
   log_error("%s : %s\n", msg, strerror(errno));
   exit(1);
 }
