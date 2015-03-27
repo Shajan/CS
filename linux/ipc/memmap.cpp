@@ -5,18 +5,22 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 #include "common.h"
 
 //#define FILE_NAME "/dev/shm/sdasan"
 //#define FILE_NAME "/dev/zero"
 #define FILE_NAME "/tmp/sdasan"
+#define NAME "/sdasan"
 
 static void test_fork();
+static void test_open_shared_filehandle();
 static void test_open();
 
 void memmap() {
   log("memmap start\n");
-  test_fork();
+  //test_fork();
+  //test_open_shared_filehandle();
   test_open();
   log("memmap end\n");
 }
@@ -59,7 +63,11 @@ static void test_fork() {
   void* pmap;
 
   if ((fd = open(FILE_NAME, O_RDWR)) == -1) {
-    sys_error_exit(FILE_NAME);
+    sys_error_exit("open " FILE_NAME);
+  }
+
+  if (ftruncate(fd, payload_size()) == -1) {
+    sys_error_exit("ftruncate %s", FILE_NAME);
   }
 
   if ((pmap = mmap(0, payload_size(), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)) == (void*) -1) {
@@ -77,6 +85,9 @@ static void test_fork() {
   if (childpid == 0) {
     /* Child process */
     memcpy(pmap, get_payload(), payload_size());
+    if (munmap(pmap, payload_size()) == -1) {
+      error_exit("Payload corrupt");
+    }
     exit(0);
   } else {
     /* Parent process */
@@ -84,8 +95,96 @@ static void test_fork() {
     if (!verify_payload(pmap)) {
       error_exit("Payload corrupt");
     }
+    if (munmap(pmap, payload_size()) == -1) {
+      error_exit("Payload corrupt");
+    }
   }
 }
 
-static void test_open() {
+static void* get_map(const char* name, bool create) {
+  int fd;
+  void* pmap;
+  int flags = (create ? (O_RDWR|O_CREAT) : O_RDWR);
+
+  if (create && (shm_unlink(name) == -1)) {
+    sys_warn("shm_unlink %s", name);
+  }
+
+  if ((fd = shm_open(name, flags, S_IRUSR|S_IWUSR)) == -1) {
+    sys_error_exit("shm_open %s", name);
+  }
+
+  if (create && (ftruncate(fd, payload_size()) == -1)) {
+    sys_error_exit("ftruncate name:%s fd:%d size:%d", name, fd, payload_size());
+  }
+
+  if ((pmap = mmap(0, payload_size(), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)) == (void*) -1) {
+    sys_error_exit("mmap");
+  }
+
+  if (close(fd) == -1) {
+    sys_error_exit("close");
+  }
+  return pmap;
 }
+
+static void test_open_shared_filehandle() {
+  pid_t childpid;
+  void* pmap;
+
+  pmap = get_map(NAME, true);
+  if ((childpid = fork()) == -1) {
+    sys_error_exit("fork");
+  }
+
+  if (childpid == 0) {
+    /* Child process */
+    memcpy(pmap, get_payload(), payload_size());
+    if (munmap(pmap, payload_size()) == -1) {
+      error_exit("Payload corrupt");
+    }
+    exit(0);
+  } else {
+    /* Parent process */
+    sleep(1); // Idealy this is a signal, but for now just sleeep
+    if (!verify_payload(pmap)) {
+      error_exit("Payload corrupt");
+    }
+    if (munmap(pmap, payload_size()) == -1) {
+      error_exit("Payload corrupt");
+    }
+  }
+}
+
+// Assume no parent/child process relation - no fork
+static void test_open() {
+  pid_t childpid;
+  int fd;
+  void* pmap;
+
+  if ((childpid = fork()) == -1) {
+    sys_error_exit("fork");
+  }
+
+  if (childpid == 0) {
+    /* Child process */
+    sleep(1); // Idealy this is a signal, but for now just sleeep
+    pmap = get_map(NAME, false);
+    memcpy(pmap, get_payload(), payload_size());
+    if (munmap(pmap, payload_size()) == -1) {
+      error_exit("Payload corrupt");
+    }
+    exit(0);
+  } else {
+    /* Parent process */
+    pmap = get_map(NAME, true);
+    sleep(2); // Idealy this is a signal, but for now just sleeep
+    if (!verify_payload(pmap)) {
+      error_exit("Payload corrupt");
+    }
+    if (munmap(pmap, payload_size()) == -1) {
+      error_exit("Payload corrupt");
+    }
+  }
+}
+
