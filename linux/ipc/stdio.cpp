@@ -8,9 +8,9 @@
 static void test();
 
 void stdio() {
-  log("stdio start\n");
+  log("stdio start");
   test();
-  log("stdio end\n");
+  log("stdio end");
 }
 
 static void test() {
@@ -32,7 +32,7 @@ static void test() {
     if (nbytes == -1) {
       sys_error_exit("Child write");
     } else {
-      log("Wrote %d bytes\n", nbytes);
+      log("Wrote %d bytes", nbytes);
     }
     exit(0);
   } else {
@@ -44,12 +44,12 @@ static void test() {
     void* buffer = malloc(payload_size());
     int nbytes = read(STDIN_FILENO, buffer, payload_size());
     if (nbytes != payload_size()) {
-      error_exit("Error, recived %d bytes, expected %d\n", nbytes, payload_size());
+      error_exit("Error, recived %d bytes, expected %d bytes", nbytes, payload_size());
     }
     if (!verify_payload(buffer)) {
       error_exit("Payload corrupt");
     }
     free(buffer);
-    log("Received %d bytes\n", nbytes);
+    log("Received %d bytes", nbytes);
   }
 }

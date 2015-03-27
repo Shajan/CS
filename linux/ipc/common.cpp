@@ -12,6 +12,7 @@ void log_error(const char* fmt, ...) {
   va_start(argptr, fmt);
   vfprintf(ERRORSTREAM, fmt, argptr);
   va_end(argptr);
+  fprintf(ERRORSTREAM, "\n");
 }
 
 void error_exit(const char* fmt, ...) {
@@ -19,6 +20,7 @@ void error_exit(const char* fmt, ...) {
   va_start(argptr, fmt);
   vfprintf(ERRORSTREAM, fmt, argptr);
   va_end(argptr);
+  fprintf(ERRORSTREAM, "\n");
   exit(1);
 }
 
@@ -27,7 +29,7 @@ void sys_error_exit(const char* fmt, ...) {
   va_start(argptr, fmt);
   vfprintf(ERRORSTREAM, fmt, argptr);
   va_end(argptr);
-  log_error(" [%s]\n", strerror(errno));
+  fprintf(ERRORSTREAM, " [%s]\n", strerror(errno));
   exit(1);
 }
 
@@ -44,4 +46,6 @@ void log(const char* fmt, ...) {
   va_start(argptr, fmt);
   vfprintf(LOGSTREAM, fmt, argptr);
   va_end(argptr);
+  fprintf(LOGSTREAM, "\n");
 }
+

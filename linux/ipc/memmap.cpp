@@ -18,11 +18,11 @@ static void test_open_shared_filehandle();
 static void test_open();
 
 void memmap() {
-  log("memmap start\n");
+  log("memmap start");
   //test_fork();
   //test_open_shared_filehandle();
   test_open();
-  log("memmap end\n");
+  log("memmap end");
 }
 
 /*
@@ -86,17 +86,17 @@ static void test_fork() {
     /* Child process */
     memcpy(pmap, get_payload(), payload_size());
     if (munmap(pmap, payload_size()) == -1) {
-      error_exit("Payload corrupt");
+      sys_warn("munmap");
     }
     exit(0);
   } else {
     /* Parent process */
-    sleep(1); // Idealy this is a signal, but for now just sleeep
+    sleep(1); // Idealy this is a signal, but for now just sleep
     if (!verify_payload(pmap)) {
       error_exit("Payload corrupt");
     }
     if (munmap(pmap, payload_size()) == -1) {
-      error_exit("Payload corrupt");
+      sys_warn("munmap");
     }
   }
 }
@@ -141,17 +141,17 @@ static void test_open_shared_filehandle() {
     /* Child process */
     memcpy(pmap, get_payload(), payload_size());
     if (munmap(pmap, payload_size()) == -1) {
-      error_exit("Payload corrupt");
+      sys_warn("munmap");
     }
     exit(0);
   } else {
     /* Parent process */
-    sleep(1); // Idealy this is a signal, but for now just sleeep
+    sleep(1); // Idealy this is a signal, but for now just sleep
     if (!verify_payload(pmap)) {
       error_exit("Payload corrupt");
     }
     if (munmap(pmap, payload_size()) == -1) {
-      error_exit("Payload corrupt");
+      sys_warn("munmap");
     }
   }
 }
@@ -168,22 +168,22 @@ static void test_open() {
 
   if (childpid == 0) {
     /* Child process */
-    sleep(1); // Idealy this is a signal, but for now just sleeep
+    sleep(1); // Idealy this is a signal, but for now just sleep
     pmap = get_map(NAME, false);
-    memcpy(pmap, get_payload(), payload_size());
+    //memcpy(pmap, get_payload(), payload_size());
     if (munmap(pmap, payload_size()) == -1) {
-      error_exit("Payload corrupt");
+      sys_warn("unmap");
     }
     exit(0);
   } else {
     /* Parent process */
     pmap = get_map(NAME, true);
-    sleep(2); // Idealy this is a signal, but for now just sleeep
+    sleep(2); // Idealy this is a signal, but for now just sleep
     if (!verify_payload(pmap)) {
       error_exit("Payload corrupt");
     }
     if (munmap(pmap, payload_size()) == -1) {
-      error_exit("Payload corrupt");
+      sys_warn("unmap");
     }
   }
 }

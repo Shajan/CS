@@ -8,15 +8,15 @@
 static void test();
 
 void pipe() {
-  log("pipe start\n");
+  log("pipe start");
   test();
-  log("pipe end\n");
+  log("pipe end");
 }
 
 static void test() {
   int fd[2];
   pid_t childpid;
-  char string[] = "Hello, World!\n";
+  char string[] = "Hello, World!";
   char readbuffer[80];
 
   pipe(fd);

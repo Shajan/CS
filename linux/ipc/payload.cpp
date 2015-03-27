@@ -12,11 +12,18 @@ struct envelope {
   char data[0];
 };
 
+void set_data(void* p, int size) {
+  char* pc = (char *) p;
+  for (int i=0; i<size; ++i)
+    pc[i] = i % 0xFF;
+}
+
 void init_payload(int size) {
   void* payload = malloc(size + sizeof(envelope));
   envelope* p = (envelope*) payload;
   p->canary = CANARY;
   p->size = size;
+  set_data(p->data, size);
   g_payload = payload;
 }
 
