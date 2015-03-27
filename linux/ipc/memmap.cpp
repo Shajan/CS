@@ -101,10 +101,13 @@ static void test_fork() {
   }
 }
 
+/*
+ * http://man7.org/linux/man-pages/man3/shm_open.3.html
+ */
 static void* get_map(const char* name, bool create) {
   int fd;
   void* pmap;
-  int flags = (create ? (O_RDWR|O_CREAT) : O_RDWR);
+  int flags = (create ? (O_RDWR|O_CREAT|O_EXCL) : O_RDWR);
 
   if (create && (shm_unlink(name) == -1)) {
     sys_warn("shm_unlink %s", name);
@@ -165,12 +168,13 @@ static void test_open() {
   if ((childpid = fork()) == -1) {
     sys_error_exit("fork");
   }
-
   if (childpid == 0) {
     /* Child process */
     sleep(1); // Idealy this is a signal, but for now just sleep
+    log("Child: opening map");
     pmap = get_map(NAME, false);
-    //memcpy(pmap, get_payload(), payload_size());
+    memcpy(pmap, get_payload(), payload_size());
+    log("Child: wrote data");
     if (munmap(pmap, payload_size()) == -1) {
       sys_warn("unmap");
     }
@@ -178,7 +182,9 @@ static void test_open() {
   } else {
     /* Parent process */
     pmap = get_map(NAME, true);
+    log("Parent: created map");
     sleep(2); // Idealy this is a signal, but for now just sleep
+    log("Parent: verifying data");
     if (!verify_payload(pmap)) {
       error_exit("Payload corrupt");
     }
