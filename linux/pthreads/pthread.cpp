@@ -18,7 +18,7 @@ void* thread_start(void* data) {
 int main(int argc, char *argv[]) {
    pthread_t threads[NUM_THREADS];
    for (long t=0; t<NUM_THREADS; t++) {
-      printf("Creating thread %ld\n", t);
+      printf("Creating thread #%ld\n", t);
       int rc = pthread_create(&threads[t], NULL, thread_start, (void *)t);
       if (rc) {
          printf("Error pthread_create %d, [%s]\n", rc, strerror(errno));
