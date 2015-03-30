@@ -1,15 +1,15 @@
 #define _POSIX_SOURCE
-/* Note for that UNIX 98 that _XOPEN_SOURCE should be set to 500 */
-
 #define _XOPEN_SOURCE
 #define _XOPEN_SOURCE_EXTENDED 1
 
 #include <unistd.h>
 #include <stdio.h>
+#include <time.h>
 
 /*
  * References
  *  http://linux.die.net/include/unistd.h
+  * http://pubs.opengroup.org/onlinepubs/009695399/basedefs/unistd.h.html
  *  http://www.opengroup.org/infosrv/unsupported/stdtools/ckstdvers/ckstdvers.c
  */
 
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
   if (_POSIX2_C_VERSION == 199209L)
     printf("_POSIX2_C_VERSION=199209L : ISO POSIX.2 C Languages Binding is supported\n");
   else
-    printf("_POSIX2_C_VERSION != 199209L : ISO POSIX.2 C Language Binding not supported\n");
+    printf("_POSIX2_C_VERSION!=199209L :[%d] ISO POSIX.2 C Language Binding not supported\n", _POSIX2_C_VERSION);
 #else
   printf("_POSIX2_C_VERSION not defined: ISO POSIX.2 C Language Binding  not supported\n");
 #endif
@@ -171,5 +171,18 @@ int main(int argc, char *argv[]) {
       printf("Invalid value found for _XOPEN_XCU_VERSION (%d) when _XOPEN_VERSION is set to 4\n", _XOPEN_XCU_VERSION);
   }
 #endif
+
+#ifdef _POSIX_TIMERS
+  printf("_POSIX_TIMERS defined\n");
+#else
+  printf("_POSIX_TIMERS not defined\n");
+#endif
+
+#ifdef CLOCK_REALTIME 
+  printf("CLOCK_REALTIME defined\n");
+#else
+  printf("CLOCK_REALTIME not defined\n");
+#endif
+
   return 0;
 }
