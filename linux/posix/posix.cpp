@@ -14,26 +14,26 @@
  */
 
 int main(int argc, char *argv[]) {
-  int posix_version = 0;
-  long user_sc_value = 0;
+  int posix=0, xopen_unix=0, xcu=0, xsh=0;
+  long user_sc_value=0;
 
 #ifdef _POSIX_VERSION
   switch (_POSIX_VERSION) {
   case 199009L: /* classic dot1 - ISO version */
     printf("_POSIX_VERSION=%ldL (ISO 9945-1:1990[IEEE Std POSIX.1-1990])\n", _POSIX_VERSION);
-    posix_version = 90;
+    posix = 90;
     break;
   case 198808L:  /* classic dot 1 - non ISO version */
     printf("_POSIX_VERSION=%ldL (IEEE Std POSIX.1-1988)\n", _POSIX_VERSION);
-    posix_version = 88;
+    posix = 88;
     break;
   case 199309L: /* POSIX realtime */
     printf("_POSIX_VERSION=%ldL (IEEE Std POSIX.1b-1993)\n", _POSIX_VERSION);
-    posix_version = 93;
+    posix = 93;
     break;
   case 199506L:  /* POSIX threads */
     printf("_POSIX_VERSION=%ldL (ISO 9945-1:1996 [IEEE Std POSIX.1-1996])\n", _POSIX_VERSION);
-    posix_version = 95;
+    posix = 95;
     break;
   default:
     printf("Unknown _POSIX_VERSION=%ldL\n", _POSIX_VERSION);
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
   printf("\t_POSIX_SAVED_IDS not supported\n");
 #endif
 
-  if (posix_version >= 95 ) {
+  if (posix >= 95) {
 #ifdef _POSIX_THREADS
     printf("\t_POSIX_THREADS supported\n");
 #else
@@ -81,4 +81,95 @@ int main(int argc, char *argv[]) {
     printf("\t_POSIX_THREAD_ATTR_STACKSIZE not supported\n");
 #endif
   }
+
+#ifdef _XOPEN_VERSION
+  switch (_XOPEN_VERSION) {
+  case 3:
+    printf("_XOPEN_VERSION=%d (XPG3 System Interfaces)\n", _XOPEN_VERSION);
+    xsh = 3;
+    break;
+  case 4:
+    printf("_XOPEN_VERSION=%d (XPG4 System Interfaces)\n", _XOPEN_VERSION);
+    xsh = 4;
+    break;
+  case 500:
+    printf("_XOPEN_VERSION=%d (XSH5 System Interfaces)\n", _XOPEN_VERSION);
+    xsh = 5;
+    break;
+  default:
+    printf("Unknown _XOPEN_VERSION=%d\n", _XOPEN_VERSION);
+    break;
+  }
+
+#ifdef _POSIX2_C_VERSION
+  if (_POSIX2_C_VERSION == 199209L)
+    printf("_POSIX2_C_VERSION=199209L : ISO POSIX.2 C Languages Binding is supported\n");
+  else
+    printf("_POSIX2_C_VERSION != 199209L : ISO POSIX.2 C Language Binding not supported\n");
+#else
+  printf("_POSIX2_C_VERSION not defined: ISO POSIX.2 C Language Binding  not supported\n");
+#endif
+#else
+  printf("_XOPEN_VERSION not defined\n");
+#endif
+
+
+#ifdef _XOPEN_XCU_VERSION
+  switch (_XOPEN_XCU_VERSION) {
+  case 3:
+    printf("_XOPEN_XCU_VERSION=%d (Historical Commands)\n", _XOPEN_XCU_VERSION);
+    xcu = 3;
+    break;
+  case 4:
+    printf("_XOPEN_XCU_VERSION=%d (POSIX.2 Commands)\n", _XOPEN_XCU_VERSION);
+    xcu = 4;
+    break;
+  case 5:
+    printf("_XOPEN_XCU_VERSION=%d (POSIX.2 Commands)\n", _XOPEN_XCU_VERSION);
+    xcu = 5;
+    break;
+  default:
+    printf("Unknown _XOPEN_XCU_VERSION=%d\n", _XOPEN_XCU_VERSION);
+    break;
+  }
+#else
+  printf("_XOPEN_XCU_VERSION not defined\n");
+#endif
+
+#ifdef _POSIX2_VERSION
+  if (_POSIX2_VERSION == 199209L)
+    printf("_POSIX2_VERSION=199209L : ISO POSIX.2 is supported\n");
+  else
+    printf("_POSIX2_VERSION != 199209L : ISO POSIX.2 not supported\n");
+#else
+  printf("_POSIX2_VERSION not defined: ISO POSIX.2 not supported\n");
+#endif
+
+#ifdef _XOPEN_UNIX
+  printf("_XOPEN_UNIX support is claimed\n");
+  xopen_unix = 1;
+#else
+  printf("_XOPEN_UNIX is not supported\n");
+#endif
+
+/* check valid combinations */
+
+#if (defined(_POSIX_SOURCE) && defined(_XOPEN_SOURCE) && defined(_XOPEN_XCU_VERSION) && defined(_XOPEN_VERSION))
+  if (xopen_unix == 1)  {
+    if (xcu != 4 && xcu != 5) 
+      printf("Invalid value found for _XOPEN_XCU_VERSION (%d) when _XOPEN_UNIX is supported\n", _XOPEN_XCU_VERSION);
+    if (xsh != 4  && xsh != 500 )
+      printf("Invalid value found for _XOPEN_VERSION (%d) when _XOPEN_UNIX is supported\n", _XOPEN_VERSION);
+    if (posix < 90)
+      printf("Invalid value found for _POSIX_VERSION (%ld) when _XOPEN_UNIX is supported\n", _POSIX_VERSION);
+  }
+
+  if (xsh == 4) {
+    if (posix < 90)
+      printf("Invalid value found for _POSIX_VERSION (%ld) when _XOPEN_VERSION is set to 4\n", _POSIX_VERSION);
+   if ((xcu != 3) && (xcu != 4))
+      printf("Invalid value found for _XOPEN_XCU_VERSION (%d) when _XOPEN_VERSION is set to 4\n", _XOPEN_XCU_VERSION);
+  }
+#endif
+  return 0;
 }
