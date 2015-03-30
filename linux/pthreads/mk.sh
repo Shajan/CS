@@ -14,6 +14,6 @@ fi
 rm -rf pthreads
 rm -rf pthreads.dSYM
 
-g++ -g -pthread -o pthreads -pthread pthread.cpp
+g++ -g -pthread -o pthreads pthread.cpp
 
 ./pthreads
