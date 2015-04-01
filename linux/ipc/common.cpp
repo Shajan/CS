@@ -38,7 +38,7 @@ void sys_warn(const char* fmt, ...) {
   va_start(argptr, fmt);
   vfprintf(ERRORSTREAM, fmt, argptr);
   va_end(argptr);
-  log_error(" [%s]\n", strerror(errno));
+  log_error(" Warning [%s]\n", strerror(errno));
 }
 
 void log(const char* fmt, ...) {

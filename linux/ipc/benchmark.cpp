@@ -4,6 +4,7 @@ int main(int argc, const char* argv[]) {
   init_payload(10);
   //stdio();
   //pipe();
-  memmap();
+  mutex_test();
+  //memmap();
   return 0;
 }

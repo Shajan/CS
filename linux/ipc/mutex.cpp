@@ -9,7 +9,57 @@
 #include <semaphore.h>
 #include <time.h>
 #include <errno.h>
+#include <stdlib.h>
 #include "common.h"
+
+static void test();
+
+void mutex_test() {
+  log("mutex start");
+  test();
+  log("mutex end");
+}
+
+#define MUTEX_NAME "sdasan"
+
+static void test() {
+  pid_t childpid;
+  mutex mparent = create_mutex(MUTEX_NAME, true);
+
+  if ((childpid = fork()) == -1) {
+    sys_error_exit("fork");
+  }
+
+  if (childpid == 0) {
+    /* Child process */
+    mutex m = open_mutex(MUTEX_NAME); 
+    log("Child try lock mutex");
+    if (trylock_mutex(m))  // Should not succeed
+      error_exit("Child trylock_mutex: mutex not locked by parent");
+    log("Child try to lock, 1 second timeout");
+    if (lock_withtimeout_mutex(m, 1))
+      error_exit("Child lock_withtimeout_mutex: mutex not locked by parent");
+    log("Child try to lock, 4 second timeout");
+    if (!lock_withtimeout_mutex(m, 4))
+      error_exit("Child lock_withtimeout_mutex: mutex locked by parent");
+    log("Child release lock");
+    unlock_mutex(m);
+    close_mutex(m);
+    exit(0);
+  } else {
+    /* Parent process */
+    log("Parent sleep 2 second with lock");
+    sleep(2);
+    log("Parent unlock");
+    unlock_mutex(mparent);
+    log("Parent sleep 2 seconds without lock");
+    sleep(2);
+    log("Parent wait for lock");
+    lock_mutex(mparent);
+    log("Parent got lock");
+    destroy_mutex(MUTEX_NAME, mparent);
+  }
+}
 
 #define SEM_T(mutex) ((sem_t*) mutex)
 
@@ -34,7 +84,7 @@ void destroy_mutex(const char* name, mutex m) {
     sys_warn("sem_unlink");
 }
 
-mutex open_mutex(const char* name, bool create) {
+mutex open_mutex(const char* name) {
   mutex m = (mutex) sem_open(name, 0);
   if (m == SEM_FAILED)
     sys_error_exit("open sem_open");
@@ -102,3 +152,4 @@ void unlock_mutex(mutex m) {
   if (sem_post(SEM_T(m)) == -1)
     sys_error_exit("unlock sem_post");
 }
+

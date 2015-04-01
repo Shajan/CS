@@ -21,7 +21,7 @@ void memmap() {
   log("memmap start");
   //test_fork();
   //test_open_shared_filehandle();
-  test_open();
+  //test_open();
   log("memmap end");
 }
 
@@ -193,4 +193,3 @@ static void test_open() {
     }
   }
 }
-
