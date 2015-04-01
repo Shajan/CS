@@ -76,3 +76,5 @@ true || echo "This won't print"
 false && echo "This won't print"
 true && echo "This will print"
 
+#find only in some subfolders, example find folder named dashboards, within that folder, find files with .rb then grep
+for i in `find . -name dashboards`; do echo `find $i/*.rb 2>/dev/null` | egrep dashboards | xargs egrep groupby; done

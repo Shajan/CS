@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <semaphore.h>
-//#include <time.h>
+#include <time.h>
 #include <errno.h>
 #include "common.h"
 
@@ -58,28 +58,44 @@ bool trylock_mutex(mutex m) {
   return (ret == 0);
 }
 
-/*
- * http://pubs.opengroup.org/stage7tc1/functions/sem_timedwait.html
- */
-bool lock_withtimeout_mutex(mutex m, int seconds) {
-  struct timespec ts;
+void get_time(timespec* p_ts) {
 #ifndef CLOCK_REALTIME 
   timeval tv;
   if (gettimeofday(&tv, NULL) == -1)
     sys_error_exit("lock with timeout gettimeofday");
-  ts.tv_sec = tv.tv_sec;
-  ts.tv_nsec = tv.tv_usec * 1000;
+  p_ts->tv_sec = tv.tv_sec;
+  p_ts->tv_nsec = tv.tv_usec * 1000;
 #else
-  if (clock_gettime(CLOCK_REALTIME, &ts) == -1)
+  if (clock_gettime(CLOCK_REALTIME, p_ts) == -1)
     sys_error_exit("lock with timeout clock_gettime");
 #endif
-  ts.tv_sec += seconds;
-  int ret;
-  while (((ret = sem_timedwait(SEM_T(m), &ts)) == -1) && (errno == EINTR))
+}
+
+/*
+ * http://pubs.opengroup.org/stage7tc1/functions/sem_timedwait.html
+ */
+bool lock_withtimeout_mutex(mutex m, int seconds) {
+  int ret = 0;
+  struct timespec wait_end;
+  get_time(&wait_end);
+  wait_end.tv_sec += seconds;
+#ifdef __APPLE__
+  // Naive implemenatation for mac
+  struct timespec current_time;
+  do {
+    if (trylock_mutex(m))
+      return 0;
+    sleep(1); // Sleep 1 sec, not a good hack
+    get_time(&current_time);
+  } while (current_time.tv_sec >= wait_end.tv_sec);
+  return 1;
+#else
+  while (((ret = sem_timedwait(SEM_T(m), &wait_end)) == -1) && (errno == EINTR))
     continue; // Restart if interrupted
   if (ret == -1 && errno != ETIMEDOUT)
     sys_error_exit("lock with timeout sem_timedwait");
   return (ret == 0);
+#endif
 }
 
 void unlock_mutex(mutex m) {
