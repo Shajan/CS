@@ -25,4 +25,4 @@ void pipe();
 void stdio();
 void mutex_test();
 void memmap();
-
+void ipc();
