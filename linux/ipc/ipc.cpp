@@ -1,4 +1,5 @@
 #include <stdlib.h> // exit
+#include <string.h> // memcpy
 #include <unistd.h> // fork
 #include "common.h"
 #include "message.h"
@@ -6,17 +7,6 @@
 #define MUTEX_NAME "/sdasan/ipc-mutex"
 #define MEM_NAME "/sdasan/ipc-mem"
 #define SIZE 1024
-
-class CBuffer {
-  void* m_p;
-public:
-  CBuffer(int size) {
-    m_p = malloc(size);
-  }
-  ~CBuffer() {
-    free(m_p);
-  }
-};
 
 class CMutex {
 private:
@@ -123,6 +113,45 @@ public:
   ~CSharedMemory() {
     unmap(m_map, m_size);
   }
+};
+
+#define ADD 1
+#define MUL 2
+
+class ISerialize {
+  void write(void* p);
+  void read(void* p);
+};
+
+class CRequest : public ISerialize {
+private:
+  int m_a, m_b;
+public:
+  CRequest(void* p) { read(p); }
+  CRequest(int a, int b) : m_a(a), m_b(b) {}
+
+  void write(void* p) {
+    memcpy(p, (void*)&m_a, sizeof(m_a));
+    memcpy((char*)p + sizeof(m_a), (void*)&m_b, sizeof(m_b));
+  }
+
+  void read(void* p) {
+    memcpy((void*)&m_a, p, sizeof(m_a));
+    memcpy((void*)&m_b, (char*)p + sizeof(m_a), sizeof(m_b));
+  }
+
+  void log() { ::log("a:%d, b:%d", m_a, m_b); }
+};
+
+class CResponse : public ISerialize {
+private:
+  int m_result;
+public:
+  CResponse(int result) : m_result(result) {}
+  CResponse(void* p) { read(p); }
+  void write(void* p) { memcpy(p, (void*)&m_result, sizeof(m_result)); }
+  void read(void* p) { memcpy((void*)&m_result, p, sizeof(m_result)); }
+  void log() { ::log("result:%d", m_result); }
 };
 
 void server(CMutex& mutex, CSharedMemory& memory) {
