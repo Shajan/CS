@@ -3,6 +3,7 @@ void log(const char* fmt, ...);
 void error_exit(const char* fmt, ...);
 void sys_error_exit(const char* fmt, ...);
 void sys_warn(const char* fmt, ...);
+void print_stack();
 
 void init_payload(int size);
 void free_payload();
