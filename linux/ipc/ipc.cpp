@@ -7,13 +7,14 @@
 #define MEM_NAME "/sdasan/ipc-mem"
 #define SIZE 1024
 
-class CPayload {
+class CBuffer {
+  void* m_p;
 public:
-  CPayload(int size) {
-    init_payload(size);
+  CBuffer(int size) {
+    m_p = malloc(size);
   }
-  ~CPayload() {
-    free_payload();
+  ~CBuffer() {
+    free(m_p);
   }
 };
 
@@ -78,8 +79,8 @@ public:
 
 class CLock {
 private:
-  bool m_locked;
   CMutex& m_mutex;
+  bool m_locked;
 public:
   CLock(CMutex& m) : m_mutex(m) {
     m_mutex.lock();
@@ -90,9 +91,17 @@ public:
     m_locked = m_mutex.lock(timeoutSeconds);
   }
 
-  void release() {
-    if (m_locked)
-      m_mutex.unlock();
+  void lock() {
+    m_mutex.lock();
+    m_locked = true;
+  }
+
+  bool lock(int timeoutSeconds) {
+    return m_locked = m_mutex.lock(timeoutSeconds);
+  }
+
+  void unlock() {
+    m_mutex.unlock();
     m_locked = false;
   }
 
@@ -116,10 +125,15 @@ public:
   }
 };
 
+void server(CMutex& mutex, CSharedMemory& memory) {
+}
+
+void client(CMutex& mutex, CSharedMemory& memory) {
+}
+
 void ipc() {
-  CPayload payload(SIZE);
   CServerMutex serverMutex(MUTEX_NAME);
-  CSharedMemory serverMemory(MEM_NAME, SIZE, true);
+  CSharedMemory serverMemory(MEM_NAME, CMessage::allocation_size(SIZE), true);
 
   CLock lock(serverMutex);
   pid_t childpid;
@@ -129,12 +143,13 @@ void ipc() {
 
   if (childpid == 0) {
     /* Child process */
-    CPayload payload(SIZE);
     CClientMutex clientMutex(MUTEX_NAME);
-    CSharedMemory clientMemory(MEM_NAME, SIZE, false);
+    CSharedMemory clientMemory(MEM_NAME, CMessage::allocation_size(SIZE), false);
+    server(clientMutex, clientMemory);
     exit(0);
   } else {
     /* Parent process */
+    client(serverMutex, serverMemory);
     sleep(2);
   }
 }
