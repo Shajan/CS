@@ -23,7 +23,7 @@ void unlock_mutex(mutex m);
 
 // shared memory
 typedef void* map;
-map get_map(const char* name, bool create);
+map get_map(const char* name, int size, bool create);
 void unmap(map m, int size);
 
 void pipe();

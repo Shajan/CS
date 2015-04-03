@@ -1,12 +1,15 @@
+#include <stdlib.h> // exit
+#include <unistd.h> // fork
 #include "common.h"
 
 #define MUTEX_NAME "/sdasan/ipc-mutex"
 #define MEM_NAME "/sdasan/ipc-mem"
+#define SIZE 1024
 
 class CPayload {
 public:
   CPayload(int size) {
-    init_payload(1024);
+    init_payload(size);
   }
   ~CPayload() {
     free_payload();
@@ -45,6 +48,8 @@ public:
   }
 
   void unlock() {
+    if (!m_locked)
+      sys_warn("CMutex:unlock potentialy unlocking mutex while it's not locked %s", m_name);
     unlock_mutex(m_mutex);
     m_locked = false;
   }
@@ -60,12 +65,12 @@ public:
   }
 };
 
-class CServerMutex : CMutex {
+class CServerMutex : public CMutex {
 public:
-  CServerMutex(const char* name): CMutex(name, true, true) {}
+  CServerMutex(const char* name): CMutex(name, false, true) {}
 };
 
-class CClientMutex : CMutex {
+class CClientMutex : public CMutex {
 public:
   CClientMutex(const char* name): CMutex(name, false, false) {}
 };
@@ -84,6 +89,12 @@ public:
     m_locked = m_mutex.lock(timeoutSeconds);
   }
 
+  void release() {
+    if (m_locked)
+      m_mutex.unlock();
+    m_locked = false;
+  }
+
   ~CLock() {
     if (m_locked)
       m_mutex.unlock();
@@ -92,21 +103,36 @@ public:
 
 class CSharedMemory {
 private:
-  void* m_map;
-  bool m_create;
-
+  map m_map;
+  int m_size;
 public:
-  CSharedMemory(const char* name, bool create) {
-    m_create = create;
-    if (create)
-      m_map = get_map(name, false);
-    else
-      m_map = get_map(name, true);
+  CSharedMemory(const char* name, int size, bool create) {
+    m_size = size;
+    m_map = get_map(name, m_size, create);
+  }
+  ~CSharedMemory() {
+    unmap(m_map, m_size);
   }
 };
 
 void ipc() {
-  CPayload payload(1024);
-  //CServerMutex serverMutex(MUTEX_NAME);
-  //CServerSharedMemory serverMemory(MEM_NAME);
+  CPayload payload(SIZE);
+  CServerMutex serverMutex(MUTEX_NAME);
+  CSharedMemory serverMemory(MEM_NAME, SIZE, true);
+
+  CLock lock(serverMutex);
+  pid_t childpid;
+  if ((childpid = fork()) == -1) {
+    sys_error_exit("fork");
+  }
+
+  if (childpid == 0) {
+    /* Child process */
+    CPayload payload(SIZE);
+    CClientMutex clientMutex(MUTEX_NAME);
+    CSharedMemory clientMemory(MEM_NAME, SIZE, false);
+  } else {
+    /* Parent process */
+    exit(0);
+  }
 }

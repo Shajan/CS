@@ -34,11 +34,12 @@ void sys_error_exit(const char* fmt, ...) {
 }
 
 void sys_warn(const char* fmt, ...) {
+  fprintf(ERRORSTREAM, "Warning [%s] ", strerror(errno));
   va_list argptr;
   va_start(argptr, fmt);
   vfprintf(ERRORSTREAM, fmt, argptr);
   va_end(argptr);
-  log_error(" Warning [%s]\n", strerror(errno));
+  log_error("\n");
 }
 
 void log(const char* fmt, ...) {

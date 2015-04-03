@@ -70,30 +70,30 @@ static void test() {
  */
 mutex create_mutex(const char* name, bool locked) {
   if (sem_unlink(name) == -1)
-    sys_warn("sem_unlink");
+    sys_warn("create sem_unlink [%s]", name);
   mutex m = (mutex) sem_open(name, O_CREAT|O_EXCL, S_IRUSR|S_IWUSR, (locked ? 0 : 1));
   if (m == SEM_FAILED)
-    sys_error_exit("create sem_open");
+    sys_error_exit("create sem_open [%s]", name);
   return m;
 }
 
 void destroy_mutex(const char* name, mutex m) {
   if (sem_close(SEM_T(m)) == -1)
-    sys_warn("sem_close");
+    sys_warn("destroy sem_close [%s]", name);
   if (sem_unlink(name) == -1)
-    sys_warn("sem_unlink");
+    sys_warn("destroy sem_unlink [%s]", name);
 }
 
 mutex open_mutex(const char* name) {
   mutex m = (mutex) sem_open(name, 0);
   if (m == SEM_FAILED)
-    sys_error_exit("open sem_open");
+    sys_error_exit("open sem_open [%s]", name);
   return m;
 }
 
 void close_mutex(mutex m) {
   if (sem_close(SEM_T(m)) == -1)
-    sys_warn("sem_close");
+    sys_warn("close sem_close");
 }
 
 void lock_mutex(mutex m) {
