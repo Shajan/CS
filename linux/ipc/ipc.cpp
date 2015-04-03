@@ -1,6 +1,7 @@
 #include <stdlib.h> // exit
 #include <unistd.h> // fork
 #include "common.h"
+#include "message.h"
 
 #define MUTEX_NAME "/sdasan/ipc-mutex"
 #define MEM_NAME "/sdasan/ipc-mem"
