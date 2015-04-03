@@ -7,5 +7,6 @@ int main(int argc, const char* argv[]) {
   //mutex_test();
   //memmap();
   ipc();
+  free_payload();
   return 0;
 }

@@ -17,6 +17,8 @@ static void test_fork();
 static void test_open_shared_filehandle();
 static void test_open();
 
+#define TO_PTR(x) ((void*)x)
+
 void memmap() {
   log("memmap start");
   //test_fork();
@@ -85,9 +87,7 @@ static void test_fork() {
   if (childpid == 0) {
     /* Child process */
     memcpy(pmap, get_payload(), payload_size());
-    if (munmap(pmap, payload_size()) == -1) {
-      sys_warn("munmap");
-    }
+    unmap(pmap, payload_size());
     exit(0);
   } else {
     /* Parent process */
@@ -95,16 +95,14 @@ static void test_fork() {
     if (!verify_payload(pmap)) {
       error_exit("Payload corrupt");
     }
-    if (munmap(pmap, payload_size()) == -1) {
-      sys_warn("munmap");
-    }
+    unmap(pmap, payload_size());
   }
 }
 
 /*
  * http://man7.org/linux/man-pages/man3/shm_open.3.html
  */
-static void* get_map(const char* name, bool create) {
+map get_map(const char* name, int size, bool create) {
   int fd;
   void* pmap;
   int flags = (create ? (O_RDWR|O_CREAT|O_EXCL) : O_RDWR);
@@ -121,41 +119,42 @@ static void* get_map(const char* name, bool create) {
     sys_error_exit("ftruncate name:%s fd:%d size:%d", name, fd, payload_size());
   }
 
-  if ((pmap = mmap(0, payload_size(), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)) == (void*) -1) {
+  if ((pmap = mmap(0, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)) == (void*) -1) {
     sys_error_exit("mmap");
   }
 
   if (close(fd) == -1) {
     sys_error_exit("close");
   }
-  return pmap;
+  return (map)pmap;
+}
+
+void unmap(map m, int size) {
+  if (munmap(TO_PTR(m), size) == -1)
+    sys_warn("munmap");
 }
 
 static void test_open_shared_filehandle() {
   pid_t childpid;
-  void* pmap;
+  map m;
 
-  pmap = get_map(NAME, true);
+  m = get_map(NAME, payload_size(), true);
   if ((childpid = fork()) == -1) {
     sys_error_exit("fork");
   }
 
   if (childpid == 0) {
     /* Child process */
-    memcpy(pmap, get_payload(), payload_size());
-    if (munmap(pmap, payload_size()) == -1) {
-      sys_warn("munmap");
-    }
+    memcpy(TO_PTR(m), get_payload(), payload_size());
+    unmap(m, payload_size());
     exit(0);
   } else {
     /* Parent process */
     sleep(1); // Idealy this is a signal, but for now just sleep
-    if (!verify_payload(pmap)) {
+    if (!verify_payload(TO_PTR(m))) {
       error_exit("Payload corrupt");
     }
-    if (munmap(pmap, payload_size()) == -1) {
-      sys_warn("munmap");
-    }
+    unmap(m, payload_size());
   }
 }
 
@@ -163,7 +162,7 @@ static void test_open_shared_filehandle() {
 static void test_open() {
   pid_t childpid;
   int fd;
-  void* pmap;
+  map m;
 
   if ((childpid = fork()) == -1) {
     sys_error_exit("fork");
@@ -172,24 +171,20 @@ static void test_open() {
     /* Child process */
     sleep(1); // Idealy this is a signal, but for now just sleep
     log("Child: opening map");
-    pmap = get_map(NAME, false);
-    memcpy(pmap, get_payload(), payload_size());
+    m = get_map(NAME, payload_size(), false);
+    memcpy(TO_PTR(m), get_payload(), payload_size());
     log("Child: wrote data");
-    if (munmap(pmap, payload_size()) == -1) {
-      sys_warn("unmap");
-    }
+    unmap(m, payload_size());
     exit(0);
   } else {
     /* Parent process */
-    pmap = get_map(NAME, true);
+    m = get_map(NAME, payload_size(), true);
     log("Parent: created map");
     sleep(2); // Idealy this is a signal, but for now just sleep
     log("Parent: verifying data");
-    if (!verify_payload(pmap)) {
+    if (!verify_payload(TO_PTR(m))) {
       error_exit("Payload corrupt");
     }
-    if (munmap(pmap, payload_size()) == -1) {
-      sys_warn("unmap");
-    }
+    unmap(m, payload_size());
   }
 }

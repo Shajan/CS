@@ -4,7 +4,7 @@
 
 #define CANARY 0x1BADF00D
 
-void* g_payload = 0;
+void* g_payload = NULL;
 
 struct envelope {
   int canary;
@@ -18,7 +18,16 @@ void set_data(void* p, int size) {
     pc[i] = i % 0xFF;
 }
 
+void free_payload() {
+  if (g_payload != NULL) {
+    void *payload = g_payload;
+    g_payload = NULL;
+    free(payload);
+  }
+}
+
 void init_payload(int size) {
+  free_payload();
   void* payload = malloc(size + sizeof(envelope));
   envelope* p = (envelope*) payload;
   p->canary = CANARY;
@@ -50,3 +59,4 @@ int verify_payload(const void* payload) {
   }
   return (memcmp(p->data, reference->data, p->size) == 0 ? 1 : 0);
 }
+

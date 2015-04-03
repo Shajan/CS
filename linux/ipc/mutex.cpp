@@ -20,7 +20,7 @@ void mutex_test() {
   log("mutex end");
 }
 
-#define MUTEX_NAME "sdasan"
+#define MUTEX_NAME "/sdasan"
 
 static void test() {
   pid_t childpid;
@@ -152,4 +152,3 @@ void unlock_mutex(mutex m) {
   if (sem_post(SEM_T(m)) == -1)
     sys_error_exit("unlock sem_post");
 }
-

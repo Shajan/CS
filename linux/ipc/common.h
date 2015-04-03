@@ -5,6 +5,7 @@ void sys_error_exit(const char* fmt, ...);
 void sys_warn(const char* fmt, ...);
 
 void init_payload(int size);
+void free_payload();
 void* get_payload();
 int payload_size();
 int verify_payload(const void*);
@@ -18,8 +19,12 @@ void close_mutex(mutex m);
 void lock_mutex(mutex m);
 bool trylock_mutex(mutex m);
 bool lock_withtimeout_mutex(mutex m, int seconds);
-void release_mutex(mutex m);
 void unlock_mutex(mutex m);
+
+// shared memory
+typedef void* map;
+map get_map(const char* name, bool create);
+void unmap(map m, int size);
 
 void pipe();
 void stdio();
