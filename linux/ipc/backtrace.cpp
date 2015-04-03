@@ -24,16 +24,16 @@ void print_call_stack(int frames_to_skip, bool err) {
     fprintf((err ? stderr : stdout), "no symbols\n");
     exit(1);
   }
-  
+
   // +1 to skip this frame ('print_call_stack')
   for (int i = frames_to_skip + 1; i < frame_count; i++) {
     fprintf((err ? stderr : stdout), "%s\n", raw_symbols[i]);
-#if 0 
+#if 0
     // find parantheses and +address offset surrounding mangled name
     char *mangled_name = 0, *offset_begin = 0, *offset_end = 0;
     for (char *p = raw_symbols[i]; *p; ++p) {
       if (*p == '(') {
-        mangled_name = p; 
+        mangled_name = p;
       } else if (*p == '+') {
         offset_begin = p;
       } else if (*p == ')') {

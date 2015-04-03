@@ -32,7 +32,7 @@ static void test() {
 
   if (childpid == 0) {
     /* Child process */
-    mutex m = open_mutex(MUTEX_NAME); 
+    mutex m = open_mutex(MUTEX_NAME);
     log("Child try lock mutex");
     if (trylock_mutex(m))  // Should not succeed
       error_exit("Child trylock_mutex: mutex not locked by parent");
@@ -109,7 +109,7 @@ bool trylock_mutex(mutex m) {
 }
 
 void get_time(timespec* p_ts) {
-#ifndef CLOCK_REALTIME 
+#ifndef CLOCK_REALTIME
   timeval tv;
   if (gettimeofday(&tv, NULL) == -1)
     sys_error_exit("lock with timeout gettimeofday");

@@ -25,8 +25,8 @@ private:
 
 public:
   CMutex(const char* name, bool locked, bool create) {
-    m_locked = locked;
     m_name = name;
+    m_locked = locked;
     m_create = create;
     if (create)
       m_mutex = create_mutex(m_name, m_locked);
@@ -134,5 +134,6 @@ void ipc() {
     exit(0);
   } else {
     /* Parent process */
+    sleep(2);
   }
 }

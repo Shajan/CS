@@ -15,7 +15,7 @@ int verify_payload(const void*);
 typedef void* mutex;
 mutex create_mutex(const char* name, bool locked);
 void destroy_mutex(const char* name, mutex m);
-mutex open_mutex(const char* name); 
+mutex open_mutex(const char* name);
 void close_mutex(mutex m);
 void lock_mutex(mutex m);
 bool trylock_mutex(mutex m);

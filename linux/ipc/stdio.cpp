@@ -28,7 +28,7 @@ static void test() {
     if (dup2(fd[1], STDOUT_FILENO) == -1) {
       sys_error_exit("Child dup2");
     }
-    int nbytes = write(STDOUT_FILENO, get_payload(), payload_size()); 
+    int nbytes = write(STDOUT_FILENO, get_payload(), payload_size());
     if (nbytes == -1) {
       sys_error_exit("Child write");
     } else {

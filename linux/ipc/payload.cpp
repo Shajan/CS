@@ -47,7 +47,7 @@ int payload_size() {
 
 int verify_payload(const void* payload) {
   if (payload == g_payload) return 1;
-  envelope* reference = (envelope* ) g_payload;
+  envelope* reference = (envelope*) g_payload;
   envelope* p = (envelope*) payload;
   if (p->canary != reference->canary) {
     log_error("Canary : expected %d, found %d", reference->canary, p->canary);

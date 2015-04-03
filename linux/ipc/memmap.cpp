@@ -31,7 +31,7 @@ void memmap() {
  * References
  * http://man7.org/linux/man-pages/man2/mmap.2.html
  * https://groups.google.com/forum/#!topic/comp.os.linux.development.system/BZoz6GBc7Vw
- *   msync(MS_INVALIDATE) will essentially throw out the page tables for that process: including the dirty state. 
+ *   msync(MS_INVALIDATE) will essentially throw out the page tables for that process: including the dirty state.
  *   kernel might have written the pages out earlier in an attempt to reclaim some memory, but if you have enough
  *   memory then it should be a fairly good way of getting rid of some unnecessary disk IO.
  *   Essentially, you _should_ be able to just do the MS_INVALIDATE just
