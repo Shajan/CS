@@ -131,8 +131,8 @@ void ipc() {
     CPayload payload(SIZE);
     CClientMutex clientMutex(MUTEX_NAME);
     CSharedMemory clientMemory(MEM_NAME, SIZE, false);
+    exit(0);
   } else {
     /* Parent process */
-    exit(0);
   }
 }

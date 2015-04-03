@@ -59,4 +59,3 @@ int verify_payload(const void* payload) {
   }
   return (memcmp(p->data, reference->data, p->size) == 0 ? 1 : 0);
 }
-
