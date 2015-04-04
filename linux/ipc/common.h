@@ -26,6 +26,7 @@ void unlock_mutex(mutex m);
 typedef void* map;
 map get_map(const char* name, int size, bool create);
 void unmap(map m, int size);
+#define get_ptr(map) (void*)map
 
 void pipe();
 void stdio();

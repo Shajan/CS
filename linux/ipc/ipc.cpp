@@ -110,6 +110,7 @@ public:
     m_size = size;
     m_map = get_map(name, m_size, create);
   }
+  void* ptr() { return get_ptr(m_map); }
   ~CSharedMemory() {
     unmap(m_map, m_size);
   }
@@ -124,6 +125,7 @@ class ISerialize {
 };
 
 class CRequest : public ISerialize {
+  friend class CResponse;
 private:
   int m_a, m_b;
 public:
@@ -140,24 +142,38 @@ public:
     memcpy((void*)&m_b, (char*)p + sizeof(m_a), sizeof(m_b));
   }
 
-  void log() { ::log("a:%d, b:%d", m_a, m_b); }
+  void log(const char* tag) { ::log("%s a:%d, b:%d", tag, m_a, m_b); }
 };
 
 class CResponse : public ISerialize {
 private:
   int m_result;
 public:
-  CResponse(int result) : m_result(result) {}
+  CResponse(CRequest& req) { m_result = req.m_a + req.m_b; }
   CResponse(void* p) { read(p); }
   void write(void* p) { memcpy(p, (void*)&m_result, sizeof(m_result)); }
   void read(void* p) { memcpy((void*)&m_result, p, sizeof(m_result)); }
-  void log() { ::log("result:%d", m_result); }
+  void log(const char* tag) { ::log("%s result:%d", tag, m_result); }
 };
 
 void server(CMutex& mutex, CSharedMemory& memory) {
+  mutex.lock();
+  CRequest request(memory.ptr());
+  request.log("Server");
+  CResponse response(request);
+  response.log("Server");
+  response.write(memory.ptr());
+  mutex.unlock();
 }
 
 void client(CMutex& mutex, CSharedMemory& memory) {
+  CRequest request(1, 2);
+  request.log("Client");
+  request.write(memory.ptr());
+  mutex.unlock();
+  mutex.lock();
+  CResponse response(memory.ptr());
+  response.log("Client");
 }
 
 void ipc() {
