@@ -1,8 +1,10 @@
+import scala.annotation.tailrec
+
 object Language {
   def main(args: Array[String]) {
     //loops
-    //traits
-    abstractmember
+    traits
+    //abstractmember
   }
 
   def loops = {
@@ -16,7 +18,7 @@ object Language {
       new LoopUnlessCond(body)
     }
     class LoopUnlessCond(body: => Unit) {
-      def unless(cond: => Boolean) {
+      @tailrec final def unless(cond: => Boolean) {
         body
         if (!cond) unless(cond)
       }
@@ -40,14 +42,15 @@ object Language {
 
   def traits = {
     println(new Ball with Shiny with Red) // It's a shiny, red ball
+    println(new Ball with Red with Shiny) // It's a red, shiny ball
   }
 
   def abstractmember = {
     abstract class A { def f:Unit }
-    class B extends A { override def f:Unit = {println("B.f")} }
-    class C extends A { override def f:Unit = {println("C.f")} }
+    class B extends A { override def f:Unit = { println("B.f") } }
+    class C extends A { override def f:Unit = { println("C.f") } }
     abstract class Base { val a:A }
-    class Derived extends Base { val a:A  = new B() }
+    class Derived extends Base { val a:A = new B }
     val d = new Derived
     d.a.f
   }
