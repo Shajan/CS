@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # prerec install valgrind (see http://valgrind.org/)
-# see file massif.out.<pid> after running
+# example usages:
+#  valgrind --leak-check --tool=massif ./memleak
+#    see file massif.out.<pid> after running
+#  valgrind --tool=memcheck --leak-check=full ./memleak
 
 if [ "$1" == "clean" ]; then
   rm -rf memleak
@@ -23,5 +26,5 @@ if [ "$1" == "compile" ]; then
 fi
 
 clang++ -g -o memleak memleak.cpp
-valgrind --tool=massif ./memleak
+valgrind --tool=memcheck --leak-check=full ./memleak
 
