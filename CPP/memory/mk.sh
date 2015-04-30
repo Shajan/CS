@@ -2,7 +2,7 @@
 
 # prerec install valgrind (see http://valgrind.org/)
 # example usages:
-#  valgrind --leak-check --tool=massif ./memleak
+#  valgrind --tool=massif ./memleak
 #    see file massif.out.<pid> after running
 #  valgrind --tool=memcheck --leak-check=full ./memleak
 
