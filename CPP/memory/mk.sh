@@ -4,6 +4,7 @@
 # example usages:
 #  valgrind --tool=massif ./memleak
 #    see file massif.out.<pid> after running
+#    ms_print massif.out.<pid> for better readability
 #  valgrind --tool=memcheck --leak-check=full ./memleak
 
 if [ "$1" == "clean" ]; then
