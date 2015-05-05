@@ -3,7 +3,7 @@ object ScalaSchool {
     //range()
     //for_loop()
     //array()
-    list()
+    //list()
   }
 
   def range() = {
@@ -19,9 +19,9 @@ object ScalaSchool {
 
   def for_loop() = {
     // iterates over Range(0,1,2), (0 until 3) is a range
-    for (i <- 0 until 3) {
-      println(i)
-    }
+    for (i <- 0 until 3) println(i)
+    val l = List(1, 2, 3, 4)
+    for (i <- l) println(i)
   }
 
   def array() = {
