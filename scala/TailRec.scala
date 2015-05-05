@@ -20,16 +20,20 @@ object TailRec {
   }
  */
 
-  def reverse(l1: List[Int], l2: List[Int]): List[Int] = {
-    if (l1.size == 0) l2
-    else reverse(l1.tail, l1.head :: l2)
+  def reverse(l: List[Int]): List[Int] = {
+    @tailrec
+    def reverse(acc: List[Int], l: List[Int]): List[Int] = {
+      if (l.size == 0) acc
+      else reverse(l.head :: acc, l.tail)
+    }
+    reverse(Nil, l)
   }
 
   def main(args: Array[String]): Unit = {
     println(fact(10))
 
     val l1 = List(1,2,3,4,5,6,7)
-    val l2 = reverse(l1, Nil)
+    val l2 = reverse(l1)
 
     println(l1.mkString(","))
     println(l2.mkString(","))
