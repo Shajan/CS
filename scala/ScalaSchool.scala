@@ -1,7 +1,7 @@
 object ScalaSchool {
   def main(args: Array[String]) {
     //range()
-    //for_loop()
+    for_loop()
     //array()
     //list()
   }
@@ -22,6 +22,12 @@ object ScalaSchool {
     for (i <- 0 until 3) println(i)
     val l = List(1, 2, 3, 4)
     for (i <- l) println(i)
+
+    // for comprehension - just like map with syntatic sugar
+    // Transform each element of the source collection to create
+    // a new collection.
+    val lsq = for (i <- l) yield i*i 
+    println(lsq.mkString(","))
   }
 
   def array() = {
