@@ -18,13 +18,13 @@ object Memoize {
 
   //Uncomment to see how slow this will be
   //val memoizedFact: Int => Int = fact
-  val memoizedFact = Memoize(fact)
-  def fact(n: Int): Int = {
+  val memoizedFib = Memoize(fib)
+  def fib(n: Int): Int = {
     if (n < 2) 1
-    else memoizedFact(n - 1) + memoizedFact(n - 2)
+    else memoizedFib(n - 1) + memoizedFib(n - 2)
   }
 
   def main(args: Array[String]): Unit = {
-    println("Factorial of %s : %d".format(47, memoizedFact(47)))
+    println("Fibanocci %s : %d".format(47, memoizedFib(47)))
   }
 }
