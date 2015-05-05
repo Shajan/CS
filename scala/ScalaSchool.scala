@@ -1,7 +1,8 @@
 object ScalaSchool {
   def main(args: Array[String]) {
     //range()
-    for_loop()
+    //for_loop()
+    for_comprehension()
     //array()
     //list()
   }
@@ -22,12 +23,36 @@ object ScalaSchool {
     for (i <- 0 until 3) println(i)
     val l = List(1, 2, 3, 4)
     for (i <- l) println(i)
+  }
 
+  def for_comprehension() = {
     // for comprehension - just like map with syntatic sugar
     // Transform each element of the source collection to create
     // a new collection.
+    val l = List(1, 2, 3, 4)
     val lsq = for (i <- l) yield i*i 
-    println(lsq.mkString(","))
+    println(lsq.mkString(",")) // 1,4,9,16
+
+    val crossproduct = for {
+      a <- List("A", "B", "C") // Collection type of first genrator is used for result
+      b <- List("X", "Y", "Z")
+      concat = "%s.%s".format(a, b)
+    } yield concat
+
+    println(crossproduct.mkString(",")) // A.X,A.Y,A.Z,B.X,B.Y,B.Z,C.X,C.Y,C.Z
+
+    // Range will be converted to a Vector
+    val even = for (i <- 0 to 10 if (i % 2 == 0)) yield i
+    println(even.mkString(",")) // 0,2,4,6,8,10
+
+    // Conditions
+    val large = for {
+      i <- 0 until 10
+      j <- 0 until 10
+      sum = i + j
+      if (sum) > 15
+    } yield sum
+    println(large.mkString(",")) // 16,16,17,16,17,18
   }
 
   def array() = {
