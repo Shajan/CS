@@ -5,7 +5,7 @@ object ScalaSchool {
     //for_comprehension()
     //array()
     //list()
-    pattern()
+    //pattern()
   }
 
   def range() = {
