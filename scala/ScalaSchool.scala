@@ -2,9 +2,10 @@ object ScalaSchool {
   def main(args: Array[String]) {
     //range()
     //for_loop()
-    for_comprehension()
+    //for_comprehension()
     //array()
     //list()
+    pattern()
   }
 
   def range() = {
@@ -82,5 +83,13 @@ object ScalaSchool {
     println(l3) // List(A, B, C)
     val l4 = "A" :: ("B" :: ("C" :: Nil)) // equivalent to l3
     println(l4) // List(A, B, C)
+  }
+
+  def pattern() = {
+    val a = Array(1, 2, 3, 4, 5) 
+    a match {
+      case Array(x, y, _*) => println("%d, %d".format(x, y))
+      case _ => println("Huh?")
+    }
   }
 }
