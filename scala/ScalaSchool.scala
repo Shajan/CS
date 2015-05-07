@@ -1,8 +1,8 @@
 object ScalaSchool {
   def main(args: Array[String]) {
     //range()
-    for_loop()
-    //for_comprehension()
+    //for_loop() // iterate - foreach, do something
+    //for_comprehension() // yield result, map/flatMap to another type of same collection
     //array()
     //list()
     //pattern()
@@ -37,7 +37,6 @@ object ScalaSchool {
     // Equivalent to 
     si.foreach { println(_) }
     none.foreach { println(_) }
-
   }
 
   def for_comprehension() = {
@@ -68,6 +67,15 @@ object ScalaSchool {
       if (sum) > 15
     } yield sum
     println(large.mkString(",")) // 16,16,17,16,17,18
+
+    // for comprehension and options
+    val si:Option[String] = Some("XXXX")
+    val none:Option[Int] = None
+    println(for (s <- si) yield s) // Some("XXXX")
+    println(for (s <- none) yield s) // Does not yield anything
+    // Equivalent to 
+    println(si.map { x => x }) // Some("XXXX")
+    println(none.map { x => x }) // Does not print anything
   }
 
   def array() = {
