@@ -1,7 +1,7 @@
 object ScalaSchool {
   def main(args: Array[String]) {
     //range()
-    //for_loop()
+    for_loop()
     //for_comprehension()
     //array()
     //list()
@@ -22,8 +22,22 @@ object ScalaSchool {
   def for_loop() = {
     // iterates over Range(0,1,2), (0 until 3) is a range
     for (i <- 0 until 3) println(i)
-    val l = List(1, 2, 3, 4)
+
+    val l = List("A", "B", "C")
     for (i <- l) println(i)
+    // Equivalent to
+    0 until 3 foreach { println(_) }
+    l.foreach { println(_) }
+
+    // for and options
+    val si:Option[String] = Some("XXXX")
+    val none:Option[Int] = None
+    for (s <- si) println(s) // Prints XXXX 
+    for (s <- none) println(s) // Does not print anything
+    // Equivalent to 
+    si.foreach { println(_) }
+    none.foreach { println(_) }
+
   }
 
   def for_comprehension() = {
