@@ -20,11 +20,11 @@ object TailRec {
   }
  */
 
-  def reverse(l: List[Int]): List[Int] = {
+  def reverse[T](l: List[T]): List[T] = {
     @tailrec
-    def reverse(acc: List[Int], l: List[Int]): List[Int] = {
-      if (l.size == 0) acc
-      else reverse(l.head :: acc, l.tail)
+    def reverse(acc: List[T], rem: List[T]): List[T] = rem match {
+      case Nil => acc
+      case head :: tail => reverse(head :: acc, tail)
     }
     reverse(Nil, l)
   }
@@ -38,6 +38,5 @@ object TailRec {
     println(l1.mkString(","))
     println(l2.mkString(","))
   }
-
 }
 
