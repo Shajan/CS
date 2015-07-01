@@ -3,8 +3,8 @@
 
 object Monads {
   def main(args: Array[String]) {
-     //simple()
-     advanced()
+     simple()
+     //advanced()
   }
 
 /*
