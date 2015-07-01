@@ -2,4 +2,4 @@
 JAR_ROOT=/Users/sdasan/tmp/jars/
 JARS="$JAR_ROOT/javax.inject-1.jar"
 javac -cp $JARS DPI.java
-java -cp $JARS DPI
+java -cp $JARS:. DPI
