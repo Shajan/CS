@@ -1,7 +1,8 @@
 object Basics {
   def main(args: Array[String]) {
      //mapFlatMap()
-     forComprehension()
+     //forComprehension()
+     forWithFilter()
   }
 
   def mapFlatMap() = {
@@ -16,10 +17,13 @@ object Basics {
 
   def optInt: Option[Int] = {
     import scala.util.Random._
-    //if (nextBoolean()) Some(nextInt()%100) else None
     if (nextBoolean()) Some(2) else None
   }
 
+  def optInt100: Option[Int] = {
+    import scala.util.Random._
+    if (nextBoolean()) Some(nextInt()%100) else None
+  }
   def forComprehension() = {
     // nested maps
     val a = optInt.flatMap(i => optInt.map(j => i + j))
@@ -31,5 +35,20 @@ object Basics {
       j <- optInt
     } yield i + j
     println(b) // Some(4) or None
+  }
+
+  def forWithFilter() = {
+    // Filter manually
+    val a =  List(1, -2, 4, 5, -11, 15).filter(i => i > 1)
+    println(a) // List(4, 5, 15)
+
+    // Filter using for, uses withFilter instead of filter
+    // withFilter does not create intermediate lists, instead provides an 'iterator'
+    // map operation then iterates over the functions in withFilter
+    val b = for {
+      i <- List(1, -2, 4, 5, -11, 15)
+      if i > 1
+    } yield i
+    println(b) // List(4, 5, 15)
   }
 }
