@@ -2,7 +2,7 @@ object Basics {
   def main(args: Array[String]) {
      //mapFlatMap()
      //forComprehension()
-     forWithFilter()
+     //forWithFilter()
   }
 
   def mapFlatMap() = {
