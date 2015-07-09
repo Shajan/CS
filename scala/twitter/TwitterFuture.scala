@@ -79,9 +79,9 @@ object TwitterFuture {
 
     // join returns a future of touple
     // Fail if any one fails
-    val f:Future[(Int,String,Int)] = Future.join(Future.value(1), Future.value("X"), Future.value(3))
+    val f2:Future[(Int,String,Int)] = Future.join(Future.value(1), Future.value("X"), Future.value(3))
 
-    f map { s => println(s) } // (1,X,3)
+    f2 map { s => println(s) } // (1,X,3)
 
   }
 
@@ -113,7 +113,7 @@ object TwitterFuture {
   // callback way of handling future, 
   // useful only for side-effects/logging, no returns
   // prefer map, flatmap etc.
-  def concurrent() = {
+  def callback() = {
     val f: Future[Int] = FuturePool.unboundedPool { Thread.sleep(1000); 1 }
 
     f onSuccess { res: Int =>

@@ -1,6 +1,5 @@
-echo "./pants repl utils"
-echo ":paste"
-echo "Copy the source"
-echo "^D"
-echo "TwitterFuture.main(Array[String]())"
+#!/bin/bash
+TARGET=${1:-TwitterFuture}
 
+scalac -classpath ~/tmp/jars/com.twitter-util-core_2.10.jar -feature -language:postfixOps $TARGET.scala
+scala -classpath ~/tmp/jars/com.twitter-util-core_2.10.jar:. $TARGET
