@@ -20,7 +20,12 @@ object TwitterFuture {
 
   // Sequential Composition: map  A = B
   def map() = {
-    val fp = FuturePool.unboundedPool { println("fp.start"); Thread.sleep(10000); println("fp.end"); 10 }
+    val fp = FuturePool.unboundedPool {
+      println("fp.start")
+      Thread.sleep(10000)
+      println("fp.end")
+      10
+    }
 
     // f is Future, statement inside map is executed synchronously after fp is done
     // don't block on map, use flatmap and return a future if you have to block
