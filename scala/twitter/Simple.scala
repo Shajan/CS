@@ -1,6 +1,6 @@
 import com.twitter.util._ // requires twitter util jar
 
-object School {
+object Simple {
   def main(args: Array[String]) {
     val futurePool = new Pool(2) // two threads
     //setValue()

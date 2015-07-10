@@ -1,5 +1,5 @@
 #!/bin/bash
-TARGET=${1:-TwitterFuture}
+TARGET=${1:-Simple}
 
 JAR_ROOT=~/tmp/jars
 JARS=$JAR_ROOT/com.twitter-util-core_2.10.jar:$JAR_ROOT/com.twitter-finagle-core_2.10.jar:$JAR_ROOT/netty-3.10.1.Final.jar
