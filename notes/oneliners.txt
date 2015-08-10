@@ -1,0 +1,4 @@
+pretty print json
+	cat foo | python -m json.tool
+unquote html
+	cat foo | python -c "import sys,HTMLParser;[sys.stdout.write(HTMLParser.HTMLParser().unescape(line)) for line in sys.stdin];"

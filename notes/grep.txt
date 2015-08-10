@@ -1,0 +1,2 @@
+Print only the patched part
+	egrep -o
