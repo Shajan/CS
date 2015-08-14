@@ -1,46 +1,3 @@
-# One line git log without 'less'
-git --no-pager log --pretty=oneline --abbrev-commit --author=sdasan
-
-#update branch from master
-git checkout master; git pull origin master; git checkout -; git merge master; git rebase master
-
-#set branch to a review's rbid
-git review set <rbid>
-
-#locally apply patch from review board
-go/rb, click download diff to see commitID this change is based on
-git checkout -b <new_branch_name> <commitID>
-#Apply the patch
-rbt patch <reviewid>
-OR
-cd birdcage
-git apply <downloaded diff file from go/rb>
-
-#install rbt breaks 'git review post'
-easy_install -U RBTools
-#uninstall to fix 'git review post'
-pip uninstall rbt
-pip uninstall RBTools
-pip list
-
-#create a patch
-git diff > patchfile
-patch -p1 < patchfile
-
-#Crazy git errors
-git remote prune origin
-git gc --prune=now
-
-#Change commit message
-git commit --amend
-
-#undo a commit
-git reset --soft HEAD~1
-
-#Delete a branch
-git push origin --delete [Name]
-git branch -d [Name]
-
 # Normal workflow
 git checkout master
 git pull
@@ -59,11 +16,41 @@ git pull
 git checkout branch_name
 git rebase master
 
-#Check what's different in a branch
+# update branch from master
+git checkout master; git pull origin master; git checkout -; git merge master; git rebase master
+
+# show summary of changes, 1 line per change
+git log --pretty=oneline
+# One line git log without 'less'
+git --no-pager log --pretty=oneline --abbrev-commit --author=sdasan
+# format output http://git-scm.com/docs/pretty-formats
+git log --pretty=format:"[%<(15,trunc)%cr] %s" --author=sdasan
+
+# show original url
+git config --get remote.origin.url
+
+# clean up, remove untracked stuff
+git clean -f -d
+
+# Check what's different in a branch
 git log --format=oneline --no-merges --author=sdasan --left-right --cherry-pick origin/master...origin/v5.0.0
+# create a patch
+git diff > patchfile
+patch -p1 < patchfile
 
-#Show changes only in your branch (which was off of master)
+# Change commit message
+git commit --amend
+
+# undo a commit
+git reset --soft HEAD~1
+
+# Delete a branch
+git push origin --delete [Name]
+git branch -d [Name]
+# List branches, -r for remote
+git branch [-r]
+# Find branch containing a change sha1, -r for remote
+git branch -r --contain <SHA1>
+
+# Show changes only in your branch (which was off of master)
 git log master..
-
-#Debug/trace
-env GIT_TRACE=1 GIT_CURL_VERBOSE=1 git ...
