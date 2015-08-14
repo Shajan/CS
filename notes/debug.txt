@@ -1,0 +1,117 @@
+a.hprof Java/JVM thread/call-stack that uses most cpu
+	Using top in conjunction with jstack, you can locate which threads are using up the majority of your CPU in production. Run `top` press 'H' (for LWP/thread view), 'c' (to show the full command view), and 'P' (to order by process), and found the 2 offending threads. I then ran `jstack <java_pid>` and found the native thread IDs that corresponded to the LWP IDs from top (you have to convert them to hex).
+
+ps aux | egrep <process_name> | egrep -v egrep | awk '{ print "cat /proc/" $2 "/status" }' | bash
+ps aux | egrep <process_name> | egrep -v egrep | awk '{ print "jstack -l " $2 }' | bash
+ps aux | egrep ^[<group_id>]| egrep java | egrep -v egrep | egrep -v bash | awk '{ print "jmap -histo:live " $2 }' | bash
+ps aux | egrep <app.jar> | egrep -v 'bash|python|egrep' | awk '{ print "jmap -histo:live " $2 }' | bash
+ps aux | egrep <app.jar> | egrep -v 'bash|python|egrep' | awk '{ print "jstack -l " $2 }' | bash
+
+#Paging : majflt/s #of per second, those which have required loading a memory page from disk.
+sar -B 1 10
+
+ps aux | egrep <group_id> | egrep -v egrep | awk '{ print "ps -o maj_flt " $2 } ' | bash
+ps aux | egrep ^<group_id> | egrep java | egrep -v egrep | egrep -v bash | awk '{ print "gcore " $2 }' | bash
+
+#Generate core dump
+gcore pid
+
+#Print stack from core dump
+#http://web.mit.edu/gnu/doc/html/gdb_8.html#SEC42
+gdb /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
+gdb --core=core.dump
+	thread apply all bt
+	info threads
+	thread XX
+		bt
+	frame XX 
+		info frame
+		info args|locals|catch
+
+#http://docs.oracle.com/javase/7/docs/technotes/tools/
+JVM tools
+
+#http://docs.oracle.com/javase/7/docs/technotes/tools/share/jstack.html
+jstack -m -l /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump 
+
+jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/lib/jvm/java-1.7.0-openjdk7/bin/java,core=./core
+	where all
+	wherei all
+	threads
+	thread XX
+	locals [print local variables]
+	up XX, down XX [to jump frames]
+
+#http://docs.oracle.com/javase/7/docs/technotes/tools/share/jmap.html
+java "-agentlib:hprof=cpu=samples,interval=10,depth=128,file=log/hprof.txt"
+java "-agentlib:hprof=cpu=samples,interval=10,depth=128,file=log/hprof.bin,format=b"
+jmap -histo /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
+jmap -dump:format=b,file=/tmp/core /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
+jhat /tmp/core [creates http server on port 7000]
+jhat /tmp/a.hprof [creates http server on port 7000]
+ssh nest2.twitter.biz -L7000:smf1-cox-10-sr1:7000 -N -o ExitOnForwardFailure=yes
+http://localhost:7000/ 
+	https://blogs.oracle.com/sundararajan/entry/querying_java_heap_with_oql
+	http://visualvm.java.net/oqlhelp.html
+	To compare two coredumps, use '-baseline first-coredump'
+	jconsole [Appears not to work]
+#to see which port is open by jhat
+netstat --all --program | egrep jhat
+
+#linux Network delay/loss emulator
+http://www.linuxfoundation.org/collaborate/workgroups/networking/netem
+
+#MAC 
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7000
+jdb -attach 7000
+/opt/local/bin/gdb-apple /System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java [PID|dump]
+ggdb /System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java [PID|dump]
+	info signals
+	catch signal 'all'
+
+lldb -c core.XX
+	bt
+	bt all
+
+#Mac list pid using a port
+lsof -n -i4TCP:9990
+fs_usage : To see file activity - like filemon
+	sudo fs_usage -w -f mode="network" PID
+Activity Monitor
+#For Crash dumps
+	sudo launchctl limit core unlimited
+	ulimit -c unlimited
+
+#netstat
+netstat -na
+lsof
+
+#vex query on mesos
+curl localhost:30000/system/network/if/eth0/rx_bytes
+
+#Linux version
+uname -mrs
+
+#Linux trace system calls
+strace <executable>
+
+#Linux trace individual request on disk driver's queue
+blkparse
+
+#Linux I/O statistics 
+iostat
+
+#Linux network I/O
+tcpdump or Wireshark
+
+#Listy dynamic dependencies (http://www.cyberciti.biz/tips/linux-shared-library-management.html)
+ldd <binary>
+
+#find a class in set of jars
+find . -name "*.jar" -exec grep -Hsli "com/foo/bar/Baz" {} \;
+OR
+for i in *.jar; do jar -tvf "$i" | grep -Hsi "com/foo/bar/Baz"; done
+
+TODO
+pprof https://github.com/mariusae/heapster/blob/master/README.md
+
