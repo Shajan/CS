@@ -85,3 +85,6 @@ dd if=input_file of=output_file conv=lcase
 
 #create a fixed size blank 1k file
 dd if=/dev/zero of=file1 bs=1024 count=1
+
+#modify the first 512 bytes of a file
+dd if=/dev/zero of=file_to_modify bs=512 count=1 conv=notrunc
