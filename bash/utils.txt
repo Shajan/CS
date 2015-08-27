@@ -49,6 +49,10 @@ cat foo.txt | awk '{print $6 }’
 #compute average
 awk '{ total += $2; count++ } END { print total/count }' 
 
+#swap columns 1 and 2, then print the line
+awk '{a=$1; $1=$2; $2=a} 1'
+:%!awk '{a=$1; $1=$2; $2=a} 1' # in vi
+
 #print just the matching part of an expression
 egrep -o EXPR file
 
