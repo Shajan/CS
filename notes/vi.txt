@@ -99,6 +99,8 @@ Utility
 	Repeat last :command by @: then @@ to repeat again
 	Highlight searches :set hlsearch [:nohlsearch to turn off]
 	Tab completion of file/folder names :set wildmode=full
+	Sort lines 10 to 40
+		:10,40!sort
 .........................................................................
 Split screen http://vimcasts.org/episodes/working-with-windows/
 	:split 	[Split screen vertically]
