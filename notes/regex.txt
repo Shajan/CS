@@ -1,0 +1,16 @@
+http://docs.oracle.com/javase/1.5.0/docs/api/java/util/regex/Pattern.html
+http://regexlib.com/CheatSheet.aspx
+http://www.cheatography.com/davechild/cheat-sheets/regular-expressions/
+^	start
+$	end
+.	any char except newline
+*	zero or more of more of the previous
++	one or more of more of the previous
+?	zero or 1 of the previous expresion
+
+\d	digit
+\D	not digit
+\w	word
+\W	not word
+\s	white Space
+\S	Not white Space
