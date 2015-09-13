@@ -25,6 +25,9 @@ Local grunt shell
 	E = FILTER X BY '^abc.*$';
 	DUMP E;
 
+	-- Remove duplicates, find uniq
+	E_NO_DUPES = E DISTINCT;
+	
         -- Join to Expand state names 
         F = LOAD 'state.csv' USING PigStorage(',') AS (state:chararray, stateName:chararray);
         G = JOIN A by state, F by state; -- G will have all cols or A and F
