@@ -13,9 +13,17 @@ Local grunt shell
 	D = FOREACH C GENERATE $0, COUNT($1);
         DUMP D;
 
+	-- Count number of rows
+	NUM_ROWS = FOREACH (GROUP A ALL) GENERATE COUNT(A);
+	DUMP NUM_ROWS;
+
         -- Find the records with age > 30
 	E = FILTER A BY age > 30;
         DUMP E;
+
+        -- Regular expression match
+	E = FILTER X BY '^abc.*$';
+	DUMP E;
 
         -- Join to Expand state names 
         F = LOAD 'state.csv' USING PigStorage(',') AS (state:chararray, stateName:chararray);
