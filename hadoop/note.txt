@@ -1,0 +1,7 @@
+Book : Hdoop definitive guide
+
+TBD:
+How can map be done in parallel? Extend boundary almost never align to record boundaries.
+	Mapper needs to alwasy skip initial partial records? Fileformat needs to be 'skippable'?
+	What is the Interface/Protocol?
+	Read https://hadoop.apache.org/docs/current/api/org/apache/hadoop/mapred/FileInputFormat.html
