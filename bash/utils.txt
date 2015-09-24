@@ -28,6 +28,9 @@ foo 2>&1
 # Redirect stdout to stderr
 foo 1>&2
 
+# Append Redirect all to file
+cmd >>file.txt 2>&1
+
 #read contents of lib files (elf format)
 readelf -a -W <file>
 readelf -d <file> | egrep SONAME # read version if present
