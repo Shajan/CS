@@ -9,6 +9,10 @@ vi `find . -name *.scala | xargs egrep "foo" | cut -f1 -d ":"`
 # cut: Get everyting beyond ':'
 cut -d ":" -f1-
 
+#split text file into multiple
+split -dl <numberoflines> <inputfile> <outputfilesuffix> 
+example: split -dl 8 "ttl.snapshot/$f" "ttl.1024/$f."
+
 # Search for 'foobar' any file in a local git repository
 # using find -print0 xargs -0 takes care of spaces and other chars in filenames
 # ingnoring '*.git' reduces noise/duplicates from git
