@@ -99,3 +99,8 @@ dd if=/dev/zero of=file1 bs=1024 count=1
 
 #modify the first 512 bytes of a file
 dd if=/dev/zero of=file_to_modify bs=512 count=1 conv=notrunc
+
+#remove pattern from beginning of string ${VARIABLE#PATTERN}
+#  ${VARIABLE#PATTERN} will do the shortest match
+#  ${VARIABLE##PATTERN} will do the longest match
+FOO=/abc; BAR=abc; echo "Strip initial '/' if present ${FOO} => ${FOO#/}, ${BAR} => ${BAR#/}"
