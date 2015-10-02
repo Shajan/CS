@@ -104,3 +104,8 @@ dd if=/dev/zero of=file_to_modify bs=512 count=1 conv=notrunc
 #  ${VARIABLE#PATTERN} will do the shortest match
 #  ${VARIABLE##PATTERN} will do the longest match
 FOO=/abc; BAR=abc; echo "Strip initial '/' if present ${FOO} => ${FOO#/}, ${BAR} => ${BAR#/}"
+
+#find files matching an expression 
+# Example: ab*d.txt or ab*d-<two digit number>.log
+for f in ab*d{.txt,-[0-9][0-9].log}; do echo $f; done
+
