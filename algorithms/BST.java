@@ -19,19 +19,19 @@ class BST {
   public static void insert(BST node, int val) {
     if (val > node.val) {
       if (node.right == null)
-   node.right = new BST(val);
+        node.right = new BST(val);
       else
         insert(node.right, val);
     } else {
       if (node.left == null)
-   node.left = new BST(val);
+        node.left = new BST(val);
       else
         insert(node.left, val);
     }
   }
 
   public static void remove(int val) {
-    remove(root, val);
+    root = remove(root, val);
   }
   
   public static BST remove(BST node, int val) {
@@ -82,11 +82,70 @@ class BST {
     return current;
   }
 
+  private static void visit_ascending(BST t) {
+    if (t == null)
+      return;
+    visit_ascending(t.left);
+    System.out.print(t.val + ",");
+    visit_ascending(t.right);
+  }
+
+  private static int visit_top(BST t, int n) {
+    if (t == null || n == 0)
+      return 0;
+    int c = visit_top(t.right, n);
+    if (c < n) {
+      System.out.print(t.val + ",");
+      ++c;
+      c += visit_top(t.left, n - c);
+    }
+    return c;
+  }
+
+  private static int find_top(BST t, int n) {
+    if (t == null || n == 0)
+      return 0;
+    int c = find_top(t.right, n);
+    if (c < n) {
+      if (n - c == 1)
+        System.out.print(t.val + ",");
+      ++c;
+      c += find_top(t.left, n - c);
+    }
+    return c;
+  }
+
   public static void main(String[] args) {
-    int[] a = {100, 110, 120, 115, 90, 105, 107, 95, 108, 117, 85};
+    //test_remove();
+    //test_sort();
+    test_top();
+  }
+
+  private static void setup_test_tree() {
+    root = null;
+    int[] a = {100, 110, 120, 115, 75, 111, 90, 105, 107, 95, 108, 117, 85};
     for (int i : a)
       insert(i);
+  }
 
+  private static void test_top() {
+    setup_test_tree();
+    System.out.println("top 10");
+    visit_top(root, 10);
+    System.out.println("\nfind 5th");
+    find_top(root, 5);
+    System.out.println("");
+  }
+
+  private static void test_sort() {
+    setup_test_tree();
+    print();
+    visit_ascending(root);
+    System.out.println("");
+  }
+
+  private static void test_remove() {
+    setup_test_tree();
     print();
     System.out.println("removing 90");
     remove(90);
@@ -96,6 +155,8 @@ class BST {
     print();
     System.out.println("removing 110");
     remove(110);
+    print();
+    remove(100);
     print();
   }
 
@@ -107,7 +168,11 @@ class BST {
 
   // Printing tree
   public static void print() {
-    if (root != null)
+    print(root);
+  }
+
+  public static void print(BST t) {
+    if (t != null)
       print("", horizontal, root, true);
   }
 
