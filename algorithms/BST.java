@@ -16,23 +16,57 @@ class BST {
       insert(root, val);
   }
 
-  public static void insert(BST parent, int val) {
-    if (val > parent.val) {
-      if (parent.right == null)
-	parent.right = new BST(val);
+  public static void insert(BST node, int val) {
+    if (val > node.val) {
+      if (node.right == null)
+   node.right = new BST(val);
       else
-        insert(parent.right, val);
+        insert(node.right, val);
     } else {
-      if (parent.left == null)
-	parent.left = new BST(val);
+      if (node.left == null)
+   node.left = new BST(val);
       else
-        insert(parent.left, val);
+        insert(node.left, val);
     }
   }
 
   public static void remove(int val) {
+    remove(root, val);
   }
   
+  public static BST remove(BST node, int val) {
+    if (node == null)
+      return null;
+    if (val > node.val)
+      node.right = remove(node.right, val);
+    else if (val < node.val)
+      node.left = remove(node.left, val);
+    else {
+      if (node.left == null && node.right == null)
+        return null;
+      else if (node.left == null) 
+        return node.right;
+      else if (node.right == null)
+        return node.left;
+      else {
+        // Both children are present.
+        // Copy value of a child with one or zero children to node, then remove that child.
+        // NOTE:
+        //   Lowset value child on the right subtree will have atmost one child.
+        //   Highest value child on the left will have at most one child.
+        // Replace value of this node with one of the above two, then remove that node.
+
+        // Find the highest value left child
+	BST tmp = node.left;
+	while (tmp.right != null)
+	  tmp = tmp.right;
+	node.val = tmp.val;
+	node.left = remove(node.left, tmp.val); // ok to remove any child with that value
+      }
+    }
+    return node;
+  }
+
   public static BST find(int val) {
     BST current = root;
 
@@ -49,17 +83,19 @@ class BST {
   }
 
   public static void main(String[] args) {
-    int[] a = {100, 110, 120, 115, 90, 105, 107, 95, 110, 117, 85};
+    int[] a = {100, 110, 120, 115, 90, 105, 107, 95, 108, 117, 85};
     for (int i : a)
       insert(i);
-    /*
+
+    print();
     System.out.println("removing 90");
     remove(90);
+    print();
     System.out.println("removing 115");
     remove(115);
+    print();
     System.out.println("removing 110");
     remove(110);
-    */
     print();
   }
 
@@ -68,8 +104,6 @@ class BST {
   private static char sidewaysT = 9500;  // Looks like '|-'
   private static char horizontal = 9472; // Looks like '-'
   private static char vertical = 9474;   // Looks like '|'
-  //private static String corner = new String(new char[] {leftCorner, horizontal, horizontal}); // L--
-  //private static String joint = new String(new char[] {sidewaysT, horizontal, horizontal}); // |--
 
   // Printing tree
   public static void print() {
@@ -82,7 +116,7 @@ class BST {
       prefix + 
       (isLastSibling ?
         new String(new char[] {leftCorner, horizontal, lr, horizontal}) : 
-	new String(new char[] {sidewaysT, horizontal, lr, horizontal})) + 
+        new String(new char[] {sidewaysT, horizontal, lr, horizontal})) + 
       "[" + t.val + "]");
 
     String paddNext = prefix + (isLastSibling ? "    " : vertical + "   ");
@@ -97,5 +131,4 @@ class BST {
       print(paddNext, 'r', t.right, true);
     }
   }
-
 }

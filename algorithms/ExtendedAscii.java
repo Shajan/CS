@@ -1,7 +1,7 @@
 /*
  * References
  * http://www.theasciicode.com.ar/extended-ascii-code/box-drawing-character-double-line-lower-left-corner-ascii-code-200.html
- * http://www.theasciicode.com.ar/extended-ascii-code/box-drawing-character-double-line-lower-left-corner-ascii-code-200.html
+ * http://stackoverflow.com/questions/22273046/how-to-print-the-extended-ascii-code-in-java-from-integer-value 
  */
 public class ExtendedAscii {
     public static final char[] EXTENDED = { 0x00C7, 0x00FC, 0x00E9, 0x00E2,
