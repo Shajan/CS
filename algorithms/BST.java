@@ -2,78 +2,37 @@ class BST {
   int val;
   BST left;
   BST right;
-  BST parent;
 
   static BST root;
 
-  public BST(BST parent, int val) {
+  public BST(int val) {
     this.val = val;
-    this.parent = parent;
-  }
-
-  public String toString() {
-    return
-    "value: " + val +
-    ", left : " + ((left != null) ? left.val : "null") +
-    ", right : " + ((right != null) ? right.val : "null");
   }
 
   public static void insert(int val) {
     if (root == null)
-      root = new BST(null, val);
+      root = new BST(val);
     else
       insert(root, val);
   }
 
   public static void insert(BST parent, int val) {
     if (val > parent.val) {
-      if (parent.right != null)
+      if (parent.right == null)
+	parent.right = new BST(val);
+      else
         insert(parent.right, val);
-      else
-	parent.right = new BST(parent, val);
     } else {
-      if (parent.left != null)
-        insert(parent.left, val);
+      if (parent.left == null)
+	parent.left = new BST(val);
       else
-	parent.left = new BST(parent, val);
+        insert(parent.left, val);
     }
   }
 
   public static void remove(int val) {
-    BST node = find(val);
-    if (node != null) {
-      remove(node);
-    }
   }
   
-  public static void remove(BST node) {
-    if (node.left == null)
-      if (node.right != null)
-        swap_child(node.parent, node, node.right);
-      else
-        swap_child(node.parent, node, null);
-    else if (node.right == null)
-      swap_child(node.parent, node, node.left);
-    else {
-      // Both children present, copy over left child
-      node.val = node.left.val;
-      node.left = node.left.left;
-      node.right = node.left.right;
-      remove(node.left);
-    }
-  }
-
-  private static void swap_child(BST parent, BST old_child, BST new_child) {
-    if (new_child != null)
-      new_child.parent = parent;
-    if (parent == null)
-      root = new_child;
-    else if (parent.left == old_child)
-      parent.left = new_child;
-    else
-      parent.right = new_child;
-  }
-
   public static BST find(int val) {
     BST current = root;
 
@@ -85,31 +44,58 @@ class BST {
       else
         current = current.left;
     }
+
     return current;
   }
 
-  public static void print() {
-    if (root == null)
-      System.out.println("empty");
-    else
-      print(root, 0);
-  }
-
-  public static void print(BST node, int depth) {
-    if (node == null)
-      return;
-
-    System.out.println("depth: " + depth + ", " + node.toString());
-    print(node.left, depth + 1);
-    print(node.right, depth + 1);
-  }
-
   public static void main(String[] args) {
-    //System.out.println("........Empty........");
-    insert(100);
-    insert(110);
-    insert(120);
-    insert(115);
+    int[] a = {100, 110, 120, 115, 90, 105, 107, 95, 110, 117, 85};
+    for (int i : a)
+      insert(i);
+    /*
+    System.out.println("removing 90");
+    remove(90);
+    System.out.println("removing 115");
+    remove(115);
+    System.out.println("removing 110");
+    remove(110);
+    */
     print();
   }
+
+  // Ascii art
+  private static char leftCorner = 9492; // Looks like 'L'
+  private static char sidewaysT = 9500;  // Looks like '|-'
+  private static char horizontal = 9472; // Looks like '-'
+  private static char vertical = 9474;   // Looks like '|'
+  //private static String corner = new String(new char[] {leftCorner, horizontal, horizontal}); // L--
+  //private static String joint = new String(new char[] {sidewaysT, horizontal, horizontal}); // |--
+
+  // Printing tree
+  public static void print() {
+    if (root != null)
+      print("", horizontal, root, true);
+  }
+
+  private static void print(String prefix, char lr, BST t, boolean isLastSibling) {
+    System.out.println(
+      prefix + 
+      (isLastSibling ?
+        new String(new char[] {leftCorner, horizontal, lr, horizontal}) : 
+	new String(new char[] {sidewaysT, horizontal, lr, horizontal})) + 
+      "[" + t.val + "]");
+
+    String paddNext = prefix + (isLastSibling ? "    " : vertical + "   ");
+    String paddCurrent = paddNext + vertical; 
+
+    if (t.left != null) {
+      System.out.println(paddCurrent);
+      print(paddNext, 'l', t.left, t.right == null);
+    }
+    if (t.right != null) {
+      System.out.println(paddCurrent);
+      print(paddNext, 'r', t.right, true);
+    }
+  }
+
 }
