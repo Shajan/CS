@@ -112,3 +112,5 @@ for f in ab*d{.txt,-[0-9][0-9].log}; do echo $f; done
 #rename a set of files
 for i in *.src ; do mv "$i" "$i.jpg" ; done
 
+#find and replace filenames
+for src in *.dst.head; do dst=`echo $src | sed s/src/dst/`; echo "$src --> $dst"; done 
