@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 class Strings {
   public static void main(String[] args) {
     escape("abc def");
