@@ -2,6 +2,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.LinkedHashMap;
+import java.util.Iterator;
 
 class Maps {
   public static void main(String args[]) {
@@ -18,6 +19,9 @@ class Maps {
     print(tm);
     System.out.println("LinkedHashMap");
     print(lm);
+
+    System.out.println("HashMap Iterator");
+    print(hm);
   }
 
   public static void populate(Map<String,String> m) {
@@ -35,5 +39,13 @@ class Maps {
   public static void print(Map<String,String> m) {
     for (Map.Entry entry : m.entrySet())
       System.out.println(entry.getKey() + " --> " + entry.getValue());
+  }
+
+  public static void iterate(Map<String,String> m) {
+    Iterator iter = m.entrySet().iterator();
+    while (iter.hasNext()) {
+      Map.Entry entry = (Map.Entry) iter.next();
+      System.out.println(entry.getKey() + " --> " + entry.getValue());
+    }
   }
 }
