@@ -1,6 +1,8 @@
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 import java.util.Vector;
 
 class Basic {
@@ -8,11 +10,11 @@ class Basic {
     StringBuilder sb = new StringBuilder();
 
     // ArrayList
-    ArrayList<String> a = new ArrayList<String>();
+    ArrayList<String> al = new ArrayList<String>();
     for (String s: args)
-      a.add(s);
+      al.add(s);
 
-    for (String s: a)
+    for (String s: al)
      sb.append(s).append(",");
 
     if (sb.length() > 1)
@@ -43,5 +45,11 @@ class Basic {
 
     for (Map.Entry<Integer,String> e: h.entrySet())
       System.out.println(e.getKey() + " -> " + e.getValue()); 
+
+    // Arrays and sort
+    int[] a = {1, 5, 15, 14, 3, 25};
+    Arrays.sort(a);
+    for (int i : a)
+      System.out.println(i);
   }
 }
