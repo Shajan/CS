@@ -8,6 +8,10 @@
  * foo 100 -> bar2
  * foo 500 -> bar2
  *  
+ * 10/19/15
+ *  1. Refactor for better unit testing
+ *  2. mid = (start + end)/2
+ *  3. binfind return index in arraylist, caller to seek back
  */
 
 import java.util.*;
