@@ -1,3 +1,4 @@
 CLASS=${1:-HelloWorld}
 javac $CLASS.java
-java $CLASS
+java -ea $CLASS
+#-ea for enable assertions
