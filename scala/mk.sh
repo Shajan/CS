@@ -2,4 +2,4 @@
 TARGET=${1:-Sample}
 
 scalac -feature -language:postfixOps $TARGET.scala
-scala $TARGET
+scala $TARGET $2
