@@ -1,8 +1,9 @@
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Set;
 import java.util.Vector;
 
 class Basic {
@@ -38,6 +39,12 @@ class Basic {
     System.out.println("From Vector " + sb); 
     System.out.println("v[0] " + v.get(0)); 
 
+    // Arrays and sort
+    int[] a = {1, 5, 15, 14, 3, 25};
+    Arrays.sort(a);
+    for (int i : a)
+      System.out.println(i);
+
     // Hash
     Map<Integer,String> h = new HashMap<Integer,String>();
     for (int i=0; i<args.length; ++i)
@@ -46,10 +53,16 @@ class Basic {
     for (Map.Entry<Integer,String> e: h.entrySet())
       System.out.println(e.getKey() + " -> " + e.getValue()); 
 
-    // Arrays and sort
-    int[] a = {1, 5, 15, 14, 3, 25};
-    Arrays.sort(a);
-    for (int i : a)
-      System.out.println(i);
+    if (h.containsKey(0))
+      System.out.println("0 --> " + h.get(0)); 
+
+    System.out.println("10 --> " + h.get(10));
+
+    // Set
+    Set<String> s = new HashSet<String>();
+    s.add("1");
+    s.add("2");
+    System.out.println("1 --> " + s.contains("1"));
+    System.out.println("10 --> " + s.contains("10"));
   }
 }
