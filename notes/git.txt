@@ -30,7 +30,7 @@ git log --pretty=format:"[%<(15,trunc)%cr] %s" --author=sdasan
 git config --get remote.origin.url
 
 # clean up, remove untracked stuff
-git clean -f -d
+git clean -xXfd #clean and remove untracked files as well From folder and subfolders from here
 
 # Check what's different in a branch
 git log --format=oneline --no-merges --author=sdasan --left-right --cherry-pick origin/master...origin/v5.0.0
