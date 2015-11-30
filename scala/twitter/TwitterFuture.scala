@@ -10,6 +10,8 @@ object TwitterFuture {
     concurrent_failany()
     concurrent()
     callback()
+
+    flow()
   }
 
   def basic() = {
@@ -162,5 +164,59 @@ object TwitterFuture {
       case ex: Throwable => 
         println("f:Exception " + ex) // prints this
     }
+  }
+
+  def createFuture(value: Int, delay: Int, fail: Boolean, message: String): Future[Int] = FuturePool.unboundedPool {
+    println("Starting " + message)
+    Thread.sleep(delay)
+    if (fail) {
+      println("Failing " + message)
+      throw new Exception("Fail " + message)
+    }
+    println("Success " + message)
+    value 
+  }
+
+  def flow() = {
+    val f1: Future[Int] = createFuture(1, 5000, false, "should succeed")
+
+    f1 handle {
+      case t: Throwable => println("Unexpected to be here")
+    }
+    println("Should be 1 : " + Await.result(f1))
+
+    val f2: Future[Int]  = createFuture(100, 5000, true, "should fail")
+    f2 handle {
+      case t: Throwable =>
+        println("Never happens")
+        101
+    }
+    try {
+      println("Unexpected : " + Await.result(f2))
+    } catch {
+      case t: Throwable => println("Exception : " + t)
+    }
+
+    val f3: Future[Int]  = createFuture(100, 5000, true, "should fail")
+    f3 rescue {
+      case t: Throwable =>
+        println("Rescuing exception")
+        Future.value(101)
+    }
+
+    try {
+      printlnw("Does not get here : " + Await.result(f3))
+    } catch {
+      case t: Throwable => println("Exception : " + t)
+    }
+
+    val f4: Future[Int]  = createFuture(100, 5000, true, "should fail")
+    val f5 = f4 rescue {
+      case t: Throwable =>
+        println("Rescuing exception")
+        Future.value(102)
+    }
+
+    f5 map { i: Int => if (i == 102) println("Ok") else println("Fail") }
   }
 }

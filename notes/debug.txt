@@ -34,6 +34,7 @@ JVM tools
 #http://docs.oracle.com/javase/7/docs/technotes/tools/share/jstack.html
 jstack -m -l /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump 
 
+#/usr/lib/jvm/java-1.8.0-twitter/bin/java
 jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/lib/jvm/java-1.7.0-openjdk7/bin/java,core=./core
 	where all
 	wherei all
