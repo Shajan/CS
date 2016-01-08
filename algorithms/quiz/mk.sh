@@ -1,4 +1,4 @@
-CLASS=${1:-HelloWorld}
+CLASS=${1:-Graph}
 shift
 
 javac $CLASS.java
