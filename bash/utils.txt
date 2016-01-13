@@ -118,3 +118,9 @@ for src in *.find.foo; do dst=`echo $src | sed s/find/replace/`; echo "$src --> 
 #pad with 0
 printf "%03d" 1
 printf "%03d" 11
+
+#word count
+sed -e 's/ /\n/g' | sort | uniq -c | sort -n
+
+#histogram of field #2
+awk '{ n[$2]++ } END { for (i in n) print n[i],i}' | sort -n
