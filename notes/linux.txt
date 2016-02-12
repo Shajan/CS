@@ -1,0 +1,2 @@
+#Find uptime of process
+ps -eo pid,comm,lstart,etime,time,args
