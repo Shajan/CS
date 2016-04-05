@@ -11,6 +11,9 @@ object Generics {
     new P[A].x(new A)
     new P[A].p(new A)
   }
+
+  //def thisWillNotCompile(c: C) = { c.g(c.f()) }
+  def thisWillCompile[T](c: C[T]) = { c.g(c.f()) }
 }
 
 class A { }
@@ -21,3 +24,9 @@ class X[T <: A] { def x(t: T) = { } }
 class Y[T <: AB] { def y(t: T) = { } }
 
 class P[T <: A] extends X[T] { def p(t: T) = { } }
+
+class C[T](t: T) {
+  def f(): T = t
+  def g(t: T) = Unit
+  def test(a: A[T]) = a.g(a.f())
+}
