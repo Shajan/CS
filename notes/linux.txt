@@ -9,3 +9,7 @@ iostat
 nmon
 iftop
 iptraf
+
+#Debugging network
+	nstat -az
+	netstat -s
