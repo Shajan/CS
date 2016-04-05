@@ -1,29 +1,50 @@
 #!/bin/bash
 
-while getopts ":h:a:b:" OPTION
+echo "Number of params not counding 0 $#"
+echo "All params except 0:"
+echo "$*"    # "$1" "$2"..
+echo $*      # $1 $2 ... 
+
+echo "All params except 0: $@"
+
+echo "0: $0"
+echo "1: $1"
+echo "2: $2"
+
+shift
+
+echo "After shift"
+echo "0: $0"
+echo "1: $1"
+echo "2: $2"
+
+echo "for arg loop"
+for arg
 do
-  case "$OPTION" in
-    h)
-      echo "option help"
-      exit 1
-      ;;
-    a)
-      a=${OPTARG}
-      echo "option a $a"
-      exit 0 
-      ;;
-    b)
-      b=${OPTARG}
-      echo "option b $b"
-      exit 0 
-      ;;
-  esac
+  echo "$arg"
 done
 
-if [ -z "${a}"] && [ -z "${b}"]; then
-  echo "provide vlaue for a or b"
-  echo "Usage: -a abc"
-  exit 1
-fi
+echo "null check"
+while [ "$1" ]
+do
+    echo "$1"
+    shift
+done
 
-echo "a = ${a}, b= ${b}"
+# Comment out earlier loops to make following work because of shift
+
+echo "Better null check"
+while [ "${1+defined}" ];
+do
+  echo "$1"
+  shift
+done
+
+echo "C Style for loop"
+numargs=$#
+for ((i=1; i<=numargs; i++))
+do
+    echo "$1"
+    shift
+done
+
