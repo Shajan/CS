@@ -1,6 +1,13 @@
 #!/bin/bash
 
-echo "Number of params not counding 0 $#"
+echo "Number of params not counting 0 $#"
+
+if [[ $# -eq 0 ]]
+then
+  echo "Usage: $0 a b c d e f"
+  exit 1
+fi
+
 echo "All params except 0:"
 echo "$*"    # "$1" "$2"..
 echo $*      # $1 $2 ... 
