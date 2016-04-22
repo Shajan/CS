@@ -1,12 +1,32 @@
+import java.util.Arrays;
+import java.util.Random;
 
 class Sort {
   public static void main(String[] args) {
-    //int[] a = new int[]{1, 2, 3};
-    //int[] a = new int[]{3, 2, 1};
-    //int[] a = new int[]{50, 15, 49, 40};
+/*
     int[] a = new int[]{10, 5, 63, 84, 63, 5, 49, 77, 50, 7, 40, 98, 15};
+    System.out.println(String.format("Before isSorted:%s", isSorted(a)));
     qsort(a, 0, a.length - 1);
     print(a, 0, a.length - 1);
+    System.out.println(String.format("After isSorted:%s", isSorted(a)));
+*/
+    benchmark(1000000);
+  }
+
+  public static void benchmark(int count) {
+    Random rand = new Random();
+    int[] base = new int[count];
+    for (int i=0; i<count; ++i) {
+      base[i] = rand.nextInt();
+    }
+
+    for (int i=0; i<10; ++i) {
+      if (isSorted(base))
+        System.out.println("Base is already sorted!");
+      long start = System.currentTimeMillis();
+      Arrays.sort(base.clone());
+      System.out.println(String.format("Array.sort ms : %d", System.currentTimeMillis() - start));
+    }
   }
 
   public static void print(int[] a, int start, int end) {
@@ -16,15 +36,23 @@ class Sort {
     System.out.println("");
   }
 
+  public static boolean isSorted(int[] a) {
+    for (int i=1; i<a.length; ++i) {
+      if (a[i-1] > a[i])
+        return false;
+    }
+    return true;
+  }
+
   public static void swap(int[] a, int i, int j) {
-    System.out.println(a[i] + " <--> " + a[j]);
+    //System.out.println(a[i] + " <--> " + a[j]);
     int tmp = a[i];
     a[i] = a[j];
     a[j] = tmp;
   }
 
   public static void qsort(int[] a, int first, int last) {
-    print(a, first, last);
+    //print(a, first, last);
     if (first >= last)
       return;
 
@@ -42,7 +70,7 @@ class Sort {
       }
     }
 
-    print(a, first, last);
+    //print(a, first, last);
     int pos = i;
 
     if (a[pos] > pivot)
