@@ -1,17 +1,22 @@
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 class Sort {
   public static void main(String[] args) {
-    benchmark(10000000, 10);
+    tsort(randomArray(10));
+    //benchmark(10000000, 10);
+  }
+
+  public static int[] randomArray(int size) {
+    Random rand = new Random();
+    int[] a = new int[size];
+    for (int i=0; i<size; ++i) {
+      a[i] = rand.nextInt(100);
+    }
+    return a;
   }
 
   public static void benchmark(int size, int samples) {
-    Random rand = new Random();
-    int[] base = new int[size];
-    for (int i=0; i<size; ++i) {
-      base[i] = rand.nextInt();
-    }
+    int[] base = randomArray(size);
 
     for (int i=0; i<samples; ++i) {
       long start = System.currentTimeMillis();
@@ -29,6 +34,10 @@ class Sort {
       if (!isSorted(a))
         System.out.println("Not sorted!");
     }
+  }
+
+  public static void print(int[] a) {
+    System.out.println(a);
   }
 
   public static void print(int[] a, int start, int end) {
@@ -75,5 +84,32 @@ class Sort {
       qsort(a, first, j);
     if (i < last) 
       qsort(a, i, last);
+  }
+
+  public static void tsort(int[] a) {
+    Map<Integer, Set<Integer>> graph = new HashMap<Integer, Set<Integer>>();
+    for (int i=0; i<a.length-1; ++i) {
+      add_relation(graph, a[i], a[i+1]);
+    }
+    print(a, 0, a.length-1);
+    System.out.println(graph.toString());
+  }
+
+  public static void add_relation(Map<Integer, Set<Integer>> graph, int a, int b) {
+    if (a == b)
+      return;
+
+    int from = Math.min(a, b);
+    int to = Math.max(a, b);
+
+    Set<Integer> s = null; 
+    if (graph.containsKey(from)) {
+      s = graph.get(from);
+    } else {
+      s = new HashSet<Integer>();
+      graph.put(from, s);
+    }
+
+    s.add(to);
   }
 }
