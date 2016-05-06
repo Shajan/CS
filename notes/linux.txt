@@ -1,6 +1,9 @@
 #Find uptime of process
 ps -eo pid,comm,lstart,etime,time,args
 
+#Trace system calls
+strace <cmd>
+
 #performance http://www.tecmint.com/command-line-tools-to-monitor-linux-performance/
 top
 htop
