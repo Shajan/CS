@@ -16,3 +16,11 @@ iptraf
 #Debugging network
 	nstat -az
 	netstat -s
+
+#find open ports for a pid
+# Not sure this works.
+netstat -p <PID>
+
+#find listening ports
+# Not sure this works.
+netstat -tulpn
