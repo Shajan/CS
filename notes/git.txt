@@ -39,6 +39,17 @@ git log --format=oneline --no-merges --author=sdasan --left-right --cherry-pick 
 git diff > patchfile
 patch -p1 < patchfile
 
+# Create a patch for rollback a commit
+git format-patch -1 <sha>
+OR
+git format-patch -1 HEAD
+OR
+git format-patch master --stdout > patchfile
+THEN
+patch -p1 -R < patchfile
+OR
+git apply -R patchfile
+
 # Change commit message
 git commit --amend
 

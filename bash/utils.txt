@@ -128,4 +128,5 @@ awk '{ n[$2]++ } END { for (i in n) print n[i],i}' | sort -n
 #diff without markers -1 suppress missing first, -2 missing second, -3 suppress union
 comm -13 <first> <second>
 
-
+#sort files by timestamp in subfolders
+find . -type f -name *.fat -printf '%T@ %p\n' | sort -k 1 -n
