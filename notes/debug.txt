@@ -48,6 +48,8 @@ java "-agentlib:hprof=cpu=samples,interval=10,depth=128,file=log/hprof.txt"
 java "-agentlib:hprof=cpu=samples,interval=10,depth=128,file=log/hprof.bin,format=b"
 jmap -histo /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
 jmap -dump:format=b,file=/tmp/core /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
+jmap -dump:format=b,file=core.hprof <pid>
+
 jhat /tmp/core [creates http server on port 7000]
 jhat /tmp/a.hprof [creates http server on port 7000]
 ssh nest2.twitter.biz -L7000:smf1-cox-10-sr1:7000 -N -o ExitOnForwardFailure=yes
