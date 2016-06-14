@@ -1,2 +1,6 @@
 Print only the patched part
 	egrep -o
+
+Lazy match not supported, use the perl syntax 
+	grep -P then use ? modifier 
+	[Example use .*? instead of .*]
