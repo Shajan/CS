@@ -17,8 +17,8 @@ iptraf
 pmap -x <pid>
 
 #Debugging network
-	nstat -az
-	netstat -s
+nstat -az
+netstat -s
 
 #find open ports for a pid
 # Not sure this works.

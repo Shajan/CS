@@ -120,4 +120,3 @@ for i in *.jar; do jar -tvf "$i" | grep -Hsi "com/foo/bar/Baz"; done
 
 TODO
 pprof https://github.com/mariusae/heapster/blob/master/README.md
-
