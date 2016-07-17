@@ -92,9 +92,6 @@ Activity Monitor
 netstat -na
 lsof
 
-#vex query on mesos
-curl localhost:30000/system/network/if/eth0/rx_bytes
-
 #Linux version
 uname -mrs
 
