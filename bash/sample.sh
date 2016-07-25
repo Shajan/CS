@@ -15,6 +15,31 @@ function sequence()
   for i in $(seq $START $END); do echo $i; done
 }
 
+function for_with_variable()
+{
+  echo "for loops in bash"
+
+  # prints 5 6 7 8 9
+  for i in {5..9}
+  do
+    echo $i
+  done
+
+  # prints {5..9}, this does not work as expected
+  START=5
+  END=9
+  for i in {$START..$END}
+  do
+    echo $i
+  done
+
+  # Use c style instead, prints 5, 6, 7, 8, 9
+  for (( i=$START; i<=$END; i++ ))
+  do
+    echo $i
+  done
+}
+
 function sum() 
 {
   #Single digits left padded with 0
@@ -69,3 +94,6 @@ echo "Drop chars before last '/' in '$STR' : ${STR##*/}"
 echo "Drop chars after first '/' in '$STR' : ${STR%%/*}"
 
 sequence
+
+
+for_with_variable
