@@ -130,3 +130,7 @@ comm -13 <first> <second>
 
 #sort files by timestamp in subfolders
 find . -type f -name *.fat -printf '%T@ %p\n' | sort -k 1 -n
+
+#substitute empty line with someting
+sed -e 's/^$/foobar/' <file>
+
