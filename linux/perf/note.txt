@@ -1,0 +1,8 @@
+https://www.thomas-krenn.com/en/wiki/Linux_I/O_Performance_Tests_using_dd
+
+# if: Input file, of: Output file, bs: Block size, count: Number of blocks to copy, oflag: direct/dsync
+dd if=/dev/zero of=/tmp/testfile bs=1G count=1 oflag=direct
+
+# test reading / writing 1g
+dd if=/dev/zero bs=1024 count=1024x1024 of=/tmp/1g
+dd if=/tmp/1g of=/dev/null bs=1024
