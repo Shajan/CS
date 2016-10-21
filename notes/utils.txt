@@ -1,0 +1,7 @@
+video downloader, youtube & others
+	brew install youtube-dl
+	https://github.com/rg3/youtube-dl/tree/master/youtube_dl/extractor
+
+coursera video downloader
+	brew install coursera-dl
+	https://github.com/coursera-dl/coursera-dloptional 
