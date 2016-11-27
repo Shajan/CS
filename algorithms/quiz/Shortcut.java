@@ -15,6 +15,31 @@ class Shortcut {
   }
 
   static void test_maps(Map<String, Integer> map) {
+/*
+╔══════════════╦═════════════════════╦═══════════════════╦══════════════════════╗
+║   Property   ║       HashMap       ║      TreeMap      ║     LinkedHashMap    ║
+╠══════════════╬═════════════════════╬═══════════════════╬══════════════════════╣
+║              ║  no guarantee order ║ sorted according  ║                      ║
+║   Order      ║ will remain constant║ to the natural    ║    insertion-order   ║
+║              ║      over time      ║    ordering       ║                      ║
+╠══════════════╬═════════════════════╬═══════════════════╬══════════════════════╣
+║  Get/put     ║                     ║                   ║                      ║
+║   remove     ║         O(1)        ║      O(log(n))    ║         O(1)         ║
+║ containsKey  ║                     ║                   ║                      ║
+╠══════════════╬═════════════════════╬═══════════════════╬══════════════════════╣
+║              ║                     ║   NavigableMap    ║                      ║
+║  Interfaces  ║         Map         ║       Map         ║         Map          ║
+║              ║                     ║    SortedMap      ║                      ║
+╠══════════════╬═════════════════════╬═══════════════════╬══════════════════════╣
+║              ║                     ║                   ║                      ║
+║     Null     ║       allowed       ║    only values    ║       allowed        ║
+║ values/keys  ║                     ║                   ║                      ║
+╠══════════════╬═════════════════════╦═══════════════════╦══════════════════════╣
+║              ║                     ║                   ║                      ║
+║Implementation║      buckets        ║   Red-Black Tree  ║    double-linked     ║
+║              ║                     ║                   ║       buckets        ║
+╚══════════════╩════════════════════════════════════════════════════════════════╝
+*/
     //------------[Map]-----------------------
     String[] a = {"foo", "bar", "abc"};
     int i = 0;
