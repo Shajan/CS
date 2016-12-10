@@ -46,7 +46,7 @@ class Ranges {
 
     for (int i=1; i<ranges.length; ++i) {
       Range r = ranges[i];
-      Range endingSoon = heap.poll(); 
+      Range endingSoon = heap.remove(); 
       Range nextEntry = new Range(0,0);
 
       if (endingSoon.end > r.start) {
