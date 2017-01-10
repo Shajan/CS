@@ -36,15 +36,15 @@ class CircularBinSearch {
   private static int findOffsetOfSmallest(int[] a) {
     int mid=0, start=0, end=a.length-1;
 
-    while (start <= end) {
+    while (start < end) {
       mid = (start + end)/2;
-      if (a[mid] < a[start])
+      if (a[mid] > a[end])
         start = mid + 1;
       else
-        end = mid - 1;
+        end = mid;
     }
 
-    return mid;
+    return end;
   }
 
 /*
