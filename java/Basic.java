@@ -8,6 +8,14 @@ import java.util.Vector;
 
 class Basic {
   public static void main(String args[]) {
+    String a = "abc";
+    String b = "abc";
+    System.out.println("a == b : " + a == b); // false (object identity)
+    System.out.println("a.equals(b) : " + a.equals(b)); // true
+
+    System.out.println("0123.substring(1): " + "0123".substring(1)); // prints "123"
+
+/*
     StringBuilder sb = new StringBuilder();
 
     // ArrayList
@@ -64,5 +72,6 @@ class Basic {
     s.add("2");
     System.out.println("1 --> " + s.contains("1"));
     System.out.println("10 --> " + s.contains("10"));
+*/
   }
 }
