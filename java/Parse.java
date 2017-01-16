@@ -11,6 +11,8 @@ class Parse {
     test("a,", 1);
     test("a,b", 2);
     test("a,b,c,d", 4);
+
+    System.out.println(Integer.parseInt("123"));
   }
 
   private static void test(String s, int expect) {
