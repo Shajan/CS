@@ -16,7 +16,7 @@ class Basic {
       al.add(s);
 
     for (String s: al)
-     sb.append(s).append(",");
+      sb.append(s).append(",");
 
     if (sb.length() > 1)
       sb.setLength(sb.length() - 1);
