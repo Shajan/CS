@@ -3,7 +3,7 @@ import java.util.HashMap;
 class Combinations {
   public static void main(String[] args) {
     System.out.println("Catalan Number 1 to 25");
-    for (int i=1; i<=25; ++i)
+    for (int i=1; i<=5; ++i)
       System.out.println(CatalanNumber(i));
   }
 
