@@ -1,2 +1,3 @@
+http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=MachineLearning
 http://neuralnetworksanddeeplearning.com/chap1.html
 https://www.youtube.com/watch?v=bxe2T-V8XRs
