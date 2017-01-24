@@ -1,0 +1,14 @@
+* Conditional: Control flow step thru code; Inspect variables
+1) Find larger of two numbers int max(int a, int b)
+2) Find smaller of two numbers int min(int a, int b)
+3) Find larger of three numbers int max(int a, int b, int c)
+
+* Functions: Reuse & Composition
+1) Find smallest of three numbers - take advantage of min(a,b) from above
+
+* Arrays: Scale number of items; Loops; Variable
+1) Find largest of many numbers
+2) Use while loop to find largest number
+3) Use for loop to find largest number
+
+* Primitive types: Strings, integers, boolean
