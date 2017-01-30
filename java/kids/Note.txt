@@ -6,7 +6,13 @@
 * Functions: Reuse & Composition
 1) Find smallest of three numbers - take advantage of min(a,b) from above
 
-* Arrays: Scale number of items; Loops; Variable
+* Loops: while, for, variables
+1) print numbers 0 to 5
+2) print numbers 0 to end
+3) print numbers start to end
+4) print even numbers, odd numbers less than 20
+
+* Arrays: Scale number of items; for
 1) Find largest of many numbers
 2) Use while loop to find largest number
 3) Use for loop to find largest number
