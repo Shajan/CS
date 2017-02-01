@@ -76,6 +76,9 @@ sudo fs_usage
 du -hs <folder>
 ls -lRh <filder>
 
+#debug disk space usage, find folders using more than 1G space
+sudo du -h / | grep '[0-9\.]\+G'
+
 #true always set exit code 0, false sets 1, echo $? to see the code
 true
 echo $?
