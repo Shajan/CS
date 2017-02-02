@@ -88,6 +88,13 @@ Activity Monitor
 	sudo launchctl limit core unlimited
 	ulimit -c unlimited
 
+#trace file system calls (open,stat,chmod,unlink) linux
+sudo strace -p <pid.  -e trace=open,stat,chmod,unlink -f
+
+#find proesses accessing a folder/file
+lsof | egrep <path>
+lsof +f -- /dev/sdb1
+
 #netstat
 netstat -na
 lsof
@@ -97,6 +104,7 @@ uname -mrs
 
 #Linux trace system calls
 strace <executable>
+strace -p <pid> [-f]
 
 #Linux trace individual request on disk driver's queue
 blkparse
