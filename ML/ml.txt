@@ -51,14 +51,20 @@ Linear Regression using Gradient Descent
 	Gradient descent for linear regression has only one global minimum - based on J(theta) is defined.
 
 Vectorized Linear Regression
+
 	alpha: learning rate (number)
-	x[1..m;0..n], y[1..m]: m labels (vector, vector)
-	theta[0..n]: weights. Initial value random, converges to trained value (vector)
+	labels : x[row:1..m;col:0..n], y[row:1..m]
+	weights : theta[row:0..n]
+		Initial value random, converges to trained value (vector)
 
-	theta[i] = theta[i] - (alpha/m)*delta[i]	// Update theta (vector[1..n])
-	delta[i] = sum(j:1..m){error[j]*x[,j]}		// Sum over training set, error*feature (vector[1..n])
-	error[j] = hypothesis[j] - y[j]			// Error for label 'j' hypotheis - result (vector[1..m])
-	hypothesis[j] = x[j,]*theta[]			// Hypothesis using theta[0..n] for features x[0..n] (vector[1..m])
-
-	theta = theta - (alpha/m)*transpose(transpose(x*theta - y)*x)
+	(1..n)
+	  theta[row:i] = theta[row:i] - (alpha/m)*delta[row:i]          // Update theta for each iteration
+		theta = theta - (alpha/m) * (x*theta' - y)' * x
+	  (1..m)
+	    delta[row:i] = sum(j:1..m) { error[row:j] } x[col:i]        // Sum over training set, error*feature (vector[1..n])
+		(x*theta' - y)' * x
+	    error[row:j] = hypothesis[row:j] - y[row:j]                 // Error for label 'j' hypotheis - result (vector[1..m])
+		((x[row:j,]*theta') - y[row:j])
+	    hypothesis[row:j] = x[row:j,*] * transpose(theta[*])        // Hypothesis using theta[0..n] for features x[0..n] (vector[1..m])
+		(x[row:j,]*theta')
 
