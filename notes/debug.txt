@@ -1,5 +1,6 @@
 a.hprof Java/JVM thread/call-stack that uses most cpu
 	Using top in conjunction with jstack, you can locate which threads are using up the majority of your CPU in production. Run `top` press 'H' (for LWP/thread view), 'c' (to show the full command view), and 'P' (to order by process), and found the 2 offending threads. I then ran `jstack <java_pid>` and found the native thread IDs that corresponded to the LWP IDs from top (you have to convert them to hex).
+	Use htop instead of top to find thread id
 
 ps aux | egrep <process_name> | egrep -v egrep | awk '{ print "cat /proc/" $2 "/status" }' | bash
 ps aux | egrep <process_name> | egrep -v egrep | awk '{ print "jstack -l " $2 }' | bash
@@ -35,6 +36,7 @@ JVM tools
 jstack -m -l /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump 
 
 #/usr/lib/jvm/java-1.8.0-twitter/bin/java
+jdb -listconnectors [to see what is supported]
 jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/lib/jvm/java-1.7.0-openjdk7/bin/java,core=./core
 	where all
 	wherei all
@@ -89,7 +91,8 @@ Activity Monitor
 	ulimit -c unlimited
 
 #trace file system calls (open,stat,chmod,unlink) linux
-sudo strace -p <pid.  -e trace=open,stat,chmod,unlink -f
+sudo strace -p <pid>  -e trace=open,stat,chmod,unlink -f
+sudo strace -p <pid>  -c # prints stats
 
 #find proesses accessing a folder/file
 lsof | egrep <path>
