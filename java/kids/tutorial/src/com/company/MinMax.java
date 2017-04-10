@@ -5,7 +5,6 @@ package com.company;
  */
 public class MinMax {
     public static void test() {
-        /*
         System.out.println("max of 10, 15 is " + max(10, 15));
         System.out.println("max of 15, 10 is " + max(15, 10));
         System.out.println("max of 10, 10 is " + max(10, 10));
@@ -29,7 +28,6 @@ public class MinMax {
         System.out.println("min of 10, 5, 10 is " + min(10, 5, 10));
         System.out.println("min of 10, 10, 20 is " + min(10, 10, 20));
         System.out.println("min of 10, 10, 10 is " + min(10, 10, 10));
-        */
 
         System.out.println(max(1,2,3));
         System.out.println(max(1,3,2));
@@ -37,6 +35,13 @@ public class MinMax {
         System.out.println(max(2,1,3));
         System.out.println(max(3,1,2));
         System.out.println(max(3,2,1));
+
+        System.out.println(min(1,2,3));
+        System.out.println(min(1,3,2));
+        System.out.println(min(2,3,1));
+        System.out.println(min(2,1,3));
+        System.out.println(min(3,1,2));
+        System.out.println(min(3,2,1));
     }
 
     static int max(int a, int b) {
@@ -53,9 +58,12 @@ public class MinMax {
             return b;
     }
 
-    static int max(int a, int b, int c) {
+    static int maxold(int a, int b, int c) {
         if (a > c) {
-            return a;
+            if (a > b)
+                return a;
+            else
+                return b;
         }
         if (c > b)
             return c;
@@ -63,15 +71,25 @@ public class MinMax {
             return b;
     }
 
-
-    static int min(int a, int b, int c) {
-        if (a < b)
-            return a;
-        if (c < b)
-            return c;
-        else
+    static int minold(int a, int b, int c) {
+        if (a < b) {
+            if (a < c)
+                return a;
+            else
+                return c;
+        }
+        if (b < c)
             return b;
+        else
+            return c;
     }
 
+    static int max(int a, int b, int c) {
+        return max(max(a,b),c);
+    }
+
+    static int min(int a, int b, int c) {
+        return min(min(a, b),c);
+    }
 }
 
