@@ -1,5 +1,6 @@
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.TreeMap;
 
 class Maps {
   public static void main(String args[]) {
+/*
     System.out.println("HashMap");
     Map<Integer,String> hm = new HashMap<>();
     populate(hm);
@@ -23,11 +25,12 @@ class Maps {
     populate(lm);
     print(lm);
 
-/*
     System.out.println("HashMap Iterator");
     print(hm);
     copy_semantics();
 */
+    System.out.println("Map Keyset Mutations");
+    map_keyset_mutations();
   }
 
   public static void populate(Map<Integer,String> m) {
@@ -77,5 +80,25 @@ class Maps {
     } catch (UnsupportedOperationException ex) {
       System.out.println("Map.value() is unmutable");
     }
+  }
+
+  public static void map_keyset_mutations() {
+    Map<Integer, String> map = new HashMap<>();
+    populate(map);
+
+    Set<Integer> set = new HashSet<>();
+    set.add(1);
+    set.add(3);
+    set.add(5);
+    set.add(100);
+
+    // Entries in the backing map can be removed using keySet
+    // All set remove operations work
+    // However entries cannot be added
+    //
+    // Only keep entries that match the set (1, 3, 5)
+    map.keySet().retainAll(set);
+
+    iterate(map); // prints 1, 3, 5
   }
 }
