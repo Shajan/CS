@@ -137,3 +137,10 @@ find . -type f -name *.fat -printf '%T@ %p\n' | sort -k 1 -n
 #substitute empty line with someting
 sed -e 's/^$/foobar/' <file>
 
+#process each line in a file
+IFS=$'\n'
+for line in $(cat filename.txt)
+do
+  echo $line
+done
+
