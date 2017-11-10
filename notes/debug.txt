@@ -100,7 +100,14 @@ lsof +f -- /dev/sdb1
 
 #netstat
 netstat -na
+sudo netstat --all --program 
 lsof
+
+#network activity, find pricess using too much network
+sudo iftop
+sudo iftop -B -i eth0
+	Press 1 2 or 3 column you want to sort; Find remote host, then to find process
+        sudo netstat -tup | egrep <host>
 
 #Linux version
 uname -mrs

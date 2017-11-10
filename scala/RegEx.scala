@@ -12,6 +12,12 @@ object RegEx {
       case p(n) => println(n.toInt) // prints 100
       case _ => println("no match")
     }
+
+    val simple = "^[/]?(__.*/)?foo/.*".r
+    args(0) match {
+      case simple(_) => println("match")
+      case _ => println("unable to find root folder in: " + args(0) )
+    }
   }
 }
 
