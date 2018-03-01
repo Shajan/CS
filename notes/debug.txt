@@ -90,6 +90,9 @@ Activity Monitor
 	sudo launchctl limit core unlimited
 	ulimit -c unlimited
 
+#Linux, list files open by process (including open ports)
+sudo lsof -Pan -p <pid>
+
 #trace file system calls (open,stat,chmod,unlink) linux
 sudo strace -p <pid>  -e trace=open,stat,chmod,unlink -f
 sudo strace -p <pid>  -c # prints stats
