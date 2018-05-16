@@ -73,7 +73,8 @@ class GradientDescent {
         System.out.println(String.format("\ttheta %f, error %f", theta, error));
     } while (iterations <= 1000);
 
-    System.out.println(String.format("%s Alpha %g, feature %.5f, label %.5f, iterations %d, theta %.5f [Failed to converge]",
+    System.out.println(String.format(
+      "%s Alpha %g, feature %.5f, label %.5f, iterations %d, theta %.5f [Failed to converge]",
       note, alpha, feature, label, iterations, theta));
     return theta;
   }
@@ -89,7 +90,7 @@ class GradientDescent {
   static void multipleLabelsSingleFeature() {
     double feature[] = { 0.1, 0, 1.0, 10.0, 100, -0.5, -1.0, 100000 };
     double label[] = new double[feature.length];
-    double alpha = 0.0000000001; 
+    double alpha = 0.0000000001;
 
     train(alpha, feature, multiply(1, feature), "Multiply by 1");
     train(alpha, feature, multiply(-1, feature), "Multiply by -1");
@@ -105,8 +106,10 @@ class GradientDescent {
     double theta = 1.0;
     double error[] = new double[m];
 
-    if (debugAllIterations)
-      System.out.println(String.format("%s Alpha %g, feature %s, label %s", note, alpha, toStr(feature), toStr(label)));
+    if (debugAllIterations) {
+      System.out.println(String.format("%s Alpha %g, feature %s, label %s",
+        note, alpha, toStr(feature), toStr(label)));
+    }
 
     do {
       // Compute error for the current values of theta
@@ -118,12 +121,14 @@ class GradientDescent {
         sumErrorTimesFeature += e*feature[i];
         sumSqError += Math.pow(e, 2);
       }
-      double avgError = sumSqError/m;
 
+      double avgError = sumSqError/m;
       if (avgError < 0.01) {
-        System.out.println(String.format("%s theta %f, iterations %d" note, theta, iterations));
-        if (debugAllIterations)
-          System.out.println(String.format("\tAlpha %g, feature %s, label %s", alpha, toStr(feature), toStr(label)));
+        System.out.println(String.format("%s theta %f, iterations %d", note, theta, iterations));
+        if (debugAllIterations) {
+          System.out.println(String.format("\tAlpha %g, feature %s, label %s",
+            alpha, toStr(feature), toStr(label)));
+        }
         return theta;
       }
 
@@ -137,7 +142,8 @@ class GradientDescent {
         System.out.println(String.format("\ttheta %.8f, error %s", theta, toStr(error)));
     } while (iterations <= 1000000);
 
-    System.out.println(String.format("%s Alpha %g, feature %s, label %s, iterations %d, theta %.5f [Failed to converge]",
+    System.out.println(String.format(
+      "%s Alpha %g, feature %s, label %s, iterations %d, theta %.5f [Failed to converge]",
       note, alpha, toStr(feature), toStr(label), iterations, theta));
     return theta;
   }
