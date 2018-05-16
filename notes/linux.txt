@@ -13,6 +13,10 @@ nmon
 iftop
 iptraf
 
+#find network usage by process
+yum install nethogs
+nethogs
+
 #memory, find RSS
 pmap -x <pid>
 
