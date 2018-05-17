@@ -1,9 +1,27 @@
 object Implicit {
   def main(args: Array[String]) {
+    ImplicitMethod.test
+    ImplicitClass.test
+    ImplicitParams.test
+  }
+}
+
+// Implicit method
+object ImplicitMethod {
+import scala.language.implicitConversions
+  implicit def num(s: String): Int = { Integer.parseInt(s) }
+
+  def test() {
+    val n: Int = "10"
+    println("\"10\" => " + n) // prints 10
+  }
+}
+
+// Implicit class
+object ImplicitClass {
+  def test() {
     print("10 square", 10 square)
     print("4 fatorial", 4 factorial)
-
-    ImplicitTest.test
   }
 
   // Only one argument for implict classes
@@ -25,12 +43,12 @@ object Implicit {
 }
 
 // Implicit paramter
-abstract class Monoid[A] {
-  def add(x: A, y: A): A
-  def unit: A
-}
+object ImplicitParams {
+  abstract class Monoid[A] {
+    def add(x: A, y: A): A
+    def unit: A
+  }
 
-object ImplicitTest {
   implicit val stringMonoid: Monoid[String] = new Monoid[String] {
     def add(x: String, y: String): String = x concat y
     def unit: String = ""
@@ -47,7 +65,7 @@ object ImplicitTest {
     else m.add(xs.head, sum(xs.tail))
   }
 
-  def test(): Unit = {
+  def test() {
     println(sum(List(1, 2, 3)))       // uses IntMonoid implicitly
     println(sum(List("a", "b", "c"))) // uses StringMonoid implicitly
   }
