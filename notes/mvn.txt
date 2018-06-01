@@ -1,0 +1,14 @@
+operations
+	mvn clean compile test install
+see dependencies
+	mvn dependency:tree
+	mvn dependency:tree -Dverbose -Dincludes=com.twitter:ostrich_2.9.2
+run specific test
+	mvn test -Dtest=ClassName
+	mvn test -Dtest=ClassName#MethodName
+skip tests
+	mvn compile -DskipTests
+print console output
+	mvn -X
+force failed again
+	mvn -U
