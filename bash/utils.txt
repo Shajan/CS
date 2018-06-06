@@ -144,3 +144,5 @@ do
   echo $line
 done
 
+#hash host name then modulo 
+hex=$(echo $HOSTNAME | md5sum | cut -f1 -d ' ' | cut -c 24-32); dec=$(printf '%d' 0x$hex); odd=$(echo "$dec % 2" | bc); if [[ $odd -eq 1 ]]; then echo "odd"; else echo "even"; fi
