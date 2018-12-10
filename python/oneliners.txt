@@ -1,0 +1,6 @@
+# Print object
+import pprint
+pprint.pprint(obj)
+
+# Print type
+type(obj)
