@@ -39,3 +39,6 @@ sudo iptables -A INPUT -p tcp --dport 10002 -j DROP
 #Enable port
 sudo iptables -D INPUT -p tcp --dport 10002 -s 127.0.0.1 -j ACCEPT
 sudo iptables -D INPUT -p tcp --dport 10002 -j DROP
+
+#trace events
+http://www.brendangregg.com/perf.html
