@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # prerec install valgrind (see http://valgrind.org/)
 # example usages:
@@ -15,7 +16,8 @@ if [ "$1" == "clean" ]; then
 fi
 
 if [ "$1" == "run" ]; then
-  valgrind --tool=massif ./memleak
+  #valgrind --tool=massif ./memleak
+  valgrind --tool=memcheck --leak-check=full ./memleak
   exit 0
 fi
 
@@ -28,4 +30,3 @@ fi
 
 clang++ -g -o memleak memleak.cpp
 valgrind --tool=memcheck --leak-check=full ./memleak
-

@@ -20,6 +20,8 @@ class BoundedCache {
       .maximumSize(mapCapacity) // avoid resize
       .build();
 
+    print(cache.getIfPresent(null));
+
     for (int i=0; i<mapCapacity; ++i) {
       cache.put(String.format("%d", i), new ArrayBlockingQueue<Integer>(arrayCapacity));
     }
@@ -36,7 +38,7 @@ class BoundedCache {
 
     try {
       items.add(arrayCapacity);
-    System.out.println("Unexpected!");
+      System.out.println("Unexpected!");
     } catch (IllegalStateException ex) {
     }
     print(items);
@@ -50,6 +52,9 @@ class BoundedCache {
   }
 
   static void print(ArrayBlockingQueue<Integer> items) {
+    if (items == null)
+      System.out.println("items:null");
+    else
       System.out.println(items.toString());
   }
 }

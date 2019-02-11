@@ -66,3 +66,6 @@ git branch -r --contain <SHA1>
 
 # Show changes only in your branch (which was off of master)
 git log master..
+
+# Fetch one file from another branch
+git show <branch>:<path>

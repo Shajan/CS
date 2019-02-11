@@ -1,5 +1,0 @@
-https://www.tensorflow.org/
-setup env
-	https://hackercodex.com/guide/python-development-environment-on-mac-osx/
-	source ~/tensorflow/bin/activate
-

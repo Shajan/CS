@@ -1,0 +1,6 @@
+TF_ENV=.tf.env
+TF_VERSION=v1.12.0
+TF_NAME=tensorflow
+WORKSPACE=~/workspace
+TF_BASE=${WORKSPACE}/${TF_NAME}/${TF_VERSION}
+TF_SRC=${TF_BASE}/${TF_NAME}
