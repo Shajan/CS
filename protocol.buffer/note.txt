@@ -1,0 +1,1 @@
+protoc --decode_raw < file.pb
