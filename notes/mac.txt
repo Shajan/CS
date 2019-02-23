@@ -1,0 +1,2 @@
+ldd equivalent (find library depnecies)
+  otool -L <binary-path>
