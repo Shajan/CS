@@ -19,6 +19,11 @@ gcore pid
 
 #Print stack from core dump
 #http://web.mit.edu/gnu/doc/html/gdb_8.html#SEC42
+gdb /usr/lib/jvm/java-1.7.0-openjdk7/bin/java <PID>
+# to continue execution on attach
+gdb /usr/lib/jvm/java-1.7.0-openjdk7/bin/java <PID> -ex cont
+  handle SIGSEGV print nostop
+  set logging on
 gdb /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
 gdb --core=core.dump
 	thread apply all bt
@@ -36,6 +41,7 @@ JVM tools
 jstack -m -l /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump 
 
 #/usr/lib/jvm/java-1.8.0-twitter/bin/java
+
 jdb -listconnectors [to see what is supported]
 jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/lib/jvm/java-1.7.0-openjdk7/bin/java,core=./core
 	where all
@@ -44,6 +50,11 @@ jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/li
 	thread XX
 	locals [print local variables]
 	up XX, down XX [to jump frames]
+
+/usr/lib/jvm/java-1.8.0-twitter/bin/jdb -connect com.sun.jdi.ProcessAttach:pid=<pid>
+
+/usr/lib/jvm/java-1.8.0-twitter/bin/jdb -connect sun.jvm.hotspot.jdi.SAPIDAttachingConnector:pid=<pid>
+	threads:w
 
 #http://docs.oracle.com/javase/7/docs/technotes/tools/share/jmap.html
 java "-agentlib:hprof=cpu=samples,interval=10,depth=128,file=log/hprof.txt"
