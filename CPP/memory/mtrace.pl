@@ -1,7 +1,6 @@
-#! @PERL@
-eval "exec @PERL@ -S $0 $@"
-    if 0;
-# Copyright (C) 1997-2018 Free Software Foundation, Inc.
+#! /usr/bin/perl
+
+# Copyright (C) 1997-2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 # Contributed by Ulrich Drepper <drepper@gnu.org>, 1997.
 # Based on the mtrace.awk script.
@@ -17,12 +16,12 @@ eval "exec @PERL@ -S $0 $@"
 # Lesser General Public License for more details.
 
 # You should have received a copy of the GNU Lesser General Public
-# License along with the GNU C Library; if not, see
-# <http://www.gnu.org/licenses/>.
+# License along with the GNU C Library; if not, write to the Free
+# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+# 02111-1307 USA.
 
-$VERSION = "@VERSION@";
-$PKGVERSION = "@PKGVERSION@";
-$REPORT_BUGS_TO = '@REPORT_BUGS_TO@';
+$VERSION = "2.7";
+$PACKAGE = "libc";
 $progname = $0;
 
 sub usage {
@@ -31,7 +30,7 @@ sub usage {
     print "  --version    print version number, then exit\n";
     print "\n";
     print "For bug reporting instructions, please see:\n";
-    print "$REPORT_BUGS_TO.\n";
+    print "<http://www.gnu.org/software/libc/bugs.html>.\n";
     exit 0;
 }
 
@@ -44,8 +43,8 @@ arglist: while (@ARGV) {
     if ($ARGV[0] eq "--v" || $ARGV[0] eq "--ve" || $ARGV[0] eq "--ver" ||
 	$ARGV[0] eq "--vers" || $ARGV[0] eq "--versi" ||
 	$ARGV[0] eq "--versio" || $ARGV[0] eq "--version") {
-	print "mtrace $PKGVERSION$VERSION\n";
-	print "Copyright (C) 2018 Free Software Foundation, Inc.\n";
+	print "mtrace (GNU $PACKAGE) $VERSION\n";
+	print "Copyright (C) 2007 Free Software Foundation, Inc.\n";
 	print "This is free software; see the source for copying conditions.  There is NO\n";
 	print "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
 	print "Written by Ulrich Drepper <drepper\@gnu.org>\n";
@@ -164,10 +163,10 @@ while (<DATA>) {
     SWITCH: {
 	if ($cols[$n] eq "+") {
 	    if (defined $allocated{$allocaddr}) {
-		printf ("+ %#0@XXX@x Alloc %d duplicate: %s %s\n",
+		printf ("+ %#010x Alloc %d duplicate: %s %s\n",
 			hex($allocaddr), $nr, &location($addrwas{$allocaddr}),
 			$where);
-	    } elsif ($allocaddr =~ /^0x/) {
+	    } else {
 		$allocated{$allocaddr}=$howmuch;
 		$addrwas{$allocaddr}=$where;
 	    }
@@ -178,7 +177,7 @@ while (<DATA>) {
 		undef $allocated{$allocaddr};
 		undef $addrwas{$allocaddr};
 	    } else {
-		printf ("- %#0@XXX@x Free %d was never alloc'd %s\n",
+		printf ("- %#010x Free %d was never alloc'd %s\n",
 			hex($allocaddr), $nr, &location($where));
 	    }
 	    last SWITCH;
@@ -188,14 +187,14 @@ while (<DATA>) {
 		undef $allocated{$allocaddr};
 		undef $addrwas{$allocaddr};
 	    } else {
-		printf ("- %#0@XXX@x Realloc %d was never alloc'd %s\n",
+		printf ("- %#010x Realloc %d was never alloc'd %s\n",
 			hex($allocaddr), $nr, &location($where));
 	    }
 	    last SWITCH;
 	}
 	if ($cols[$n] eq ">") {
 	    if (defined $allocated{$allocaddr}) {
-		printf ("+ %#0@XXX@x Realloc %d duplicate: %#010x %s %s\n",
+		printf ("+ %#010x Realloc %d duplicate: %#010x %s %s\n",
 			hex($allocaddr), $nr, $allocated{$allocaddr},
 			&location($addrwas{$allocaddr}), &location($where));
 	    } else {
@@ -224,10 +223,10 @@ if ($#addrs >= 0) {
 	if (defined $allocated{$addr}) {
 	    if ($anything == 0) {
 		print "\nMemory not freed:\n-----------------\n";
-		print ' ' x (@XXX@ - 7), "Address     Size     Caller\n";
+		print ' ' x (10 - 7), "Address     Size     Caller\n";
 		$anything=1;
 	    }
-	    printf ("%#0@XXX@x %#8x  at %s\n", hex($addr), $allocated{$addr},
+	    printf ("%#010x %#8x  at %s\n", hex($addr), $allocated{$addr},
 		    &location($addrwas{$addr}));
 	}
     }

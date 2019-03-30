@@ -11,10 +11,6 @@ set -e
 # Compile using C++ sources
 # -g : Source level debug info
 
-if [ "$1" == "init" ]; then
-  wget https://raw.githubusercontent.com/lattera/glibc/master/malloc/mtrace.pl
-fi
-
 if [ "$1" == "clean" ]; then
   rm -rf memleak.valgrind
   rm -rf memleak.mtrace
@@ -36,6 +32,8 @@ if [ "$1" == "mtrace" ]; then
   export MALLOC_TRACE=./mtrace.txt
   ./memleak.mtrace
   # The downloaded perl file does not appear to work
-  perl ./mtrace.pl ./memleak.mtrace $MALLOC_TRACE
+  # wget https://raw.githubusercontent.com/lattera/glibc/master/malloc/mtrace.pl
+  # Using https://www.linuxquestions.org/questions/programming-9/problem-with-mtrace-718946/
+  ./mtrace.pl ./memleak.mtrace $MALLOC_TRACE
   exit 0
 fi
