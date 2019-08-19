@@ -63,3 +63,16 @@ docker rm `docker ps --no-trunc -aq`
 
 # remove images without tag
 docker images | egrep ^'<none>' | awk '{ print $3 }' | xargs docker rmi 
+
+################ Containers
+
+# List containers
+docker container ls
+
+# Create a named container
+docker container create --name <ContainerName> <ImageName>
+
+# Start a container in the background
+
+# Remove all stopped containers
+docker container prune

@@ -33,8 +33,6 @@ git config --get remote.origin.url
 git clean -xfd
 git clean -xXfd #clean and remove untracked files as well From folder and subfolders from here
 
-# Check what's different in a branch
-git log --format=oneline --no-merges --author=sdasan --left-right --cherry-pick origin/master...origin/v5.0.0
 # create a patch
 git diff > patchfile
 patch -p1 < patchfile
@@ -66,6 +64,13 @@ git branch -r --contain <SHA1>
 
 # Show changes only in your branch (which was off of master)
 git log master..
+git log master.. | egrep ^commit | cut -f2 -d ' '
+
+# Check what's different in a branch
+git log --format=oneline --no-merges --author=sdasan --left-right --cherry-pick origin/master...origin/v5.0.0
 
 # Fetch one file from another branch
 git show <branch>:<path>
+
+# git fast clone, ignore history, useful for build jobs
+git clone --depth 1 <repo>

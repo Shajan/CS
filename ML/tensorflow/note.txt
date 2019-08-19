@@ -1,2 +1,5 @@
 # tf uses running time to selecting best algo, ignores memory usage, disable by setting to 0
 os.environ["TF_CUDNN_USE_AUTOTUNE"] = "0"
+
+tensorflow debugger https://www.tensorflow.org/guide/debugger
+`tfdbg lt -r -s dump_size` for inspecting a protobuf graph and sorting by the size of the tensors
