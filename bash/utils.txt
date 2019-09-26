@@ -149,3 +149,6 @@ hex=$(echo $HOSTNAME | md5sum | cut -f1 -d ' ' | cut -c 24-32); dec=$(printf '%d
 
 #print file from lastline to first
 tail -r
+
+#timestamp to human readable date
+date -r 1566259670

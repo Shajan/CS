@@ -1,0 +1,10 @@
+# Define partial functions
+
+import functools
+
+def mul(a, b):
+  return a * b
+
+d = functools.partial(mul, 2)
+
+d(3) # returns 6

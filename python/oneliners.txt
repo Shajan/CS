@@ -4,3 +4,7 @@ pprint.pprint(obj)
 
 # Print type
 type(obj)
+
+# Get source code
+import inspect
+print(inspect.getsource(<fn_var>))

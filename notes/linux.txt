@@ -4,6 +4,16 @@ ps -eo pid,comm,lstart,etime,time,args
 #Trace system calls
 strace <cmd>
 
+# -p only trace a process
+# -fp include sub process/threads
+strace -fp <pid>
+
+# Histogram of time spend in system call
+strace -c -fp <pid> 
+
+# -i option to print instruction pointer
+strace -e trace=proess -ifp $pid
+
 #performance http://www.tecmint.com/command-line-tools-to-monitor-linux-performance/
 top
 htop
@@ -42,3 +52,10 @@ sudo iptables -D INPUT -p tcp --dport 10002 -j DROP
 
 #trace events
 http://www.brendangregg.com/perf.html
+
+#Trace short lived processes
+perf probe --add 'do_execve +0(+0(%si)):string +0(+8(%si)):string +0(+16(%si)):string +0(+24(%si)):string'
+perf record --no-buffering -e probe:do_execve -a -o - | PAGER="cat -v" stdbuf -oL perf script -i -
+  :10007 10007 [000] 557516.214765: probe:do_execve: (ffffffff811cccb0) arg1="ls" arg2="--color=auto" arg3="-l" arg4="^\"
+  :10008 10008 [000] 557516.219168: probe:do_execve: (ffffffff811cccb0) arg1="sleep" arg2="1" arg3="^X" arg4=""
+perf probe --del do_execve

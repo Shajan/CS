@@ -1,0 +1,9 @@
+#export PYTHONPATH=${PYTHONPATH}:"$(pwd)/models"
+#running from python you need to set the `os.environ` or the subprocess will not see the directory.
+
+my_path = os.path.join(os.getcwd(), 'my_folder')
+
+if "PYTHONPATH" in os.environ:
+  os.environ['PYTHONPATH'] += os.pathsep +  my_path
+else:
+  os.environ['PYTHONPATH'] = my_path
