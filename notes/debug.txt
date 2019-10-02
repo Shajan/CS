@@ -34,6 +34,37 @@ gdb --core=core.dump
 		info frame
 		info args|locals|catch
 
+# examine memory
+x <address>
+x/g <address> # giant word
+
+# disassemble
+disass
+
+# Common commands in gdb
+gdb -p <pid> [OR gdb command, attach <pid>]
+c # continue
+info locals
+detach <pid>
+
+# After a fork, debug the child or parent process?
+set follow-fork-mode [child|parent]
+set detach-on-fork off # debug both child and parent
+
+# Threads
+catch syscall clone
+break pthread_exit
+
+# Break points
+catch [throw]
+info break
+delete [num]
+
+# Stack
+bt
+bt n [innermost n frames]
+bt -n [outermost n frames]
+
 #http://docs.oracle.com/javase/7/docs/technotes/tools/
 JVM tools
 

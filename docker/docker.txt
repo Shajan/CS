@@ -30,6 +30,7 @@ docker start <image-name>
 docker exec -it <image-name> /bin/bash
 
 # new image from commit id
+docker images # to get commit-id
 docker commit <commit-id> <image-name:tag>
 
 # Tensorflow
@@ -55,7 +56,7 @@ docker rm $(docker ps -a -q)
 docker rmi $(docker images -q)
 
 # remove all docker volumes
-docker volume ls -qf dangling=true | xargs -r docker volume rm
+docker volume ls -qf dangling=true | xargs docker volume rm
 
 # cleanup all containers
 docker system prune -a # removes everything
@@ -76,3 +77,11 @@ docker container create --name <ContainerName> <ImageName>
 
 # Remove all stopped containers
 docker container prune
+
+# Create image using Dockerfile
+docker build -f <DockerFilePath> -t <imagename:tag> .
+
+# Volume
+docker -v "laptop_folder:container_folder"
+Dockerfile
+  VOLUME ["container_folder",..]
