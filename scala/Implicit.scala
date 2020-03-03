@@ -3,6 +3,7 @@ object Implicit {
     ImplicitMethod.test
     ImplicitClass.test
     ImplicitParams.test
+    ImplicitPipe.test
   }
 }
 
@@ -68,5 +69,27 @@ object ImplicitParams {
   def test() {
     println(sum(List(1, 2, 3)))       // uses IntMonoid implicitly
     println(sum(List("a", "b", "c"))) // uses StringMonoid implicitly
+  }
+}
+
+// A common pattern
+implicit class Pipe[T](val v: T) extends AnyVal {
+  def |>[U] (f: T => U) = f(v)
+
+  // Additional suggestions:
+  def $$[U](f: T => U): T = {f(v); v}
+  def #!(str: String = ""): T = {println(str + v); v}
+}
+
+object ImplicitPipe {
+  import math
+  def rate(): Double = { 1.1 }
+  def test(): Unit = {
+    val a = rate() + math.log(rate()) // what if rate() changes between the two calls?
+    val b = { val r = rate(); rate + math.log(rate) }
+
+    // Double converted to Pipe[Double]
+    // then apply method |>, which takes a function that takes Double
+    val c = rate().|>(r => r + math.log(rate)) 
   }
 }
