@@ -5,23 +5,22 @@ object Stream {
     streamSeq()
   }
 
-  def streamIterator(): Unit = {
+  def get(n: Int): Iterator[Int] = {
     val c:C = new C
     val iter = c.getIterator
-    val x = iter.takeWhile(_ < 5) // Limit to first 4 items
+    iter.takeWhile(_ < n) // Limit to first n items
+  }
 
+  def streamIterator(): Unit = {
+    val iter: Iterator[Int] = get(5)
     // Nothing is materialized till this x.forach is called
-    x.foreach(i => println("iterated " + i))
+    iter.foreach(i => println("iterated " + i))
   }
     
   def streamSeq(): Unit = {
-    val c:C = new C
-    val iter = c.getIterator
-    val x = iter.takeWhile(_ < 5) // Limit to first 4 items
-
-    // Nothing is materialized till this x.forach is called
+    val iter: Iterator[Int] = get(5)
     val s = x.toSeq
-
+    // Nothing is materialized till this x.forach is called
     s.foreach(i => println("iterated " + i))
   }
 }

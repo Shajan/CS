@@ -72,6 +72,7 @@ object ImplicitParams {
   }
 }
 
+// https://www.scala-academy.com/tutorials/scala-pipe-operator-tutorial
 // A common pattern
 implicit class Pipe[T](val v: T) extends AnyVal {
   def |>[U] (f: T => U) = f(v)
