@@ -3,6 +3,8 @@ object Stream {
     streamIterator()
     println("------------------------")
     streamSeq()
+    println("------------------------")
+    length()
   }
 
   def get(n: Int): Iterator[Int] = {
@@ -19,9 +21,16 @@ object Stream {
     
   def streamSeq(): Unit = {
     val iter: Iterator[Int] = get(5)
-    val s = x.toSeq
+    val s = iter.toSeq
     // Nothing is materialized till this x.forach is called
     s.foreach(i => println("iterated " + i))
+  }
+
+  def length(): Unit = {
+    val iter: Iterator[Int] = get(5)
+    val s = iter.toSeq
+    // This will cause the items to materialize!
+    println("length : " + s.length)
   }
 }
 
