@@ -1,3 +1,12 @@
+For building a new version of tensorflow on mac
+
+0) cd ~/workspace/tensorflow
+1) create a folder for the version <XX>; cd <XX>
+2) virtualenv -p python3 ./.tf.env 
+3) Add alias tf.env.XXX to  ~/.local.bash 
+   example: alias tf.env.2.2="source ~/src/CS/ML/tensorflow/env.sh 2.2"
+4) Open virtual env by executing the alias
+
 # tf uses running time to selecting best algo, ignores memory usage, disable by setting to 0
 os.environ["TF_CUDNN_USE_AUTOTUNE"] = "0"
 
