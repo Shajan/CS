@@ -1,5 +1,5 @@
 TF_ENV=.tf.env
-TF_VERSION=v1.${1}.0
+TF_VERSION=v${1}.0
 TF_NAME=tensorflow
 WORKSPACE=~/workspace
 TF_BASE=${WORKSPACE}/${TF_NAME}/${TF_VERSION}
