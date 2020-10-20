@@ -1,0 +1,81 @@
+Setup on GCP:
+1. Add a GKE cluster
+   Create a pool
+   Use a namespace
+
+Setup Kubeflow:
+  https://github.com/kubeflow/manifests/tree/master/kfdef
+    kubeflow uses to define and build (describes your install)
+
+Configuration:
+  kind: Selects the service, example "InferenceService"
+  metadata/name: User defined name for that model
+  spec/default/<tensorflow/pytorch/sklearn>/
+    storageUri: gs://<bucket>/path
+    serviceAccount: .. (kubernetes identity, with access to gcs)
+    minReplicas, maxReplicas
+    resources/requests/
+      cpu,gpu,memory
+  spec/canaryTrafficPercent : 25
+  spec/canary/<tensorflow/..>/..
+
+
+To add explainer
+  spec/default/predictor/<tensorflow/pytorch/sklearn>/
+  spec/default/explainer/alibi
+    type: AnchorTabular, AnchorText,..
+
+Notes
+
+Canary:
+* Split traffic between production and canary.
+* Ability to have 0% traffic to canary, but still have an endpoint to test.
+
+Layers:
+
+Tensorflow/PyTorch/XGBoost/TensorRT/ONNX
+Kubeflow/KFServing
+KNative: Platform to build, deploy, and manage serverless workloads
+  Build src code into continers
+  Rollout, Autoscaling, Plug logging/monitoring
+    Request based Autoscaler
+  Events declarative actions/bindings between events 
+Istio: Service Mesh
+  Proxy controlly all traffic in and out of the pod
+  Service Discovery, Load Balancing, Failure Recovery, Metrics, Monitoring, Logging
+  A/B testing, Canary, Rate Limiting, Access Control, S2S Auth
+Kubernetes
+Compute (CPU/GPU/TPU)
+
+MicroServices:
+
+Predictor
+  Does prediction
+
+Explainer
+  Send multiple requrest to a predictor, preturbe the input serveral times to see what parts of the input was most important. Out of the box Alibi explainer configurable in yaml
+  Example given a picture, model predicts a cat. Change the picture many times to understand what part of the picture results in the model predicting a cat.
+  Alibi Explainer
+
+Transformer
+  Request can be transformed expanded
+
+Logging
+  Request (optionally response as well)
+  URL to send payload as CLoudEvents
+  Alibi Detect : Outlier Detection, Adversarial Detection, Concept Drift
+    Alert
+
+Links:
+https://github.com/kubeflow/kfserving/blob/master/docs/PRESENTATIONS.md
+https://istio.io/latest/docs/concepts/what-is-istio/
+
+References:
+GCP: Google Cloud Platform
+GKE: Google Kubernetes Engine
+  Google managed kubernetes service, 99.95% regional SLA, scale to 15K nodes
+  Private and Hybrid Networking
+  Nodes contain Pods which contain containers
+  Connected GCP Services: VPC Netowrking, Persistent disk, Load Balancer, Stackdriver
+Kubernetes: Container orchestration at scale, (aka k8s), written in go language
+Docker: Container

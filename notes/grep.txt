@@ -1,6 +1,10 @@
 Print only the patched part
-	egrep -o
+  egrep -o
 
 Lazy match not supported, use the perl syntax 
-	grep -P then use ? modifier 
-	[Example use .*? instead of .*]
+  grep -P then use ? modifier 
+  [Example use .*? instead of .*]
+
+Highlight matches in string
+  sysctl -a | grep -E --color 'machdep.cpu.features|VMX'
+

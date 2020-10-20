@@ -1,3 +1,6 @@
+# Snooze mesos health checks
+touch .healthchecksnooze
+
 a.hprof Java/JVM thread/call-stack that uses most cpu
 	Using top in conjunction with jstack, you can locate which threads are using up the majority of your CPU in production. Run `top` press 'H' (for LWP/thread view), 'c' (to show the full command view), and 'P' (to order by process), and found the 2 offending threads. I then ran `jstack <java_pid>` and found the native thread IDs that corresponded to the LWP IDs from top (you have to convert them to hex).
 	Use htop instead of top to find thread id
@@ -19,12 +22,12 @@ gcore pid
 
 #Print stack from core dump
 #http://web.mit.edu/gnu/doc/html/gdb_8.html#SEC42
-gdb /usr/lib/jvm/java-1.7.0-openjdk7/bin/java <PID>
+gdb /usr/lib/jvm/java-1.8.0-twitter/bin/java <PID>
 # to continue execution on attach
-gdb /usr/lib/jvm/java-1.7.0-openjdk7/bin/java <PID> -ex cont
+gdb /usr/lib/jvm/java-1.8.0-twitter/bin/java <PID> -ex cont
   handle SIGSEGV print nostop
   set logging on
-gdb /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
+gdb /usr/lib/jvm/java-1.8.0-twitter/bin/java core.dump
 gdb --core=core.dump
 	thread apply all bt
 	info threads
@@ -69,12 +72,12 @@ bt -n [outermost n frames]
 JVM tools
 
 #http://docs.oracle.com/javase/7/docs/technotes/tools/share/jstack.html
-jstack -m -l /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump 
+jstack -m -l /usr/lib/jvm/java-1.8.0-twitter/bin/java core.dump 
 
 #/usr/lib/jvm/java-1.8.0-twitter/bin/java
 
 jdb -listconnectors [to see what is supported]
-jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/lib/jvm/java-1.7.0-openjdk7/bin/java,core=./core
+jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/lib/jvm/java-1.8.0-twitter/bin/java,core=./core
 	where all
 	wherei all
 	threads
@@ -82,16 +85,24 @@ jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/li
 	locals [print local variables]
 	up XX, down XX [to jump frames]
 
+https://confluence.twitter.biz/display/~alambert/Frequently+answered+questions
+
 /usr/lib/jvm/java-1.8.0-twitter/bin/jdb -connect com.sun.jdi.ProcessAttach:pid=<pid>
+  print <full expression>
 
 /usr/lib/jvm/java-1.8.0-twitter/bin/jdb -connect sun.jvm.hotspot.jdi.SAPIDAttachingConnector:pid=<pid>
 	threads:w
 
+Launch mesos process with the added commandline
+  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address={{thermos.ports[debug]}}
+Then attach debugger to mesos debug port
+  /usr/lib/jvm/java-1.8.0-twitter/bin/jdb -attach 0:<debug-port>
+
 #http://docs.oracle.com/javase/7/docs/technotes/tools/share/jmap.html
 java "-agentlib:hprof=cpu=samples,interval=10,depth=128,file=log/hprof.txt"
 java "-agentlib:hprof=cpu=samples,interval=10,depth=128,file=log/hprof.bin,format=b"
-jmap -histo /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
-jmap -dump:format=b,file=/tmp/core /usr/lib/jvm/java-1.7.0-openjdk7/bin/java core.dump
+jmap -histo /usr/lib/jvm/java-1.8.0-twitter/bin/java core.dump
+jmap -dump:format=b,file=/tmp/core /usr/lib/jvm/java-1.8.0-twitter/bin/java core.dump
 
 #To see objects and in GC heap and traverse them
 jmap -dump:format=b,file=core.hprof <pid>
@@ -187,3 +198,95 @@ strings <path to core dump> #Wild guess
 
 #find process that has too many files open
 for proc in $(ls /proc | egrep -o '[0-9]*') ; do echo "$(ls -l $proc/fd | wc -l) : $proc"; done | sort -nr | head -n 20
+
+
+############################################
+## jdb connectors available on twitter JVM
+############################################
+  Connector: com.sun.jdi.CommandLineLaunch  Transport: dt_socket
+    description: Launches target using Sun Java VM command line and attaches to it
+
+    Argument: home Default value: /usr/lib/jvm/java-1.8.0-twitter/jre
+    description: Home directory of the SDK or runtime environment used to launch the application
+
+    Argument: options (no default)
+    description: Launched VM options
+
+    Required Argument: main (no default)
+    description: Main class and arguments, or if -jar is an option, the main jar file and arguments
+
+    Argument: suspend Default value: true
+    description: All threads will be suspended before execution of main
+
+    Required Argument: quote Default value: "
+    description: Character used to combine space-delimited text into a single command line argument
+
+    Required Argument: vmexec Default value: java
+    description: Name of the Java VM launcher
+
+  Connector: com.sun.jdi.RawCommandLineLaunch  Transport: dt_socket
+    description: Launches target using user-specified command line and attaches to it
+
+    Required Argument: command (no default)
+    description: Raw command to start the debugged application VM
+
+    Required Argument: quote Default value: "
+    description: Character used to combine space-delimited text into a single command line argument
+
+    Required Argument: address (no default)
+    description: Address from which to listen for a connection after the raw command is run
+
+  Connector: com.sun.jdi.SocketAttach  Transport: dt_socket
+    description: Attaches by socket to other VMs
+
+    Argument: timeout (no default)
+    description: Timeout while waiting to attach 
+
+    Argument: hostname Default value: atla-evz-19-sr1.prod.twttr.net
+    description: Machine name to which to attach for VM connections
+
+    Required Argument: port (no default)
+    description: Port number to which to attach for VM connections
+
+  Connector: com.sun.jdi.SocketListen  Transport: dt_socket
+    description: Accepts socket connections initiated by other VMs
+
+    Argument: timeout (no default)
+    description: Timeout while waiting for connection
+
+    Argument: port (no default)
+    description: Port number at which to listen for VM connections
+
+    Argument: localAddress (no default)
+    description: Local address that the listener binds to
+
+  Connector: com.sun.jdi.ProcessAttach  Transport: local
+    description: Attaches to debuggee by process-id (pid)
+
+    Required Argument: pid (no default)
+    description: pid
+
+    Argument: timeout (no default)
+    description: Timeout while waiting to attach 
+
+  Connector: sun.jvm.hotspot.jdi.SACoreAttachingConnector  Transport: filesystem
+    description: This connector allows you to attach to a core file using the Serviceability Agent
+
+    Required Argument: javaExecutable (no default)
+    description: Pathname of Java Executable
+
+    Argument: core Default value: core
+    description: Pathname of a corefile from a Java Process
+
+  Connector: sun.jvm.hotspot.jdi.SADebugServerAttachingConnector  Transport: RMI
+    description: This connector allows you to attach to a Java Process via a debug server with the Serviceability Agent
+
+    Required Argument: debugServerName (no default)
+    description: Name of a remote SA Debug Server
+
+  Connector: sun.jvm.hotspot.jdi.SAPIDAttachingConnector  Transport: local process
+    description: This connector allows you to attach to a Java process using the Serviceability Agent
+
+    Required Argument: pid (no default)
+    description: PID of a Java process
+############################################

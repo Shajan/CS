@@ -1,0 +1,12 @@
+gcloud config list
+gcloud config set project <project-id>
+gcloud container images list
+gcloud compute instances list
+
+Shortcuts:
+# Image life cycle
+gcloud auth configure-docker                          # docker use gcloud credentials
+docker build -t gcr.io/$PROJECT_ID/my-server:v1 .     # build the container using Dockerfile
+gcloud docker -- push gcr.io/$PROJECT_ID/my-server:v1 # push to registry
+docker run -d -p 8080:8080 --name my-server \
+gcr.io/$PROJECT_ID/my-server:v1                       # run
