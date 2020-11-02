@@ -29,6 +29,7 @@ POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metada
 
 # Deployment
 kubectl get deployments
+kubectl delete deployment <deployment-name>
 
 # Events
 kubectl get events
