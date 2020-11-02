@@ -1,7 +1,4 @@
 Setup on GCP:
-1. Add a GKE cluster
-   Create a pool
-   Use a namespace
 
 Setup Kubeflow:
   https://github.com/kubeflow/manifests/tree/master/kfdef
