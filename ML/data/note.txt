@@ -1,0 +1,5 @@
+Source:
+pima-indians-diabetes.csv
+  https://www.kaggle.com/kumargh/pimaindiansdiabetescsv?select=pima-indians-diabetes.csv
+titanic.csv
+  https://www.kaggle.com/c/titanic/data?select=train.csv
