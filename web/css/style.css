@@ -1,0 +1,44 @@
+/* Define paragraph (p) style */
+p {
+  font-zize: 28px;
+  color: red;
+  border: 5px dotted gray;
+  background: lightblue;
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+/* Style for id's in the html page */
+.showblock {
+  background: yellow;
+}
+
+.showspan {
+  background: grey;
+}
+
+#firstList {
+  background: yellow;
+  overflow: auto;
+  margin 0 auto; /* centers a block element */
+}
+
+#firstList li {
+  width: 200px;
+  padding: 10px;
+  float: left; /* Left to right instead of top to bottom */
+}
+
+#firstList li span {
+  background: lightblue;
+}
+
+/* Change color when mouse over */
+#firstList li:hover {
+  background: white;
+}
+
+#secondList {
+  background: lightblue;
+}

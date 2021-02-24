@@ -1,0 +1,11 @@
+CSS Reset removes default styles on browsers http://meyerweb.com/eric/tools/css/reset/ 
+Minify css https://cssminifier.com/
+
+HTML block elements occoupy the whole block - till end of line? (example <p>)
+Inline elements don't take the whole block (example <span>)
+
+Using id vs class
+* Each html page can have only one element with an id.
+  On html, use id="name"; on CSS #name { }
+* Use class if the class need to be present in multiple places in the html file
+  On html, use class="name"; on CSS .name { }

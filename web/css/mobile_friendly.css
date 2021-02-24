@@ -1,0 +1,40 @@
+/* Use media properties to override. To test, reduce the browser width */
+
+#container {
+  width: 500px;
+  overflow: auto;
+  margin: 0 auto;
+  background: lightblue;
+  padding: 20px;
+  margin-top: 20px;    /* space from the previous block */
+}
+
+#container li {
+  width: 47%;          /* about 50% forces two columns */
+  float: left;         /* arrage items in column format */
+  background: gray;
+  text-align: center;
+  margin-bottom: 20px; /* Space between rows of items */
+  padding: 10px 0;     /* Area within the list item */
+}
+
+/* Add a margin to the right of items in the first row */
+/* same as nth-child(2n-1) */
+#container li:nth-child(1),
+#container li:nth-child(3) {
+  margin-right: 20px;
+}
+
+/* Adjust for small screen */
+/* Does not appear to work with 400px, works with 520px */
+@media screen and (max-width: 520px) {
+
+  #container {
+    width: 100%;
+  }
+
+  #container li {
+    width: 90%;
+  }
+}
+
