@@ -1,0 +1,4 @@
+Install
+  install nodejs to get npm
+  npm install typescript --save-dev
+

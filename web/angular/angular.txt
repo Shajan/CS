@@ -1,0 +1,8 @@
+Components
+  https://angular.io/api/core/Component
+  Basic building block, and has
+  * HTML template
+  * CSS selector
+  * Optional set of CSS styles
+
+Templates

@@ -1,0 +1,11 @@
+Install NodeJs to get npm
+
+Getting packages
+  npm install <package-name> --save-dev
+  --save-dev will install as devDepenencies
+  devDependencies required during development, dependencies
+     are also required at runtime
+
+Publish by creating account on https://www.npmjs.com
+  npm login
+  npm publish
