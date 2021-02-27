@@ -2,3 +2,7 @@ Install
   install nodejs to get npm
   npm install typescript --save-dev
 
+Run
+  tsc <file.ts>  # Creates .js file
+  node <file.js> # Run the .js code
+
