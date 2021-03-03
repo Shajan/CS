@@ -1,0 +1,39 @@
+Setup
+
+* Install Python and virtualenv
+  pip3 install virtualenv
+* Optional : Create virtualenv (virtualenv django)
+  virtualenv ./env
+* Install django
+  pip install django
+
+Environment
+  source ./env/bin/activate
+
+Create a project
+  django-admin startproject helloworld
+
+  Create an app in the project
+  python ./manage.py calc
+
+Run server
+  cd ./helloworld
+  python manage.py runserver
+
+Concepts
+  Each app will have an MVT
+  MVT (Model, View - Equivalent to controller in MVC, Template - View in MVC)
+  Template : html with place holders that is set by view
+  Urls : Routes request paths to different apps and views
+  View : Handle requests, then renders output using Templates
+
+Wiring an app to the homepage
+  Create urls.py in app (see calc/urls.py)
+    Add a list of views
+  Create function views.py for each view
+  Update project's urls.py to include calc's urls
+
+To add page with dynamic content
+  Create a template html file (templates/dynamic.html)
+  Use {{placeholder}} in the html file
+  Update settings.py, TEMPLATES map, include html folder in 'DIRS'

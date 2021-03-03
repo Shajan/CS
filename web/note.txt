@@ -1,0 +1,11 @@
+JavaScript frameworks
+  Angular : More features compared to Angular out of the box
+  React : Quick start, less features than Angular, need plugins
+
+TypeScript compiles to JavaScript
+
+SVG : Draw directly on web pages
+  Vector graphics (no pixel distortion with any size of display)
+  Slow to render?
+
+Django : Python web framework for web backend
