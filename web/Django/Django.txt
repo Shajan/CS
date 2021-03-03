@@ -1,3 +1,5 @@
+Tutorial https://www.youtube.com/playlist?list=PLsyeobzWxl7r2ukVgTqIQcl-1T0C2mzau
+
 Setup
 
 * Install Python and virtualenv
@@ -24,8 +26,10 @@ Concepts
   Each app will have an MVT
   MVT (Model, View - Equivalent to controller in MVC, Template - View in MVC)
   Template : html with place holders that is set by view
+    DTL : Django Template Language
   Urls : Routes request paths to different apps and views
   View : Handle requests, then renders output using Templates
+    Business logic goes here (diferent form  View in MVC)
 
 Wiring an app to the homepage
   Create urls.py in app (see calc/urls.py)
@@ -37,3 +41,21 @@ To add page with dynamic content
   Create a template html file (templates/dynamic.html)
   Use {{placeholder}} in the html file
   Update settings.py, TEMPLATES map, include html folder in 'DIRS'
+
+To add a base html page with placeholders filled in by other html sub pages
+  Create a base page (see templates/base.html)
+    Add placeholders in the page {% block content %} {% endblock %}
+  Create a sub page (see templates/dynamicUsingBase.html) 
+    Import base {% extends 'base.html' %}
+    Add content to be rendered in base.html
+      Between {% block content %} .. {% endblock %} 
+
+To get input
+  Create an html page with form (see templates/getDataForm.html)
+  In the view use request.GET[] (see calc.views.getDataCompute)
+
+To post data
+  Create an html page with form (see templates/postDataForm.html)
+    Add {% csrf_token %}
+  In the view use request.POST[] (see calc.views.postDataCompute)
+
