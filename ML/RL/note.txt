@@ -1,0 +1,72 @@
+Links
+  https://deeplizard.com/learn/playlist/PLZbbT5o_s2xoWNVdDudn51XM8lOuZ_Njv
+
+-------------------------------
+Markov Decision Processes (MDPs)
+-------------------------------
+  A way to mathematically model sequntial decision making
+
+  Given Environment, Agent, States, Actions, Rewards
+  Agent takes Action, one at a time
+  Action causes state transition which gets Rewards
+  Goal is to maximize long term cumulative rewards from multiple sequntial actions.
+
+  Notation:
+  S : Set of States
+  A : Set of Actions
+  R : Set of Rewards
+
+  At each time step t (t0, t1..), a state transition (St, At) is taken by the Agent.
+  In the next step (St+1, At+1) produces a Reward Rt+1 attributed to the previous step (St, At).
+  Note: Reward is computed at the current state, which was influenced by the previous transition.
+
+  Process of recieving a reward as 'f' maps (State, Action) to Reward
+  f(St,At) = Rt+1
+
+  Trajectory S0,A0,R1,S1,A1,R2,S2,A2,R3..
+
+Expected Return
+  Sum of future rewards
+  Gt = Rt+1 + Rt+2 + .. RT
+  T : Final time step
+  Episode : End of a session, environment resets after each episode.
+  Episodic Vs. Continuing Tasks : Continuing Tasks don't have a notition of episode.
+
+  Immediate rewards are weighted higher, it is done using Discounted future rewards
+
+  Discounted return : Gama is multiplicative at each step
+  Gt = Rt+1 + Gama * Rt+2 + Gama^2 * Rt+3 + ..
+  Gt = Rt+1 + Gamma * Gt+1 [Reccursive definition]
+
+Policies And Value Functions
+  How Good Is A State Or Action
+  Policy : Probability that an agent will select a specific action from a specific state.
+  Value Function : Estimate how good a specific state or a specific action is.
+
+  Policy : Pi(a|s)
+    Probability of action a, in state s
+    Pi is a prability distribution for each element in S, over each element in A
+
+  Value Functions can be on States [state-value function] or (State, Action) pairs [action-value function]
+    Estimate expected return for a specific state or a specific action from a state.
+
+  State-Value function for policy 'pi' is v-pi
+    Tells us how good any given state is for an agent following policy pi.
+    E-pi : Expected return following policy pi
+    v-pi(s) : Expected Return starting at s and following policy pi 
+      v-pi(s) = E-pi[Gt|S=s]
+ 
+  Action-Value function for policy 'pi' is q-pi [aka Q-Function]
+    Tells us how good any given action is for an agent following policy pi from a given state.
+    j-pi : Expected return following policy pi
+    q-pi(s, a) : Expected Return starting at s and taking action a following policy pi 
+      q-pi(s, a) = E-pi[Gt|S=s, A=a]
+      Specific values for (s, a) is called Q-Value
+      Q : Quality
+
+Optimal Policies
+  This is what RLs learn
+
+-------------------------------
+Next
+-------------------------------
