@@ -1,5 +1,6 @@
 Links
   https://deeplizard.com/learn/playlist/PLZbbT5o_s2xoWNVdDudn51XM8lOuZ_Njv
+  https://colab.research.google.com/drive/1rDaCMkw8wxar8xpgIgqAjDDIW76ecCxc#scrollTo=IrSVEyWkwBRT
 
 -------------------------------
 Markov Decision Processes (MDPs)
