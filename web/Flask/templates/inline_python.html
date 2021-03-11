@@ -1,0 +1,24 @@
+<html>
+<head>
+<Title>My Title</Title>
+</head>
+<body>
+
+  <h4>Show list</h4>
+  {% for x in mylist %}
+    <p>{{x}}</p>
+  {% endfor %}
+
+  <h4>Some numbers</h4>
+  {% for x in range(5) %}
+    {% if x %2 == 0 %}
+      <p>Divisible by 2: {{x}}</p>
+    {% elif x % 3 == 1 %}
+      <p>Divisible by 3: {{x}}</p>
+    {% else %}
+      <p>Not Divisible by 2 or 3: {{x}}</p>
+    {% endif %}
+  {% endfor %}
+
+</body>
+</html>
