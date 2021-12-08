@@ -1,0 +1,4 @@
+Benchmarks to compare data formats
+* Serialization / Deserialization performance
+* Size of serialized data
+* Performance of differetn Language bindings
