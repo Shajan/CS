@@ -31,7 +31,7 @@ git config --get remote.origin.url
 
 # clean up, remove untracked stuff
 git clean -xfd
-git clean -xXfd #clean and remove untracked files as well From folder and subfolders from here
+git clean -Xfd
 
 # create a patch
 git diff > patchfile

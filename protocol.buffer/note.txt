@@ -1,4 +1,1 @@
 protoc --decode_raw < file.pb
-
-tensorflow debugger https://www.tensorflow.org/guide/debugger
-`tfdbg lt -r -s dump_size` for inspecting a protobuf graph and sorting by the size of the tensors
