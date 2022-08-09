@@ -1,0 +1,8 @@
+// To do a quick run ----------------------------------------------------------------------
+
+  cmdline options : -- -i 1 -wbs 1 -wf 0
+
+Annotations:
+  @Benchmark
+  @Warmup(iterations = 2, time = 5, timeUnit = TimeUnit.MILLISECONDS)
+  @Measurement(iterations = 2, time = 5, timeUnit = TimeUnit.MILLISECONDS)
