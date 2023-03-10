@@ -72,12 +72,12 @@ bt -n [outermost n frames]
 JVM tools
 
 #http://docs.oracle.com/javase/7/docs/technotes/tools/share/jstack.html
-jstack -m -l /usr/lib/jvm/java-1.8.0-twitter/bin/java core.dump 
+jstack -m -l /usr/lib/jvm/java-11-twitter/bin/java core.dump 
 
-#/usr/lib/jvm/java-1.8.0-twitter/bin/java
+#/usr/lib/jvm/java-11-twitter/bin/java
 
 jdb -listconnectors [to see what is supported]
-jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/lib/jvm/java-1.8.0-twitter/bin/java,core=./core
+jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/lib/jvm/java-11-twitter/bin/java,core=./core
 	where all
 	wherei all
 	threads
@@ -87,10 +87,10 @@ jdb -connect sun.jvm.hotspot.jdi.SACoreAttachingConnector:javaExecutable=/usr/li
 
 https://confluence.twitter.biz/display/~alambert/Frequently+answered+questions
 
-/usr/lib/jvm/java-1.8.0-twitter/bin/jdb -connect com.sun.jdi.ProcessAttach:pid=<pid>
+/usr/lib/jvm/java-11-twitter/bin/java/jdb -connect com.sun.jdi.ProcessAttach:pid=<pid>
   print <full expression>
 
-/usr/lib/jvm/java-1.8.0-twitter/bin/jdb -connect sun.jvm.hotspot.jdi.SAPIDAttachingConnector:pid=<pid>
+/usr/lib/jvm/java-11-twitter/bin/java/jdb -connect sun.jvm.hotspot.jdi.SAPIDAttachingConnector:pid=<pid>
 	threads:w
 
 Launch mesos process with the added commandline
