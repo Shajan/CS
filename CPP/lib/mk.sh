@@ -44,3 +44,8 @@ gcc ./bin/${MAIN}.o ./bin/dlib/${LIB}.so -o ./bin/d${MAIN}
 
 # Execute static binary
 LD_LIBRARY_PATH=./lib:$LD_LIBRARY_PATH ./bin/d${MAIN}
+
+# NOTE!!!
+#
+# When using '-l' option, the library file is expeced to have a 'lib' prefix
+# Example: -lfoo to import library, ld looks for 'libfoo.a' or 'libfoo.so' 
