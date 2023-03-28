@@ -1,0 +1,28 @@
+Notes
+1. Protobuf has no int16 type, Tensor can respresent such types
+2. Tensor* is mostly an in-memory c++ friendly and interacts with the model
+2. Example deals with features
+
+https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/framework/tensor.proto
+TensorProto
+  DataType, TensorShapeProto, 
+  tensor_content (bytes) or repeated <protobuf_type>_val (int16 --> int32 padded)
+  
+https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/framework/types.proto
+DataType : enum { DT_* : FLOAT, DOUBLE, [U|Q]INT[8|16|32|64],... } Q -> Quantized
+
+https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/framework/tensor_shape.proto
+TensorShapeProto
+  repeated Dim
+Dim : size (-1: for unknown), name
+
+https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto
+Example: Features
+SequenceExample: Features (common), FeatureLists (sequence by time)
+
+https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/feature.proto
+Features : map<string, Feature>
+Feature: XXXList (only one type)
+[Byte|Float|Int64]List : repeated [bytes|float|int64]
+FeatureList : repeaed Feature
+FeatureLists : map<string, FeatureList> (example: used for time series)
