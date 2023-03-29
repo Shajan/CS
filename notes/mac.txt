@@ -1,2 +1,26 @@
+Setup new machine
+=================
+
+* Generate ssh key (ssh-keygen -t rsa)
+
+Install
+-------
+* git (XCode installs it)
+  edit ~/.gitconfig
+  [user]
+  name = Shajan Dasan
+  email = sdasan@gmail.com
+  username = sdasan
+
+* github
+  Add public key to github (pbcopy < ~/.ssh/id_rsa.pub, then paste on https://github.com/settings/keys)
+  mkdir ~/src; cd ~/src; git clone git@github.com:Shajan/CS.git
+
+* Homebrew
+* Docker
+* VSCode
+
+Utils
+=====
 ldd equivalent (find library depnecies)
   otool -L <binary-path>
