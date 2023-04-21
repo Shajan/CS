@@ -1,0 +1,2 @@
+https://vercel.com/ to create and host site, with code on github
+https://cs-gules.vercel.app/ the site created by code here
