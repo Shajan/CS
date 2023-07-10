@@ -1,0 +1,11 @@
+Service
+  CluserIP: Default, provieds a stable ip for the service
+    rounting: serviceip:port --> endpoints {ip:port} --> node_bridge(ip:port)
+    Serviceip is only accessible from within the cluster
+    Headless: Set ClusterIP:None
+      Allows communication to specific pod (example for statefulset, working with DNS)
+  NodePort: Opens up a port (30k+ range) on nodes
+    {nodeip:port} --> node_bridge(ip:port)
+    Nodeport is accessible from outside the cluster
+  LoadBalancer: Creates and external ip. Help integrate with cloud loadbalancers
+    Automatically creates a NodePort and ClusterIP service

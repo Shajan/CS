@@ -1,0 +1,32 @@
+--------------------------------
+# Source me
+export KUBE_NAME=test
+alias k="minikube -p $KUBE_NAME kubectl -- "
+alias m="minikube -p $KUBE_NAME "
+
+echo "k=kubectl"
+echo "m=minikube"
+--------------------------------
+# Install
+brew update
+brew upgrade
+brew install hyperkit
+brew install minikube
+
+--------------------------------
+# Start
+minikube -p $KUBE_NAME start --driver=hyperkit
+m addons enable dashboard
+m addons enable ingress
+
+--------------------------------
+Shortcuts:
+
+m profile list
+m addons list
+m service <service-name>  # For browser access
+
+k get all
+
+--------------------------------
+

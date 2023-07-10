@@ -33,3 +33,4 @@ kubectl delete deployment <deployment-name>
 
 # Events
 kubectl get events
+

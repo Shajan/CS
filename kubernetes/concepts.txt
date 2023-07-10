@@ -1,0 +1,29 @@
+Deployment
+  Replicaset
+    Pod
+      Container
+
+Deployment
+  kubectl create deployment nginx-depl --image=nginx
+  kubectl get deployment
+  kubectl edit deployment nginx-depl
+  kubectl delete deployment nginx-depl
+  kubectl apply -f config/nginx-deployment.yaml
+
+Pod
+  kubectl get pods 
+    podname is <deployment-name>-<replicaset-id>-<pod-id>
+  kubectl describe pod <pod-name>
+  kubectl logs <pod-name>
+  kubectl exec -it <pod-name> -- /bin/bash
+
+Objects
+  # kubectl api-resources
+  # kubectl get [objecttype]
+  node
+  pod
+  deployment
+  replicaset
+  service
+  endpoint
+  namespace
