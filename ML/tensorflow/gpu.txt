@@ -1,3 +1,5 @@
+1) Compile ensorflow 2.13 for GPU
+
 TF_VERSION=2.13.0
 BAZEL_VERSION=1.18.0
 CUDNN_VERSION=8.6.0.163
@@ -40,3 +42,26 @@ echo "\nN\ny\nN\n\n8\n\n${WS}/cuda\n\nN\n\n\nN\n"  | ./configure
 
 # Compile
 bazel build --config=opt --config=cuda  --config=monolithic --compilation_mode=opt --copt=-march=native --jobs=$(nproc) tensorflow:libtensorflow.so
+
+Compiled files : bazel-bin/tensorflow/libtensorflow.so*
+
+2) Runtime env vars
+
+PATH=~/cuda/bin:$PATH
+
+CUDA_VISIBLE_DEVICES=0
+CUDA_MODULE_LOADING=EAGER
+CUDA_HOME=~/cuda
+
+XLA_FLAGS="--xla_gpu_cuda_data_dir=~/cuda"
+TF_ENABLE_ONEDNN_OPTS=1
+TF_ENABLE_XLA=1
+TF_CUDA_VERSION=11
+TF_CUDNN_VERSION=8
+
+LD_LIBRARY_PATH=~/cuda/lib64:~/tensorflow-${TF_VERSION}/bazel-bin/tensorflow:$LD_LIBRARY_PATH
+
+3) Profiling
+PATH=~/cuda/bin:$PATH
+~/cuda/bin/nsys launch <app>
+nsys [start|stop]
