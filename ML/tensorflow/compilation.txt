@@ -1,0 +1,42 @@
+TF_VERSION=2.13.0
+BAZEL_VERSION=1.18.0
+CUDNN_VERSION=8.6.0.163
+CUDA_VERSION=11.8.0
+CUDA_VERSION_FULL=${CUDA_VERSION}_520.61.05
+
+# Copy tensorflow source
+wget https://github.com/tensorflow/tensorflow/archive/refs/tags/v${TF_VERSION}.tar.gz
+tar -xf v${TF_VERSION}.tar.gz
+
+# Python pacakages
+pip3 install -U --user pip numpy wheel packaging requests opt_einsum
+pip3 install -U --user keras_preprocessing --no-deps
+
+# Install bazel
+wget https://github.com/bazelbuild/bazelisk/releases/download/v${BAZEL_VERSION}/bazelisk-linux-amd64
+cp bazelisk-linux-amd64 ~/bin/bazel
+chmod +x ~/bin/bazel
+
+# Install CUDA
+wget https://developer.download.nvidia.com/compute/cuda/${CUDA_VERSION}/local_installers/cuda_${CUDA_VERSION_FULL}_linux.run
+chmod +x ./cuda_${CUDA_VERSION_FULL}_linux.run
+cuda_${CUDA_VERSION_FULL}_linux.run --silent --toolkit --toolkitpath=~/cuda
+
+# Install cuDNN
+# Download from https://developer.nvidia.com/rdp/cudnn-archive
+#   cuDNN v8.6.0 (October 3rd, 2022), for CUDA 11.x
+# Copy lib, include to ~/cuda/* folder
+tar -xf ./cudnn-linux-x86_64-${CUDNN_VERSION}_cuda11-archive.tar.xz
+cp cudnn-linux-x86_64-${CUDNN_VERSION}_cuda11-archive/include/*  ~/cuda/include/
+cp cudnn-linux-x86_64-${CUDNN_VERSION}_cuda11-archive/lib/* ~/cuda/lib64/
+
+# Use devtoolset 11
+scl enable devtoolset-11 bash
+
+cd tensorflow-${TF_VERSION}
+
+# Configure
+echo "\nN\ny\nN\n\n8\n\n${WS}/cuda\n\nN\n\n\nN\n"  | ./configure
+
+# Compile
+bazel build --config=opt --config=cuda  --config=monolithic --compilation_mode=opt --copt=-march=native --jobs=$(nproc) tensorflow:libtensorflow.so
