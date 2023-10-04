@@ -1,0 +1,28 @@
+# Compiled binaries and libraries
+/target/
+**/*.rs.bk
+
+# Compilation output
+**/*.o
+**/*.rlib
+**/*.so
+**/*.exe
+**/*.dll
+**/*.dylib
+**/*.deb
+**/*.rpm
+**/*.tar.gz
+**/*.d
+
+# Generated files
+Cargo.lock
+
+# IDE directories and files
+.idea/
+.vscode/
+
+# OS-specific files
+.DS_Store
+*.swp
+*.swo
+

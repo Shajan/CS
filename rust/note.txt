@@ -1,0 +1,4 @@
+# rust commands
+rust init <project-name>
+rust build
+rust run
