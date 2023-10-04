@@ -1,4 +1,4 @@
 # rust commands
-rust init <project-name>
-rust build
-rust run
+cargo init <project-name>
+cargo build
+cargo run

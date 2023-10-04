@@ -1,5 +1,5 @@
 # Compiled binaries and libraries
-/target/
+**/target/*
 **/*.rs.bk
 
 # Compilation output
