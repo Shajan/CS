@@ -3,7 +3,7 @@
 # Path to the virtual environment directory
 VENV=web_server
 VENV_PATH="`pwd`/${VENV}"
-REQUIREMENTS=("flask")
+REQUIREMENTS=("flask" "MarkupSafe")
 
 export PORT=8080
 
