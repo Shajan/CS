@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Control and Experiment results</title>
+    <style>
+        body {
+            margin-top: 50px;
+        }
+        .result-table {
+            display: flex;
+        }
+        .result-table table {
+            margin-top: 20px;
+            margin-right: 20px;
+            border-collapse: collapse;
+        }
+        .result-table table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form method="post">
+        <input type="text" name="query">
+        <button type="submit">Submit</button>
+    </form>
+
+    <div class="result-table">
+        <table>
+            <tr><td><b>Control</b></td></tr>
+            {% for item in control %}
+                <tr><td>{{ item }}</td></tr>
+            {% endfor %}
+        </table>
+    
+        <table>
+            <tr><td><b>Experiment</b></td></tr>
+            {% for item in experiment %}
+                <tr><td>{{ item }}</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
+
