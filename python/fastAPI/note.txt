@@ -1,0 +1,7 @@
+One time setup:
+  conda activate py_3_11
+  python -m venv .venv
+  source .venv/bin/activate
+  pip install fastapi "uvicorn[standard]" pydantic
+
+conda activate py_3_11; source .venv/bin/activate
