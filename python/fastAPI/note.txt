@@ -2,6 +2,11 @@ One time setup:
   conda activate py_3_11
   python -m venv .venv
   source .venv/bin/activate
-  pip install fastapi "uvicorn[standard]" pydantic
+  pip install -r requirements.txt
 
-conda activate py_3_11; source .venv/bin/activate
+Development environment:
+  conda activate py_3_11
+  source .venv/bin/activate
+
+Run server from development env:
+  uvicorn main:app --reload --port 8080
