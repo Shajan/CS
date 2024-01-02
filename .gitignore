@@ -1,4 +1,6 @@
 *.swp
 .DS_Store
 .venv
+.env
 __pycache__
+.ipynb_checkpoints
