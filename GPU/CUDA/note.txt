@@ -1,0 +1,8 @@
+Run this on a google collab terminal, make sure a GPU based runtime is used.
+
+Concepts
+nvcc : NVIDIA Cuda Compiler
+Kernel : A piece of code that executes on a GPU
+Warp Size : The smallest unit of threads that are scheduled together on an NVIDIA GPU (usually 32)
+Block Size : Howmany threads to schedule in parallel, a multiple of Warp Size, tune for different applications.
+  Consider memory bandwidth so that GPUs are not waiting, as well as max for each GPU type.
