@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastAPI Echo</title>
+</head>
+<body>
+    <form action="/" method="post">
+        <input type="text" name="text" placeholder="Enter text">
+        <button type="submit">Send</button>
+    </form>
+    {% if echo %}
+        <p>You entered: {{ echo }}</p>
+    {% endif %}
+</body>
+</html>
+

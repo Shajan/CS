@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Server-Sent Events Stream</h1>
+    <div id="messages"></div>
+
+    <script>
+        var eventSource = new EventSource("/events");
+        eventSource.onmessage = function(event) {
+            document.getElementById("messages").innerText += event.data + "\n";
+        };
+    </script>
+</body>
+</html>

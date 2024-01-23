@@ -1,0 +1,12 @@
+Setup:
+  conda activate py_3_11
+  python -m venv .venv
+  source ./.venv/bin/activate
+  pip install fastapi uvicorn
+
+  # optional
+  pip install jinja2 python-multipart
+  pip install aiofiles
+
+Run:
+  uvicorn main:app --reload

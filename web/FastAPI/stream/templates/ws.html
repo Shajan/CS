@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>WebSocket Stream</h1>
+    <div id="messages"></div>
+
+    <script>
+        var ws = new WebSocket("ws://" + window.location.host + "/ws");
+        ws.onmessage = function(event) {
+            var message = JSON.parse(event.data);
+            document.getElementById("messages").innerText += message.message + "\n";
+        };
+    </script>
+</body>
+</html>
