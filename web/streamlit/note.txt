@@ -4,6 +4,7 @@ Hosted
     Connected to https://github.com/Shajan/streamlit/app.py
 
 Development env
+  cd ~/src/sdasan/streamlit
   python -m venv .venv
   source ./.venv/bin/activate
   pip install streamlit
