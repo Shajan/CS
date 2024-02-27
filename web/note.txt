@@ -11,3 +11,6 @@ SVG : Draw directly on web pages
 Django : Python framework for web backend
 
 Flask : Lite Python framework for web backend
+
+Streamlit : Python framework for web based data apps
+

@@ -1,0 +1,16 @@
+Hosted 
+  https://share.streamlit.io/
+  https://sdasan.streamlit.app
+    Connected to https://github.com/Shajan/streamlit/app.py
+
+Development env
+  python -m venv .venv
+  source ./.venv/bin/activate
+  pip install streamlit
+  pip install watchdog
+  streamlit run ./app.py
+
+   config ~/.streamlit/config.toml
+
+Reference:
+  https://github.com/streamlit/streamlit
