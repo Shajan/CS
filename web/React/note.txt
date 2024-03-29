@@ -1,0 +1,8 @@
+npx is installed as part of node.js
+
+# To create a hello world as well as install required packages, run
+npx create-react-app hello-world
+
+cd hello-world
+npm start
+
