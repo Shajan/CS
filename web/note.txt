@@ -14,3 +14,8 @@ Flask : Lite Python framework for web backend
 
 Streamlit : Python framework for web based data apps
 
+Node.js : Backend javascript runtime.
+  npm : Node package manager that comes with Node.js
+  React : JavaScript framework focusing on client side logic, built on Node.js
+    Next.js : Builts on React and focuses on server side rendering
+      Vercel : Hosts Next.js apps
