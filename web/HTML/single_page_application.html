@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>onhashchange Example</title>
+</head>
+<body>
+  <h1>Welcome to the Page</h1>
+  <p>Click the links to change the content:</p>
+
+  <a href="#section1">Section 1</a> | <a href="#section2">Section 2</a> | <a href="#section3">Section 3</a>
+
+  <div id="content">This is the default content.</div>
+
+  <script>
+    window.onhashchange = function() {
+      const hash = location.hash;
+      const content = document.getElementById('content');
+
+      if (hash === '#section1') {
+        content.textContent = 'You are now viewing Section 1.';
+      } else if (hash === '#section2') {
+        content.textContent = 'You are now viewing Section 2.';
+      } else if (hash === '#section3') {
+        content.textContent = 'You are now viewing Section 3.';
+      } else {
+        content.textContent = 'This is the default content.';
+      }
+    };
+  </script>
+</body>
+</html>
+

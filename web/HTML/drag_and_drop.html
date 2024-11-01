@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+#div1 {
+  width: 350px;
+  height: 70px;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+}
+</style>
+<script>
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("id_property", ev.target.id);
+}
+
+function drop(ev) {
+  let id = ev.dataTransfer.getData("id_property");
+  ev.target.appendChild(document.getElementById(id));
+  ev.preventDefault();
+}
+</script>
+</head>
+<body>
+
+<div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+<br>
+
+<p id="drag1" draggable="true" ondragstart="drag(event)">Item 1.</p>
+<p id="drag2" draggable="true" ondragstart="drag(event)">Item 2.</p>
+
+</body>
+</html>
