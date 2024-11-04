@@ -1,0 +1,25 @@
+<html>
+
+<body>
+
+<h1>Getting server updates</h1>
+
+<div id="result"></div>
+
+<script>
+if(typeof(EventSource) !== "undefined") {
+  <!-- Run an sse server on port 8001, see folder './server' -->
+  <!-- Run an http server to serve this html file on port 8000 'python -m http.server 8000' --->
+
+  var source = new EventSource("http://localhost:8001/events");
+    source.onmessage = function(event) {
+    document.getElementById("result").innerHTML += event.data + "<br>";
+  };
+
+} else {
+  document.getElementById("result").innerHTML = "Sorry, your browser does not support server-sent events...";
+}
+</script>
+
+</body>
+</html>
