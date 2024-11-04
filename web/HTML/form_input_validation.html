@@ -1,0 +1,26 @@
+<html>
+<body>
+
+<h1>Forms</h1>
+
+<h4>Pattern and Placeholder.</h4>
+
+<form>
+  <label for="phone">Enter a phone number:</label>
+  <input type="tel" id="phone" name="phone"
+  placeholder="123-45-678"
+  pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+  <input type="submit" value="Submit">
+</form>
+
+<h4>Required.</h4>
+<form>
+  <label for="username">Username:</label>
+  <input type="text" id="username" name="username" required> <br> <br>
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" autocomplete="on"> <br> <br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

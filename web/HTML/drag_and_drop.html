@@ -19,9 +19,9 @@ function drag(ev) {
 }
 
 function drop(ev) {
+  ev.preventDefault();
   let id = ev.dataTransfer.getData("id_property");
   ev.target.appendChild(document.getElementById(id));
-  ev.preventDefault();
 }
 </script>
 </head>
