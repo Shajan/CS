@@ -2,19 +2,30 @@
 
 <body>
 
-<h1>Getting server updates</h1>
+<h1>Server-Sent Events with FastAPI</h1>
 
+<h4>Specific event</h4>
+<div id="update"></div>
+
+<h4>Append stream</h4>
 <div id="result"></div>
 
 <script>
+
 if(typeof(EventSource) !== "undefined") {
   <!-- Run an sse server on port 8001, see folder './server' -->
-  <!-- Run an http server to serve this html file on port 8000 'python -m http.server 8000' --->
+  <!-- Run an http server to serve this html file on port 8000 'python -m http.server 8000' -->
 
   var source = new EventSource("http://localhost:8001/events");
-    source.onmessage = function(event) {
+  source.onmessage = function(event) {
     document.getElementById("result").innerHTML += event.data + "<br>";
   };
+
+  // Listen for the custom 'update' event
+  var source_ex = new EventSource("http://localhost:8001/events_ex");
+  source_ex.addEventListener('my_event', (event) => {
+    document.getElementById("update").innerHTML = event.data + "<br>";
+  });
 
 } else {
   document.getElementById("result").innerHTML = "Sorry, your browser does not support server-sent events...";
