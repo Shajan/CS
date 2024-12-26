@@ -1,0 +1,7 @@
+# requirements.txt
+--constraint https://qisk.it/1-0-constraints
+
+qiskit
+qiskit-ibm-runtime
+python-dotenv
+matplotlib
