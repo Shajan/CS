@@ -1,6 +1,16 @@
 #include <Python.h>
 #include <string.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+char* sum_str(const char* str1, const char* str2);
+
+#ifdef __cplusplus
+}
+#endif
+
 // Function to concatenate two strings
 char* sum_str(const char* str1, const char* str2) {
     size_t len1 = strlen(str1);

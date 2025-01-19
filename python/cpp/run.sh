@@ -50,6 +50,9 @@ debug() {
 
   echo "py_mem.so:"
   nm py_mem.so | egrep T
+
+  echo "Using python to run dir command on libs"
+  python ./debug.py | egrep -v "^__"
 }
 
 clean() {
