@@ -1,8 +1,21 @@
 Run this on a google collab terminal, make sure a GPU based runtime is used.
 
-Concepts
+Hardware
+SM : Streaming Multiprocessor, consisting of many physical cores
+
+Programming
 nvcc : NVIDIA Cuda Compiler
-Kernel : A piece of code that executes on a GPU
-Warp Size : The smallest unit of threads that are scheduled together on an NVIDIA GPU (usually 32)
-Block Size : Howmany threads to schedule in parallel, a multiple of Warp Size, tune for different applications.
-  Consider memory bandwidth so that GPUs are not waiting, as well as max for each GPU type.
+Warp Size : The smallest number of threads that are scheduled together on an NVIDIA GPU (usually 32)
+Block : All threads in a block has access to __shared__ memory. Blocks are scheduled in unit of warps.
+Grid : Composed on multiple blocks
+Kernel : A piece of code that executes on a GPU __global__. Does not return values.
+  Few input parameters are implicit threadIdx.x,y,z; blockIdx.x,y,z; blockDim.x,y,z; gridDim.x,y
+  When invoking a kernel, use <<<blocksPerGrid, threadsPerBlock>>>kernel_function()
+  https://github.com/Infatoshi/cuda-course/blob/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics/01_idxing.cu
+
+Performance
+Warp Size - blocks not being a multiple of Warp Size wastes cores
+Shared Memory - all threads in a block has access to shared memory which is faster than VRAM memory
+
+Reference
+https://github.com/Infatoshi/cuda-course/tree/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics
