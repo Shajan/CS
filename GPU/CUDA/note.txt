@@ -10,7 +10,7 @@ Block : All threads in a block has access to __shared__ memory. Blocks are sched
 Grid : Composed on multiple blocks
 Kernel : A piece of code that executes on a GPU __global__. Does not return values.
   Few input parameters are implicit threadIdx.x,y,z; blockIdx.x,y,z; blockDim.x,y,z; gridDim.x,y
-  When invoking a kernel, use <<<blocksPerGrid, threadsPerBlock>>>kernel_function()
+  When invoking a kernel, use <<<numBlocks, threadsPerBlock>>>kernel_function()
   https://github.com/Infatoshi/cuda-course/blob/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics/01_idxing.cu
 
 Performance
