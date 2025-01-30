@@ -105,5 +105,8 @@ int main(int argc, char **argv) {
     // Note that instead of dim3, we can also use a single integer
     //   When a sigle integer 'n' is used, partions become ('n', 1, 1)
     kernel_trace<<<blocksPerGrid, threadsPerBlock>>>();
-    cudaDeviceSynchronize();
+    cudaError_t err = cudaDeviceSynchronize();
+    if (err != cudaSuccess) {
+        printf("CUDA Error: %s\n", cudaGetErrorString(err));
+    }
 }
