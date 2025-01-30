@@ -109,4 +109,5 @@ int main(int argc, char **argv) {
     if (err != cudaSuccess) {
         printf("CUDA Error: %s\n", cudaGetErrorString(err));
     }
+    cudaDeviceSynchronize();
 }
