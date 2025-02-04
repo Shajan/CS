@@ -30,12 +30,12 @@ float* allocate_and_fill(int count) {
       p[i] = (float) rand() / RAND_MAX; // Normalize to [0,1]
     }
 
-    return p
+    return p;
 }
 
 int main() {
     // Initialize random number generator to make this code repeatable
-    srand(1234)
+    srand(1234);
 
     // Dimensions for A, B, C
     // A(m, x)  B(x, n) => C(m, n)
@@ -48,9 +48,9 @@ int main() {
     int c_count = m * n;
 
     // 2D Matrix layed out in 1D
-    float *h_A = allocate_and_fill(a_count);
-    float *h_B = allocate_and_fill(b_count);
-    float *h_C = malloc(c_count * sizeof(float));
+    float *h_A = (float*) allocate_and_fill(a_count);
+    float *h_B = (float*) allocate_and_fill(b_count);
+    float *h_C = (float*) malloc(c_count * sizeof(float));
 
     mul_cpu(h_A, h_B, h_C, m, x, n);
 /*
