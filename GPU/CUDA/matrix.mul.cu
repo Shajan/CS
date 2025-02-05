@@ -12,7 +12,7 @@ void mul_1(float* d_A, float* d_B, float* d_C, float* h_C, int m, int x, int n) 
 }
 
 void mul_cpu(float* h_A, float* h_B, float* h_C, int m, int x, int n) {
-  // Focus on creating one output element at a time
+  // Create one output element at a time
   for (int i=0; i<m; ++i) {
     for (int j=0; j<n; ++j) {
       h_C[i * n + j] = 0.0; 
