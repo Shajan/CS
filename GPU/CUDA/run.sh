@@ -8,10 +8,11 @@ then
 fi
 
 # Add compatibility version for PTX binary to nvcc command if required
-# Compile and /debug.cu to find the compatible version if necessary
+# Compile debug.cu and run to find the compatible version if necessary
 #
-#  example: -arch=sm_80
+# A100
+#  -arch=sm_80
+# T4
+#  -arch=sm_75
 
 nvcc -o simple simple.cu
-
-
