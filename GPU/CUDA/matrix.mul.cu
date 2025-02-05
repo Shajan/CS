@@ -2,13 +2,38 @@
 #include <stdlib.h>
 #include <cuda_runtime.h>
 
+#define WARP_COUNT 32
+
+int split_and_round_up(int a, int b) {
+  // Split a into equal parts of b
+  return (a + b - 1) / b;
+}
+
 __global__ void kernel_mul_1(float* A, float* B, float* C, int m, int x, int n) {
 
 }
 
-void mul_1(float* d_A, float* d_B, float* d_C, float* h_C, int m, int x, int n) {
-    // Compute one output element inside a single thread
-    // We need m*n threads one compting each output
+void mul_1(float* d_A, float* d_B, float* d_C, int m, int x, int n) {
+    // Each thread computes one element in the output
+    // Total number of threads : m * n
+
+    int total_threads = m * n;
+    int threads_per_block_x = WARP_COUNT;
+    int threads_per_block_y = 8;
+    int threads_per_block = threads_per_block_x * threads_per_block_y;
+    int blocks_per_grid = split_and_round_up(total_threads, threads_per_block);
+    int blocks_per_grid_x = 4;
+    int blocks_per_grid_y = split_and_round_up(blocks_per_grid, blocks_per_grid_x);
+
+    dim3 blockDim(threads_per_block_x, threads_per_block_y);
+    dim3 gridDim(blocks_per_grid_x, blocks_per_grid_y);
+
+    printf("Total threads needed: %d\n", total_threads);
+    printf("blockDim.x: %d\n", threads_per_block_x);
+    printf("blockDim.y: %d\n", threads_per_block_y);
+    printf("gridDim.x: %d\n", blocks_per_grid_x);
+    printf("gridDim.y: %d\n", blocks_per_grid_y);
+    printf("Total capacity: %d\n", threads_per_block * blocks_per_grid_x * blocks_per_grid_y);
 }
 
 void mul_cpu(float* h_A, float* h_B, float* h_C, int m, int x, int n) {
@@ -53,6 +78,7 @@ int main() {
     float *h_C = (float*) malloc(c_count * sizeof(float));
 
     mul_cpu(h_A, h_B, h_C, m, x, n);
+    mul_1(NULL, NULL, NULL, m, x, n);
 /*
     // Allocate GPU memory
     float *d_A, *d_B, *d_C;
