@@ -16,6 +16,7 @@ Kernel : A piece of code that executes on a GPU __global__. Does not return valu
 Performance
 Warp Size - blocks not being a multiple of Warp Size wastes cores
 Shared Memory - all threads in a block has access to shared memory which is faster than VRAM memory
+CUDA Stream - a way to allow multiple 'streams of execution'. So multiple kernels can be launched by the CPU in parallel. All kernel operations in a specific stream executes sequentially. kernel<<<gridDim, blockDim, Ns, Stream>>>()
 
 Reference
 https://github.com/Infatoshi/cuda-course/tree/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics
