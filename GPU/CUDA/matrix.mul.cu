@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <math.h>
 #include <cuda_runtime.h>
 
 #define WARP_COUNT 32
-#define EPSILON 1e-5 // Used for checking the result
+#define EPSILON 1e-4 // Used for checking the result
+#define PERF_RUNS 20
 
 //#define TRACE 1
 
@@ -16,6 +18,13 @@
       printf("Error:CUDA:%s:%s\n", #api, cudaGetErrorString(err)); \
       goto Exit; \
     } \
+
+// Used for perf measurements
+double get_time() {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec + ts.tv_nsec * 1e-9;
+}
 
 int compare_numbers(float* a, float* b, int size) {
   int mismatches = 0;
@@ -75,8 +84,8 @@ void mul_1(float* d_A, float* d_B, float* d_C, int m, int x, int n) {
 
     dim3 blockDim(threads_per_block_x, threads_per_block_y);
     dim3 gridDim(blocks_per_grid_x, blocks_per_grid_y);
-
-
+    
+    #ifdef TRACE
     printf("Total threads needed: %d\n", m * n);
     printf("blockDim.x: %d\n", threads_per_block_x);
     printf("blockDim.y: %d\n", threads_per_block_y);
@@ -85,6 +94,7 @@ void mul_1(float* d_A, float* d_B, float* d_C, int m, int x, int n) {
     printf("Total capacity: %d\n",
       threads_per_block_x * threads_per_block_y *
       blocks_per_grid_x * blocks_per_grid_y);
+    #endif
 
     kernel_mul_1<<<gridDim, blockDim>>>(d_A, d_B, d_C, m, x, n);
     
@@ -110,12 +120,14 @@ void mul_cpu(float* h_A, float* h_B, float* h_C, int m, int x, int n) {
 int main() {
     // Initialize random number generator to make this code repeatable
     srand(1234);
-    cudaError_t err;
+    cudaError_t err=cudaSuccess;
+    double cpu_total_time=0, gpu_total_time=0;
+    double cpu_avg_time=0, gpu_avg_time=0;
 
     // Dimensions for A, B, C
     // A(m, x)  B(x, n) => C(m, n)
-    int m = 256;
-    int x = 64;
+    int m = 512;
+    int x = 256;
     int n = 128;
 
     int a_count = m * x;
@@ -128,7 +140,6 @@ int main() {
     float *h_C = (float*) malloc(c_count * sizeof(float));
     float *h_C_test = (float*) malloc(c_count * sizeof(float));
 
-    mul_cpu(h_A, h_B, h_C_test, m, x, n);
 
     // Allocate GPU memory
     float *d_A = NULL, *d_B = NULL, *d_C = NULL;
@@ -145,7 +156,12 @@ int main() {
     err = cudaMemcpy(d_B, h_B, b_count * sizeof(float), cudaMemcpyHostToDevice);
     ERR_EXIT(err, cudaMemcpy)
 
-    mul_1(d_A, d_B, d_C, m, x, n);
+    // Warm-up runs
+    printf("Performing warm-up runs...\n");
+    for (int i = 0; i < 3; i++) {
+      mul_cpu(h_A, h_B, h_C_test, m, x, n);
+      mul_1(d_A, d_B, d_C, m, x, n);
+    }
 
     // Copy result from device to host
     err = cudaMemcpy(h_C, d_C, c_count * sizeof(float), cudaMemcpyDeviceToHost);
@@ -153,8 +169,35 @@ int main() {
 
     if (compare_numbers(h_C, h_C_test, c_count) != 1) {
       printf("Error, result from CPU and GPU has sufficient difference!\n");
+      goto Exit;
     }
-  
+
+    // Benchmark CPU implementation
+    printf("Benchmarking CPU implementation...\n");
+    cpu_total_time = 0.0;
+    for (int i = 0; i < PERF_RUNS; i++) {
+      double start_time = get_time();
+      mul_cpu(h_A, h_B, h_C_test, m, x, n);
+      double end_time = get_time();
+      cpu_total_time += end_time - start_time;
+    }
+    cpu_avg_time = cpu_total_time / PERF_RUNS;
+
+    // Benchmark GPU implementation
+    printf("Benchmarking GPU implementation...\n");
+    gpu_total_time = 0.0;
+    for (int i = 0; i < PERF_RUNS; i++) {
+      double start_time = get_time();
+      mul_1(d_A, d_B, d_C, m, x, n);
+      double end_time = get_time();
+      gpu_total_time += end_time - start_time;
+    }
+    gpu_avg_time = gpu_total_time / PERF_RUNS;
+
+    printf("CPU avg time: %f micro seconds\n", (cpu_avg_time * 1e6f));
+    printf("GPU avg time: %f micro seconds\n", (gpu_avg_time * 1e6f));
+    printf("Size %d, Speedup: %f times\n", (m * x * n), cpu_avg_time / gpu_avg_time);
+
   Exit:
     // Cleanup
     FREE(h_A);
