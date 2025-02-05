@@ -10,7 +10,14 @@ int split_and_round_up(int a, int b) {
 }
 
 __global__ void kernel_mul_1(float* A, float* B, float* C, int m, int x, int n) {
+    int row = blockIdx.x * blockDim.x + threadIdx.x;
+    int col = blockIdx.y * blockDim.y + threadIdx.y;
+    int dest = row * n + col;
 
+    C[dest] = 0.0;
+    for (int i=0; i<x; ++i) {
+      C[dest] += A[row*x + i] * B[x*i + col];
+    }
 }
 
 void mul_1(float* d_A, float* d_B, float* d_C, int m, int x, int n) {
@@ -34,6 +41,9 @@ void mul_1(float* d_A, float* d_B, float* d_C, int m, int x, int n) {
     printf("gridDim.x: %d\n", blocks_per_grid_x);
     printf("gridDim.y: %d\n", blocks_per_grid_y);
     printf("Total capacity: %d\n", threads_per_block * blocks_per_grid_x * blocks_per_grid_y);
+
+    kernel_mul_1<<<blockDim, gridDim>>>(d_A, d_B, d_C, m, x, n);
+    cudaDeviceSynchronize();
 }
 
 void mul_cpu(float* h_A, float* h_B, float* h_C, int m, int x, int n) {
