@@ -12,11 +12,19 @@ Kernel : A piece of code that executes on a GPU __global__. Does not return valu
   Few input parameters are implicit threadIdx.x,y,z; blockIdx.x,y,z; blockDim.x,y,z; gridDim.x,y
   When invoking a kernel, use <<<numBlocks, threadsPerBlock>>>kernel_function()
   https://github.com/Infatoshi/cuda-course/blob/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics/01_idxing.cu
+  launch: kernel_name<<<gridDim, blockDim, Ns, Stream>>>()
+  Ns : Number of bytes to allocate for block level shared memory
+  Stream : Operations launched using the same stream will be sequential.
+    This enables parallel launching of different operations, use stream to sequence dependent operations.
 
 Performance
 Warp Size - blocks not being a multiple of Warp Size wastes cores
 Shared Memory - all threads in a block has access to shared memory which is faster than VRAM memory
-CUDA Stream - a way to allow multiple 'streams of execution'. So multiple kernels can be launched by the CPU in parallel. All kernel operations in a specific stream executes sequentially. kernel<<<gridDim, blockDim, Ns, Stream>>>()
+Barriers/wait -
+  cudaDeviceSynchronize() wait for all device operations to complete
+  cudaStreamSynchronize(stream) wait for device operation of the given stream to complete
+  __syncthreads() wait for all threads in a block (call made from within the kernel)
+  __syncwarps() wait for all threads in a warp (call made from within the kernel)
 
 Reference
 https://github.com/Infatoshi/cuda-course/tree/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics
