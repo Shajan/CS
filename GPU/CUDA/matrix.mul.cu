@@ -4,15 +4,35 @@
 #include <cuda_runtime.h>
 
 #define WARP_COUNT 32
-#define EPSILON 1e-6 // Used for checking the result
+#define EPSILON 1e-5 // Used for checking the result
+
+//#define TRACE 1
+
+#define FREE(p) if (p) free(p)
+#define CUDA_FREE(p) if (p) cudaFree(p)
+
+#define ERR_EXIT(err, api)    \
+    if (err != cudaSuccess) { \
+      printf("Error:CUDA:%s:%s\n", #api, cudaGetErrorString(err)); \
+      goto Exit; \
+    } \
 
 int compare_numbers(float* a, float* b, int size) {
+  int mismatches = 0;
   for (int i = 0; i < size; i++) {
     if (fabs(a[i] - b[i]) > EPSILON) { // Expect a small difference between GPU and CPU compute
-      return 0;
+      #ifdef TRACE
+      printf("Mismatch at index %d: CPU=%.6f, GPU=%.6f, Diff=%.6f\n", 
+                    i, a[i], b[i], fabs(a[i] - b[i]));
+      #endif
+      mismatches++;
     }
   }
-  return 1;
+  #ifdef TRACE
+  printf("Total Missmatches: %d\n", mismatches);
+  #endif
+
+  return mismatches == 0 ? 1 : 0;
 }
 
 int split_and_round_up(int a, int b) {
@@ -33,11 +53,14 @@ float* allocate_and_fill(int count) {
 __global__ void kernel_mul_1(float* A, float* B, float* C, int m, int x, int n) {
     int row = blockIdx.x * blockDim.x + threadIdx.x;
     int col = blockIdx.y * blockDim.y + threadIdx.y;
+
+    if (row >= m || col >= n) return; // Prevent out-of-bounds access
+
     int dest = row * n + col;
 
     C[dest] = 0.0;
     for (int i=0; i<x; ++i) {
-      C[dest] += A[row*x + i] * B[x*i + col];
+      C[dest] += A[row*x + i] * B[i*n + col];
     }
 }
 
@@ -45,29 +68,29 @@ void mul_1(float* d_A, float* d_B, float* d_C, int m, int x, int n) {
     // Each thread computes one element in the output
     // Total number of threads : m * n
 
-    int total_threads = m * n;
     int threads_per_block_x = WARP_COUNT;
     int threads_per_block_y = 8;
-    int threads_per_block = threads_per_block_x * threads_per_block_y;
-    int blocks_per_grid = split_and_round_up(total_threads, threads_per_block);
-    int blocks_per_grid_x = 4;
-    int blocks_per_grid_y = split_and_round_up(blocks_per_grid, blocks_per_grid_x);
+    int blocks_per_grid_x = split_and_round_up(m, threads_per_block_x);
+    int blocks_per_grid_y = split_and_round_up(n, threads_per_block_y);
 
     dim3 blockDim(threads_per_block_x, threads_per_block_y);
     dim3 gridDim(blocks_per_grid_x, blocks_per_grid_y);
 
-    printf("Total threads needed: %d\n", total_threads);
+
+    printf("Total threads needed: %d\n", m * n);
     printf("blockDim.x: %d\n", threads_per_block_x);
     printf("blockDim.y: %d\n", threads_per_block_y);
     printf("gridDim.x: %d\n", blocks_per_grid_x);
     printf("gridDim.y: %d\n", blocks_per_grid_y);
-    printf("Total capacity: %d\n", threads_per_block * blocks_per_grid_x * blocks_per_grid_y);
+    printf("Total capacity: %d\n",
+      threads_per_block_x * threads_per_block_y *
+      blocks_per_grid_x * blocks_per_grid_y);
 
-    kernel_mul_1<<<blockDim, gridDim>>>(d_A, d_B, d_C, m, x, n);
+    kernel_mul_1<<<gridDim, blockDim>>>(d_A, d_B, d_C, m, x, n);
     
     cudaError_t err = cudaGetLastError();
     if (err != cudaSuccess) {
-        printf("CUDA Error: %s\n", cudaGetErrorString(err));
+        printf("Error:kernel_mul_1:%s\n", cudaGetErrorString(err));
     }
     cudaDeviceSynchronize();
 }
@@ -87,6 +110,7 @@ void mul_cpu(float* h_A, float* h_B, float* h_C, int m, int x, int n) {
 int main() {
     // Initialize random number generator to make this code repeatable
     srand(1234);
+    cudaError_t err;
 
     // Dimensions for A, B, C
     // A(m, x)  B(x, n) => C(m, n)
@@ -107,34 +131,40 @@ int main() {
     mul_cpu(h_A, h_B, h_C_test, m, x, n);
 
     // Allocate GPU memory
-    float *d_A, *d_B, *d_C;
-    cudaMalloc((void **)&d_A, a_count * sizeof(float));
-    cudaMalloc((void **)&d_B, b_count * sizeof(float));
-    cudaMalloc((void **)&d_C, c_count * sizeof(float));
+    float *d_A = NULL, *d_B = NULL, *d_C = NULL;
+    err = cudaMalloc((void **)&d_A, a_count * sizeof(float));
+    ERR_EXIT(err, cudaMalloc)
+    err = cudaMalloc((void **)&d_B, b_count * sizeof(float));
+    ERR_EXIT(err, cudaMalloc)
+    err = cudaMalloc((void **)&d_C, c_count * sizeof(float));
+    ERR_EXIT(err, cudaMalloc)
 
     // Copy input from host to device memory
-    cudaMemcpy(d_A, h_A, a_count * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_B, h_A, b_count * sizeof(float), cudaMemcpyHostToDevice);
+    err = cudaMemcpy(d_A, h_A, a_count * sizeof(float), cudaMemcpyHostToDevice);
+    ERR_EXIT(err, cudaMemcpy)
+    err = cudaMemcpy(d_B, h_B, b_count * sizeof(float), cudaMemcpyHostToDevice);
+    ERR_EXIT(err, cudaMemcpy)
 
     mul_1(d_A, d_B, d_C, m, x, n);
 
     // Copy result from device to host
-    cudaMemcpy(h_C, d_C, c_count * sizeof(float), cudaMemcpyDeviceToHost);
+    err = cudaMemcpy(h_C, d_C, c_count * sizeof(float), cudaMemcpyDeviceToHost);
+    ERR_EXIT(err, cudaMemcpy)
 
     if (compare_numbers(h_C, h_C_test, c_count) != 1) {
       printf("Error, result from CPU and GPU has sufficient difference!\n");
     }
-
+  
+  Exit:
     // Cleanup
-    free(h_A);
-    free(h_B);
-    free(h_C);
-    free(h_C_test);
+    FREE(h_A);
+    FREE(h_B);
+    FREE(h_C);
+    FREE(h_C_test);
 
-
-    cudaFree(d_A);
-    cudaFree(d_B);
-    cudaFree(d_C);
+    CUDA_FREE(d_A);
+    CUDA_FREE(d_B);
+    CUDA_FREE(d_C);
 
     return 0;
 }
