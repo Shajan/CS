@@ -23,8 +23,33 @@ Shared Memory - all threads in a block has access to shared memory which is fast
 Barriers/wait -
   cudaDeviceSynchronize() wait for all device operations to complete
   cudaStreamSynchronize(stream) wait for device operation of the given stream to complete
-  __syncthreads() wait for all threads in a block (call made from within the kernel)
-  __syncwarps() wait for all threads in a warp (call made from within the kernel)
+  __syncthreads wait for all threads in a block (call made from within the kernel)
+  __syncwarps wait for all threads in a warp (call made from within the kernel)
+
+Calling functions from within a kernel:
+Only call functions that are executable inside a GPU. These are __device__ functions (check the header files).
+Some functions are declared as __host__ __device__ these are capable of being executed on host or device.
+https://docs.nvidia.com/cuda/cuda-math-api/index.html
+
+Profiling:
+1) Install https://developer.nvidia.com/nsight-systems
+  On GPU host : wget https://developer.nvidia.com/downloads/assets/tools/secure/nsight-systems/2025_1/NsightSystems-linux-public-2025.1.1.103-3542797.run
+  On Mac : profile viewer https://developer.nvidia.com/nsight-systems/get-started
+2) Instrument code
+  #include <nvtx3/nvToolsExt.h>
+  nvtxRangePush("Start X");
+    nvtxRangePush("Start Y");
+    nvtxRangePop();
+  nvtxRangePop();
+3) Comple and execute kernel on host with GPU
+  nvcc -o profile profile.cu -lnvToolsExt
+  nsys profile --stats=true -o profile ./app
+  nsys stats --report cuda-api-summary --format csv -o profile.csv profile.nsys-rep
+4) Commandline view profile
+  
+  
+
+
 
 Reference
 https://github.com/Infatoshi/cuda-course/tree/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics

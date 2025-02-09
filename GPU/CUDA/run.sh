@@ -16,3 +16,10 @@ fi
 #  -arch=sm_75
 
 nvcc -o simple simple.cu
+
+# Profiling
+#
+# nvcc -o profile profile.cu -lnvToolsExt
+# nsys profile --stats=true -o profile ./profile
+# nsys stats profile.nsys-rep
+# nsys stats --report cuda_gpu_trace profile.nsys-rep
