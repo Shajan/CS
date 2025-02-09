@@ -32,6 +32,7 @@ Some functions are declared as __host__ __device__ these are capable of being ex
 https://docs.nvidia.com/cuda/cuda-math-api/index.html
 
 Profiling:
+https://youtu.be/86FAWCzIe_4?t=11934
 1) Install https://developer.nvidia.com/nsight-systems
   On GPU host : wget https://developer.nvidia.com/downloads/assets/tools/secure/nsight-systems/2025_1/NsightSystems-linux-public-2025.1.1.103-3542797.run
   On Mac : profile viewer https://developer.nvidia.com/nsight-systems/get-started
@@ -45,11 +46,6 @@ Profiling:
   nvcc -o profile profile.cu -lnvToolsExt
   nsys profile --stats=true -o profile ./app
   nsys stats --report cuda-api-summary --format csv -o profile.csv profile.nsys-rep
-4) Commandline view profile
-  
-  
-
-
 
 Reference
 https://github.com/Infatoshi/cuda-course/tree/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics
