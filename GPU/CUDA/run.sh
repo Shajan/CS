@@ -23,3 +23,4 @@ nvcc -o simple simple.cu
 # nsys profile --trace=cuda,nvtx --stats=true -o profile ./profile
 # nsys stats profile.nsys-rep
 # nsys stats --report cuda_gpu_trace profile.nsys-rep
+# ncu --target-processes all --set full ./profile
