@@ -99,13 +99,17 @@ void mul_1(float* d_A, float* d_B, float* d_C, int m, int x, int n) {
 
     nvtxRangePush("GPU kernel_mul_1");
     kernel_mul_1<<<gridDim, blockDim>>>(d_A, d_B, d_C, m, x, n);
-    nvtxRangePop();
     
     cudaError_t err = cudaGetLastError();
     if (err != cudaSuccess) {
-        printf("Error:kernel_mul_1:%s\n", cudaGetErrorString(err));
+        printf("Error:kernel_mul_1:launch:%s\n", cudaGetErrorString(err));
     }
+    nvtxRangePop();
     cudaDeviceSynchronize();
+    err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        printf("Error:kernel_mul_1:sync:%s\n", cudaGetErrorString(err));
+    }
 }
 
 void mul_cpu(float* h_A, float* h_B, float* h_C, int m, int x, int n) {
@@ -130,9 +134,9 @@ int main() {
 
     // Dimensions for A, B, C
     // A(m, x)  B(x, n) => C(m, n)
-    int m = 512;
-    int x = 256;
-    int n = 128;
+    int m = 64;
+    int x = 128;
+    int n = 256;
 
     int a_count = m * x;
     int b_count = x * n;

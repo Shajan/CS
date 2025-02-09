@@ -19,7 +19,7 @@ nvcc -o simple simple.cu
 
 # Profiling
 #
-# nvcc -o profile profile.cu -lnvToolsExt
-# nsys profile --stats=true -o profile ./profile
+# nvcc -arch=sm_75 -o profile profile.cu -lnvToolsExt
+# nsys profile --trace=cuda,nvtx --stats=true -o profile ./profile
 # nsys stats profile.nsys-rep
 # nsys stats --report cuda_gpu_trace profile.nsys-rep
