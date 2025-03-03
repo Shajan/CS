@@ -47,5 +47,11 @@ https://youtu.be/86FAWCzIe_4?t=11934
   nsys profile --stats=true -o profile ./app
   nsys stats --report cuda-api-summary --format csv -o profile.csv profile.nsys-rep
 
-Reference
+References:
 https://github.com/Infatoshi/cuda-course/tree/master/05_Writing_your_First_Kernels/01%20CUDA%20Basics
+
+
+Playground:
+https://leetgpu.com/challenges/
+https://colab.research.google.com/drive/1keR4e8HHy2hxr2hQzY6sm6FTJTztJdZF#scrollTo=Yl4c2iOCgJNG
+
