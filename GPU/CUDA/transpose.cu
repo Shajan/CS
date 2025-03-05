@@ -16,13 +16,16 @@ __global__ void matrix_transpose(const float* input, float* output, int rows, in
 #define TILE_SIZE 16  // Adjust this based on your GPU architecture
 
 __global__ void matrix_transpose_shared(const float* input, float* output, int rows, int cols) {
-    // Write in row order for each TILE, this is faster!
+    // Expectation:
+    // Read row order (contigious memory)
+    // Keep content in shared memory, wait for all threads for one TILE_SIZE (size of one block)
+    // Write row order (contigious in target memory)
     __shared__ float tile[TILE_SIZE][TILE_SIZE + 1]; // Padding to avoid bank conflicts
 
     int x = blockIdx.x * TILE_SIZE + threadIdx.x;
     int y = blockIdx.y * TILE_SIZE + threadIdx.y;
 
-    // Load data from global memory into shared memory
+    // Load data from global memory into shared memory in row order of 'input'
     if (x < cols && y < rows) {
         tile[threadIdx.y][threadIdx.x] = input[y * cols + x];
     }
@@ -33,7 +36,7 @@ __global__ void matrix_transpose_shared(const float* input, float* output, int r
     int transposed_x = blockIdx.y * TILE_SIZE + threadIdx.x;
     int transposed_y = blockIdx.x * TILE_SIZE + threadIdx.y;
 
-    // Store transposed data back to global memory
+    // Store transposed data back to global memory, in row order of 'output'
     if (transposed_x < rows && transposed_y < cols) {
         output[transposed_y * rows + transposed_x] = tile[threadIdx.x][threadIdx.y];
     }
