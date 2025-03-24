@@ -1,0 +1,51 @@
+# OpenAI
+OPENAI_API_KEY=
+
+# Anthropic (Claude)
+ANTHROPIC_API_KEY=
+
+# Google (Gemini / PaLM 2)
+GOOGLE_API_KEY=
+
+# Mistral (via platforms like HuggingFace or custom endpoints)
+MISTRAL_API_KEY=
+
+# Hugging Face
+HUGGINGFACE_API_KEY=
+
+# Cohere
+COHERE_API_KEY=
+
+# AI21 (Jurassic)
+AI21_API_KEY=
+
+# Aleph Alpha
+ALEPHALPHA_API_KEY=
+
+# Replicate
+REPLICATE_API_TOKEN=
+
+# Together AI
+TOGETHER_API_KEY=
+
+# Perplexity AI
+PERPLEXITY_API_KEY=
+
+# OpenRouter (aggregator of multiple LLMs)
+OPENROUTER_API_KEY=
+
+# Fireworks AI
+FIREWORKS_API_KEY=
+
+# Groq (LLM accelerator for models like Mixtral, LLaMA)
+GROQ_API_KEY=
+
+# LangChain (if needed for hosted services)
+LANGCHAIN_API_KEY=
+
+# Azure OpenAI
+AZURE_OPENAI_API_KEY=
+AZURE_OPENAI_ENDPOINT=
+AZURE_OPENAI_DEPLOYMENT_NAME=     # The name of your deployed model (e.g., "gpt-35-turbo")
+AZURE_OPENAI_API_VERSION=         # e.g., "2023-12-01"
+
