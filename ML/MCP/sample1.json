@@ -1,0 +1,12 @@
+{
+    "mcpServers": {
+        "sdasan_server": {
+            "command": "/bin/bash",
+            "args": [
+                "-c",
+                "/Users/shajan/src/sdasan/cs/ML/MCP/run.sh",
+                "sample1.py"
+            ]
+        }
+    }
+}
