@@ -1,0 +1,4 @@
+# Rename this file to .env after filling in the details
+AZURE_OPENAI_API_KEY=<your_key1_value_here>
+AZURE_OPENAI_ENDPOINT=<your_endpoint_name>
+AZURE_OPENAI_DEPLOYMENT=gpt-4.1
