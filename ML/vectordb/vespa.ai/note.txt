@@ -1,0 +1,29 @@
+Local development:
+  https://docs.vespa.ai/en/vespa-quick-start.html
+  brew install vespa-cli
+  vespa config set target local
+
+  docker run --detach --name vespa --hostname vespa-container \
+    --publish 8080:8080 --publish 19071:19071 \
+    vespaengine/vespa
+
+  # Create a simple app and deploy it
+  vespa clone album-recommendation myapp && cd myapp
+  vespa deploy --wait 300 ./app
+
+  # Feed documents
+  vespa feed dataset/*.json
+
+  # Query
+  vespa query "select * from music where album contains 'head'" \
+    language=en-US
+
+  vespa query "select * from music where true" \
+    "ranking=rank_albums" \
+    "input.query(user_profile)={pop:0.8,rock:0.2,jazz:0.1}"
+  
+  vespa query "select * from music where true" \
+    "ranking=rank_albums" \
+    "input.query(user_profile)={pop:0.8,rock:0.2,jazz:0.1}" \
+    "presentation.format.tensors=short-value"
+

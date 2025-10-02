@@ -1,0 +1,15 @@
+WIP, not ready
+
+project structure:
+ - setup.sh         (Run this once to install pacakages)
+ - start_be.sh      (Start the backend)
+ - start_fe.sh      (Start the frotent)
+ - backend/
+   - main.py        (Python server: LLM logic + Playwright)
+   - requirements.txt
+ - frontend/
+   - server.js      (Node server: serve frontend + WebRTC tunnel)
+   - package.json
+   - public/
+     - index.html   (simple client)
+

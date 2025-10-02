@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head><title>LLM Browser Agent</title></head>
+  <body>
+    <h1>Submit Task</h1>
+    <form id="taskForm">
+      <input type="text" name="url" placeholder="https://example.com" required><br>
+      <input type="text" name="instruction" placeholder="What should the agent do?" required><br>
+      <button type="submit">Submit</button>
+    </form>
+    <pre id="response"></pre>
+    <script>
+      const form = document.getElementById('taskForm');
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(form));
+        const res = await fetch('http://localhost:8000/execute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        document.getElementById('response').innerText = JSON.stringify(await res.json(), null, 2);
+      };
+    </script>
+  </body>
+</html>

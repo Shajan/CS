@@ -1,0 +1,25 @@
+Setup:
+  Install python
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    brew install python
+    Install uv - makes it easy to work with python packages
+      curl -LsSf https://astral.sh/uv/install.sh | sh
+
+  Install python dependencies for playwright
+    cd project
+    uv init
+    uv add playwright
+    #uv add pytest-playwright
+
+  Install browser related components using playwright
+    cd project
+    source .venv/bin/activate
+    playwright install
+
+Run:
+
+Info:
+  https://playwright.dev/python/docs/library
+  https://github.com/microsoft/playwright
+  https://github.com/microsoft/playwright-python
+
