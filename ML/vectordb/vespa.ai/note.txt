@@ -27,3 +27,9 @@ Local development:
     "input.query(user_profile)={pop:0.8,rock:0.2,jazz:0.1}" \
     "presentation.format.tensors=short-value"
 
+  # Fetch documents
+  vespa document get id:mynamespace:music::a-head-full-of-dreams
+  vespa visit
+
+Github
+  git clone git@github.com:vespa-engine/vespa.git
