@@ -1,0 +1,39 @@
+1. TypeScript’s Type System Fundamentals (10 minutes)
+Structural typing vs nominal typing
+Basic types: string, number, boolean, unknown, any, never
+Type inference
+Union & intersection types
+Type narrowing
+
+2. Functions & Advanced Typing (10 minutes)
+Function typing (inline & declared)
+Optional/readonly parameters
+Function overloads
+Higher-order functions + callbacks
+Generic functions
+
+3. Interfaces, Types, and Classes (10 minutes)
+interface vs type (differences & when to use)
+Extending & merging interfaces
+Type aliases & composition
+Classes + access modifiers (public, private, protected)
+Implementing interfaces
+
+*4. Generics Everywhere (10 minutes)
+Generic constraints
+Generic classes & interfaces
+Working with keyof, indexed types, and mapped types
+Utility types: Partial, Pick, Record, etc.
+
+5. Modules, Tooling & Best Practices (10 minutes)
+ES modules and import/export patterns
+tsconfig essentials
+Strict mode
+Types vs runtime behavior
+Ambient declarations (.d.ts) & working with JS libraries
+
+6. Practical Patterns (10 minutes)
+Discriminated unions (powerful alternative to OOP)
+Error handling patterns
+Narrowing with custom type guards
+Common TypeScript idioms
