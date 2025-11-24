@@ -1,0 +1,18 @@
+# Node
+node_modules/
+
+# TypeScript build output
+dist/
+out/
+
+# Logs
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Optional IDE folders
+.vscode/
+.idea/
+
+# Environment files
+.env
