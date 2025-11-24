@@ -10,5 +10,10 @@ run() {
   #npx tsc ./${SRC}.js
 }
 
+cleanup() {
+  rm -rf ./dist
+}
+
 compile
 run
+cleanup
