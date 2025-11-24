@@ -6,3 +6,25 @@ Run
   tsc <file.ts>  # Creates .js file
   node <file.js> # Run the .js code
 
+hello-ts: A typical type script project
+
+  tsconfig.json: Used to set typescript compiler options
+
+  Example:
+    "compilerOptions": {
+      "rootDir": "src",
+      "outDir": "dist",
+      "strict": true
+    }
+
+  package.json: Describes commands to build/run/test by node
+
+  Add the following to specify what happens when you run
+  `pnpm build`
+  `pnpm start`
+
+  Example:
+    "scripts": {
+      "build": "tsc",
+      "start": "node dist/xx.js"
+    }

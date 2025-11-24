@@ -12,8 +12,8 @@
 # --------------------------------------------------
 echo "Creating TypeScript project..."
 
-mkdir -p ./hello-ts/src
-cd ./hello-ts
+mkdir -p ./example.1/src
+cd ./example.1
 
 pnpm init
 
@@ -96,3 +96,4 @@ node dist/HelloWorld.js
 
 echo "Setup complete."
 
+echo "Edit package.json and tsconfig.json so that you can run `pnpm build`; `pnpm start` etc"
