@@ -1,0 +1,21 @@
+https://fastify.dev/docs/latest/Reference/TypeScript/
+
+npm init -y
+npm i fastify
+npm i -D typescript @types/node
+Update package.json
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node index.js"
+  }
+npx tsc --init
+
+create  ./index.ts
+
+npm run build
+npm run start
+curl localhost:8080/ping
+
+curl 'localhost:8080/auth?username=admin&password=Password123!'
+curl 'localhost:8080/auth1?username=admin&password=Password123!'
+curl 'localhost:8080/auth1?username=sdasan&password=Password123!'
