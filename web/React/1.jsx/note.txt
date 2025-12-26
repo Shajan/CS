@@ -1,0 +1,7 @@
+jsx requires babel to comple to js
+
+npx babel input.jsx
+
+# Usefule for debugging: compile a set of .jsx files to ./dist/.js with source code maps
+npx babel src --extensions ".jsx" --out-dir dist --source-maps
+
