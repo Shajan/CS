@@ -7,4 +7,3 @@ cd hello-world
 npm start
 
 # edit ./hello-world/src/App.js
-

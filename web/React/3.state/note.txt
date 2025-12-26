@@ -1,0 +1,36 @@
+Why state exists (and props aren’t enough)
+
+Props come from the parent
+Props are read-only
+Props describe inputs
+
+But apps need change over time:
+counters increment
+forms update
+toggles flip
+data loads asynchronously
+
+If everything were props, nothing could change internally.
+So React introduces state.
+
+State is data owned by a component that can change over time and cause re-rendering.
+Local to a component
+Mutable via React only
+Triggers re-render when updated
+
+A React component is just a function.
+State is how React remembers values between function calls.
+
+A component re-renders when:
+Its state changes
+Its props change
+Its parent re-renders
+
+Re-render:
+React calls your component function again
+Produces new React elements
+React diffs old vs new
+Updates DOM only if needed
+
+NOTE:
+SetState calls are scheduled, not immediate

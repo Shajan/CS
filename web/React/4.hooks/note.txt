@@ -1,0 +1,19 @@
+Hooks let React “plug into” a function call.
+Hooks let React remember things across renders by relying on call order, not variable identity.
+
+A component is just a function
+React re-runs it on every render
+How does React remember state between calls?
+Answer: Hooks let React associate data with a function call position.
+
+## useState
+A means for scheduling update to state and trigger re-rendering if required
+
+## useEffect
+A way to have side effects (components are purely functional)
+Render describes what the UI should look like
+Effects describe what should happen because of it
+Effects run:
+after render
+when dependencies change
+before cleanup on next run/unmount
