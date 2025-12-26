@@ -1,20 +1,23 @@
-# Understanding React by Following What Actually Happens
+# React concepts
 
-This document explains React by following what happens at runtime.
+This document explains React by following what actually happens when a program runs.
+It clearly distinguishes between what the developer writes and what React does.
+
 No prior React or UI framework knowledge is assumed.
 
 ---
 
-## What React Is Trying to Do
+## What React Is For
 
-React exists to solve a simple problem:
+React is designed to solve one problem:
 
-You have some data.
-You want the screen to reflect that data.
+You have data.
+You want a screen that reflects that data.
 When the data changes, the screen should update automatically.
 
-Instead of manually updating the screen, React asks you to **describe what the
-UI should look like**, and React takes responsibility for updating the screen.
+Instead of manually updating the screen, React asks you to describe what the UI
+should look like. React then takes responsibility for keeping the screen in sync
+with the data.
 
 ---
 
@@ -27,13 +30,13 @@ As a developer, you write code like this:
 ```
 
 This looks like HTML, but it is not.
-This line does **not** display anything.
-It does **not** call a function.
+This line does not display anything.
+It does not call a function.
 
 It is only a description.
 
 Before the program runs, this syntax is converted into plain JavaScript.
-When that JavaScript runs, it produces an object like this:
+When that JavaScript executes, it produces an object like this:
 
 ```js
 {
@@ -46,35 +49,32 @@ This object means:
 
 “There is something called `App`, and it should be used with these inputs.”
 
-At this moment:
+At this point:
 - No UI exists
 - No function has been executed
 - Nothing is on the screen
 
 ---
 
-## What React Does With That Description
+## What React Does With the Description
 
-React receives this object and inspects it.
+React receives the object and inspects it.
 
-React asks:
-- Is `type` a function?
-- Or is it a built-in UI element like `"div"` or `"h1"`?
+React checks what `type` refers to.
+If `type` is a function, React decides to call it.
 
-In this case, `type` is a function (`App`).
-
-So **React** — not the developer — decides to call it:
+So React — not the developer — calls:
 
 ```js
 App(props)
 ```
 
-The developer does **not** call `App()` directly.
-React controls when and how this happens.
+The developer does not call `App()` directly.
+React controls when and how functions are executed.
 
 ---
 
-## What the Function Returns
+## What the Function Produces
 
 The developer might have written:
 
@@ -84,9 +84,8 @@ function App() {
 }
 ```
 
-When React calls `App()`, it returns another description.
-
-That returned description looks like:
+When React calls `App()`, the function returns another description.
+That description looks like:
 
 ```js
 {
@@ -96,25 +95,25 @@ That returned description looks like:
 ```
 
 Important details:
-- This is a **new object**
-- The earlier object is unchanged
+- This is a new object
+- The previous object is unchanged
 - React never modifies descriptions in place
 
 ---
 
-## React Repeats the Same Process
+## How React Continues
 
-React now looks at this new object.
+React now examines this new object.
 
 Again:
-- `type` is a function (`Hello`)
-- So React calls it
+- `type` refers to a function (`Hello`)
+- React calls it
 
 ```js
 Hello({ name: "Alice" })
 ```
 
-The developer might have written:
+The developer may have written:
 
 ```jsx
 function Hello({ name }) {
@@ -122,7 +121,7 @@ function Hello({ name }) {
 }
 ```
 
-That call produces another description:
+That call returns another description:
 
 ```js
 {
@@ -133,18 +132,18 @@ That call produces another description:
 
 ---
 
-## When Does Anything Appear on Screen?
+## When the Screen Is Actually Updated
 
-Only when React reaches descriptions whose `type` refers to built-in UI elements
-(like `"div"`, `"h4"`, `"button"`) does React know how to map them to real UI.
+Only when React encounters descriptions whose `type` refers to built-in UI elements
+such as `"div"`, `"h4"`, or `"button"` does React know how to map them to real UI.
 
-Until then:
+Until that point:
 - Everything is just JavaScript objects
-- Nothing is displayed
-- No UI is created
+- No UI exists
+- Nothing is rendered
 
-The entire UI is built by **repeatedly turning descriptions into new descriptions**
-until only real UI elements remain.
+The entire interface is produced by repeatedly turning descriptions into new
+descriptions until only built-in UI elements remain.
 
 ---
 
@@ -167,20 +166,20 @@ This produces:
 }
 ```
 
-React passes this `props` object when calling the function:
+React passes this object when calling the function:
 
 ```js
 Hello({ name: "Alice" })
 ```
 
-The function can **read** this data.
+The function can read this data.
 It cannot change it.
 
 ---
 
 ## Data That Changes Over Time
 
-So far, all descriptions are based on fixed values.
+So far, all descriptions depend on fixed values.
 
 Real applications need values that change:
 - counters
@@ -191,7 +190,7 @@ Real applications need values that change:
 Functions normally forget everything after they run.
 If React simply called functions repeatedly, nothing could persist.
 
-React solves this by **remembering certain values between calls**.
+React solves this by remembering certain values between calls.
 
 ---
 
@@ -218,24 +217,23 @@ The developer never updates the screen directly.
 
 ---
 
-## Why the Order of These Requests Matters
+## Why Call Order Matters
 
-React remembers values based on **the order in which they are requested**.
+React remembers values based on the order in which they are requested.
 
 Because of this:
-- These requests must happen in the same order every time
+- These requests must occur in the same order every time
 - They cannot be inside conditions or loops
 
-This rule exists because of how React stores remembered values internally,
-not because of arbitrary design.
+This rule exists because of how React stores remembered values internally.
 
 ---
 
-## Introducing the Names (After the Behavior Is Clear)
+## Terminology
 
-Now that the behavior is understood, the standard terms make sense.
+The concepts described above have standard names.
 
-### UI Description Objects → Elements
+### Elements
 
 Objects like:
 
@@ -246,7 +244,7 @@ Objects like:
 }
 ```
 
-are called **elements**.
+are called elements.
 
 An element:
 - is immutable
@@ -255,9 +253,9 @@ An element:
 
 ---
 
-### Functions React Calls → Components
+### Components
 
-Functions like `App` and `Hello` are called **components**.
+Functions like `App` and `Hello` are called components.
 
 A component:
 - is written by the developer
@@ -266,9 +264,9 @@ A component:
 
 ---
 
-### Shorthand Syntax → JSX
+### JSX
 
-The HTML-like syntax is called **JSX**.
+The HTML-like syntax used to write descriptions is called JSX.
 
 JSX:
 - is converted before execution
@@ -277,20 +275,20 @@ JSX:
 
 ---
 
-### Passed-In Data → Props
+### Props
 
-The data React passes into components is called **props**.
+The data passed into components by React is called props.
 
 Props:
 - flow from parent to child
 - are read-only
-- control what the component describes
+- determine what the component describes
 
 ---
 
-### Remembered Values → State
+### State
 
-The values React remembers between function calls are called **state**.
+Values remembered by React between function calls are called state.
 
 State:
 - lives inside React
@@ -299,13 +297,13 @@ State:
 
 ---
 
-### Memory Mechanism → Hooks
+### Hooks
 
-The mechanism React uses to remember values and behavior is called **hooks**.
+The mechanism React uses to remember values and behavior is called hooks.
 
 Hooks:
-- rely on call order
 - attach memory to functions
+- rely on consistent call order
 - only work when React controls execution
 
 ---
@@ -322,5 +320,4 @@ React updates the screen to match the latest descriptions.
 
 ## One-Sentence Summary
 
-React lets developers describe UI as JavaScript data and functions, and React controls execution and screen updates to keep everything in sync.
-
+React lets developers describe UI as JavaScript data and functions, and React controls execution and screen updates to keep the UI in sync with changing data.
