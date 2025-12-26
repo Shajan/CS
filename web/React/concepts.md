@@ -1,264 +1,326 @@
-# React: A Beginner’s Mental Model
+# Understanding React by Following What Actually Happens
 
-This document explains React from first principles.
-You do NOT need to know React, UI frameworks, or web development concepts beforehand.
-
----
-
-## The Big Idea
-
-React answers one question:
-
-“How do I describe what my user interface should look like, based on data that can change over time?”
-
-React’s approach:
-- You describe the UI as data
-- React figures out how to update the screen
-
-You do NOT manually update the screen.
+This document explains React by following what happens at runtime.
+No prior React or UI framework knowledge is assumed.
 
 ---
 
-## Step 1: Describing UI with JSX
+## What React Is Trying to Do
 
-Normally, JavaScript has no built-in way to describe UI structure.
-React introduces **JSX**, a special syntax that *looks like HTML*.
+React exists to solve a simple problem:
 
-```jsx
-<h1>Hello</h1>
-```
+You have some data.
+You want the screen to reflect that data.
+When the data changes, the screen should update automatically.
 
-Important:
-- JSX is **not HTML**
-- JSX is **not JavaScript**
-- JSX is only a **writing convenience**
-
-Before the program runs, JSX is converted into normal JavaScript.
-
-```jsx
-<h1>Hello</h1>
-```
-
-becomes something like:
-
-```js
-jsx("h1", { children: "Hello" })
-```
-
-This conversion happens before execution.
-Browsers never see JSX.
-
-Think of JSX as shorthand for writing UI descriptions.
+Instead of manually updating the screen, React asks you to **describe what the
+UI should look like**, and React takes responsibility for updating the screen.
 
 ---
 
-## Step 2: What JSX Produces — Elements
+## What the Developer Writes
 
-When JSX is converted and executed, it produces a **React element**.
-
-A React element is:
-- a plain JavaScript object
-- immutable (it never changes)
-- a description of UI, not actual UI
-
-Example:
+As a developer, you write code like this:
 
 ```jsx
-const el = <h1>Hello</h1>;
+<App />
 ```
 
-creates this object:
+This looks like HTML, but it is not.
+This line does **not** display anything.
+It does **not** call a function.
+
+It is only a description.
+
+Before the program runs, this syntax is converted into plain JavaScript.
+When that JavaScript runs, it produces an object like this:
 
 ```js
 {
-  type: "h1",
-  props: { children: "Hello" }
-}
-```
-
-This object:
-- is NOT a DOM element
-- does NOT appear on screen
-- does NOT do anything by itself
-
-It is only a **description**.
-
-Think of a React element as a blueprint, not a building.
-
----
-
-## Step 3: Components — Functions That Produce UI Descriptions
-
-Writing individual elements is not enough for real apps.
-We need reusable pieces.
-
-A **component** is just a JavaScript function.
-
-```jsx
-function Hello() {
-  return <h1>Hello</h1>;
-}
-```
-
-What this function does:
-- It returns a React element (a UI description)
-
-Using the component:
-
-```jsx
-<Hello />
-```
-
-does NOT call the function yet.
-
-It creates another element:
-
-```js
-{
-  type: Hello,
+  type: App,
   props: {}
 }
 ```
 
-Later, React:
-- sees that `type` is a function
-- calls the function itself
-- receives the returned element
+This object means:
 
-Important rule:
-You do not control when components run.
-React does.
+“There is something called `App`, and it should be used with these inputs.”
+
+At this moment:
+- No UI exists
+- No function has been executed
+- Nothing is on the screen
 
 ---
 
-## Step 4: Props — Passing Data Into Components
+## What React Does With That Description
 
-Components often need data.
+React receives this object and inspects it.
 
-**Props** are how data is passed into components.
+React asks:
+- Is `type` a function?
+- Or is it a built-in UI element like `"div"` or `"h1"`?
+
+In this case, `type` is a function (`App`).
+
+So **React** — not the developer — decides to call it:
+
+```js
+App(props)
+```
+
+The developer does **not** call `App()` directly.
+React controls when and how this happens.
+
+---
+
+## What the Function Returns
+
+The developer might have written:
 
 ```jsx
-function Greeting({ name }) {
-  return <h1>Hello {name}</h1>;
+function App() {
+  return <Hello name="Alice" />;
 }
 ```
 
-Using it:
+When React calls `App()`, it returns another description.
 
-```jsx
-<Greeting name="Alice" />
+That returned description looks like:
+
+```js
+{
+  type: Hello,
+  props: { name: "Alice" }
+}
 ```
 
-Props:
-- are inputs to a component
-- are read-only
-- flow from parent to child
-
-A component cannot change its props.
-It can only use them to decide what UI to describe.
+Important details:
+- This is a **new object**
+- The earlier object is unchanged
+- React never modifies descriptions in place
 
 ---
 
-## Step 5: Why State Exists
+## React Repeats the Same Process
 
-Props alone are not enough.
-Some data changes over time.
+React now looks at this new object.
 
-Examples:
+Again:
+- `type` is a function (`Hello`)
+- So React calls it
+
+```js
+Hello({ name: "Alice" })
+```
+
+The developer might have written:
+
+```jsx
+function Hello({ name }) {
+  return <h4>Hello {name}</h4>;
+}
+```
+
+That call produces another description:
+
+```js
+{
+  type: "h4",
+  props: { children: "Hello Alice" }
+}
+```
+
+---
+
+## When Does Anything Appear on Screen?
+
+Only when React reaches descriptions whose `type` refers to built-in UI elements
+(like `"div"`, `"h4"`, `"button"`) does React know how to map them to real UI.
+
+Until then:
+- Everything is just JavaScript objects
+- Nothing is displayed
+- No UI is created
+
+The entire UI is built by **repeatedly turning descriptions into new descriptions**
+until only real UI elements remain.
+
+---
+
+## Passing Data Into Functions
+
+Sometimes a function needs data to decide what to describe.
+
+The developer writes:
+
+```jsx
+<Hello name={inputName} />
+```
+
+This produces:
+
+```js
+{
+  type: Hello,
+  props: { name: "Alice" }
+}
+```
+
+React passes this `props` object when calling the function:
+
+```js
+Hello({ name: "Alice" })
+```
+
+The function can **read** this data.
+It cannot change it.
+
+---
+
+## Data That Changes Over Time
+
+So far, all descriptions are based on fixed values.
+
+Real applications need values that change:
 - counters
 - form input
 - toggles
 - fetched data
 
-This is where **state** comes in.
+Functions normally forget everything after they run.
+If React simply called functions repeatedly, nothing could persist.
 
-State is:
-- data remembered by React
-- tied to a component
-- preserved across re-runs of the component
+React solves this by **remembering certain values between calls**.
 
-Example:
+---
+
+## Remembered Values and Re-Running Functions
+
+Inside a function, the developer can ask React to remember a value:
 
 ```jsx
-const [count, setCount] = useState(0);
+const [count, setCount] = rememberValue(0);
 ```
 
-Meaning:
-- `count` is the current value
+Conceptually:
+- `count` is the remembered value
 - `setCount` tells React to update it
 
-When state changes:
-- React re-runs the component
-- new UI descriptions are produced
+When `setCount` is called:
+- React updates the remembered value
+- React schedules another call to the function
+- The function runs again
+- New descriptions are produced
 - React updates the screen if needed
 
-You never update the screen directly.
+The developer never updates the screen directly.
 
 ---
 
-## Step 6: Why Components Run Again
+## Why the Order of These Requests Matters
 
-A key idea:
-
-React components are just functions.
-React runs them again when:
-- state changes
-- props change
-- a parent component updates
-
-Running again does NOT mean recreating everything.
-React compares old descriptions to new ones and updates only what changed.
-
----
-
-## Step 7: Hooks — How React Remembers Things
-
-If components are just functions, how does React remember state?
-
-Answer: **Hooks**
-
-Hooks are special function calls that:
-- only work inside components
-- must be called in the same order every time
-- let React store information between renders
-
-Example:
-
-```jsx
-useState(0)
-```
-
-React internally remembers:
-- “this is the first hook call”
-- “this value belongs here”
+React remembers values based on **the order in which they are requested**.
 
 Because of this:
-- hooks must not be inside loops or conditions
-- call order must stay consistent
+- These requests must happen in the same order every time
+- They cannot be inside conditions or loops
 
-Hooks are how React attaches memory and behavior to functions.
+This rule exists because of how React stores remembered values internally,
+not because of arbitrary design.
+
+---
+
+## Introducing the Names (After the Behavior Is Clear)
+
+Now that the behavior is understood, the standard terms make sense.
+
+### UI Description Objects → Elements
+
+Objects like:
+
+```js
+{
+  type: "h4",
+  props: { children: "Hello Alice" }
+}
+```
+
+are called **elements**.
+
+An element:
+- is immutable
+- is plain data
+- describes what should exist in the UI
+
+---
+
+### Functions React Calls → Components
+
+Functions like `App` and `Hello` are called **components**.
+
+A component:
+- is written by the developer
+- is called by React
+- returns UI descriptions
+
+---
+
+### Shorthand Syntax → JSX
+
+The HTML-like syntax is called **JSX**.
+
+JSX:
+- is converted before execution
+- never exists at runtime
+- is only a convenient way to write descriptions
+
+---
+
+### Passed-In Data → Props
+
+The data React passes into components is called **props**.
+
+Props:
+- flow from parent to child
+- are read-only
+- control what the component describes
+
+---
+
+### Remembered Values → State
+
+The values React remembers between function calls are called **state**.
+
+State:
+- lives inside React
+- triggers re-execution when updated
+- causes new descriptions to be created
+
+---
+
+### Memory Mechanism → Hooks
+
+The mechanism React uses to remember values and behavior is called **hooks**.
+
+Hooks:
+- rely on call order
+- attach memory to functions
+- only work when React controls execution
 
 ---
 
 ## Final Mental Model
 
-React works like this:
-
-- JSX is converted into JavaScript
-- JavaScript creates element objects
-- Elements describe what the UI should be
-- Components are functions that return elements
-- Props are inputs to components
-- State is remembered data that can change
-- Hooks let React remember state between renders
-- React controls when functions run
-- You only describe what the UI should look like
-
-You describe.
-React updates.
+The developer writes functions and UI descriptions.
+React turns descriptions into function calls.
+Functions return new descriptions.
+React remembers selected values between calls.
+React updates the screen to match the latest descriptions.
 
 ---
 
 ## One-Sentence Summary
 
-React lets you describe your UI as data, and it automatically keeps the screen in sync when that data changes.
+React lets developers describe UI as JavaScript data and functions, and React controls execution and screen updates to keep everything in sync.
+
