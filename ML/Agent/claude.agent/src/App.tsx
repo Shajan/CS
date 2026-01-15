@@ -2,8 +2,9 @@ import { useState } from 'react'
 import './App.css'
 import Chat from './Chat'
 import Traces from './Traces'
+import Settings from './Settings'
 
-type View = 'chat' | 'traces'
+type View = 'chat' | 'traces' | 'settings'
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('chat')
@@ -22,6 +23,12 @@ function App() {
             Chat
           </button>
           <button
+            className={`nav-button ${currentView === 'settings' ? 'active' : ''}`}
+            onClick={() => setCurrentView('settings')}
+          >
+            Settings
+          </button>
+          <button
             className={`nav-button ${currentView === 'traces' ? 'active' : ''}`}
             onClick={() => setCurrentView('traces')}
           >
@@ -31,7 +38,9 @@ function App() {
       </header>
 
       <main className="app-main">
-        {currentView === 'chat' ? <Chat /> : <Traces />}
+        {currentView === 'chat' && <Chat />}
+        {currentView === 'traces' && <Traces />}
+        {currentView === 'settings' && <Settings />}
       </main>
     </div>
   )

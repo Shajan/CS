@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import agentRouter from './routes/agent.js';
 import tracesRouter from './routes/traces.js';
+import toolsRouter from './routes/tools.js';
+import mcpRouter from './routes/mcp.js';
 
 // Load environment variables
 dotenv.config();
@@ -17,6 +19,8 @@ app.use(express.json());
 // Routes
 app.use('/api/agent', agentRouter);
 app.use('/api/traces', tracesRouter);
+app.use('/api/tools', toolsRouter);
+app.use('/api/mcp', mcpRouter);
 
 // Health check
 app.get('/health', (req, res) => {

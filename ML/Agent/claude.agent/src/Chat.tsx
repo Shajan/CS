@@ -74,10 +74,10 @@ function Chat() {
     <div className="chat-view">
       <div className="agent-container">
         <div className="header-row">
-          <h2>Agent Interaction</h2>
+          <h2>Chat</h2>
           {conversation.length > 0 && (
             <button className="clear-button" onClick={clearConversation}>
-              Clear Chat
+              Clear
             </button>
           )}
         </div>
@@ -85,21 +85,20 @@ function Chat() {
         <div className="conversation-area">
           {conversation.length === 0 ? (
             <p className="info-text">
-              Start a conversation with the agent by typing a message below.
-              The agent is powered by Claude and runs securely on the server.
+              No messages yet
             </p>
           ) : (
             <div className="messages">
               {conversation.map((msg, idx) => (
                 <div key={idx} className={`message ${msg.role}`}>
-                  <strong>{msg.role === 'user' ? 'You' : 'Agent'}:</strong>
-                  <p>{msg.content}</p>
+                  <span className="message-role">{msg.role === 'user' ? 'USER' : 'ASSISTANT'}</span>
+                  <span className="message-content">{msg.content}</span>
                 </div>
               ))}
               {isLoading && (
                 <div className="message assistant loading">
-                  <strong>Agent:</strong>
-                  <p>Thinking...</p>
+                  <span className="message-role">ASSISTANT</span>
+                  <span className="message-content">Thinking...</span>
                 </div>
               )}
             </div>
@@ -111,11 +110,11 @@ function Chat() {
         <div className="chat-interface">
           <textarea
             className="message-input"
-            placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
+            placeholder="Type message... (Enter to send, Shift+Enter for new line)"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            rows={3}
+            rows={2}
             disabled={isLoading}
           />
           <button
@@ -123,40 +122,10 @@ function Chat() {
             onClick={sendMessage}
             disabled={isLoading || !message.trim()}
           >
-            {isLoading ? 'Sending...' : 'Send Message'}
+            {isLoading ? 'Sending...' : 'Send'}
           </button>
         </div>
       </div>
-
-      <aside className="info-panel">
-        <h3>Getting Started</h3>
-        <ol>
-          <li>Add your Anthropic API key to <code>.env</code></li>
-          <li>Install dependencies with <code>pnpm install</code></li>
-          <li>Start the dev server with <code>pnpm dev</code></li>
-          <li>Chat with the agent!</li>
-        </ol>
-
-        <h3>Architecture</h3>
-        <ul>
-          <li>
-            <strong>Frontend:</strong> React + TypeScript
-          </li>
-          <li>
-            <strong>Backend:</strong> Express server
-          </li>
-          <li>
-            <strong>Agent:</strong> Runs on server (API key secure)
-          </li>
-        </ul>
-
-        <h3>Agent Features</h3>
-        <ul>
-          <li>Conversational memory</li>
-          <li>Context awareness</li>
-          <li>Easy to extend</li>
-        </ul>
-      </aside>
     </div>
   )
 }

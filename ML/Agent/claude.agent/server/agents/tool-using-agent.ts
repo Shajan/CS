@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { BaseAgent, AgentConfig } from './base-agent.js';
-import { toolDefinitions, executeTool } from '../tools/index.js';
+import { executeTool } from '../tools/index.js';
+import { getEnabledTools, isToolEnabled } from '../routes/tools.js';
 
 /**
  * ToolUsingAgent - An agent that can use tools to perform actions
@@ -40,13 +41,16 @@ export class ToolUsingAgent extends BaseAgent {
 
     // Tool calling loop
     while (toolRound < this.maxToolRounds) {
+      // Get currently enabled tools
+      const enabledTools = getEnabledTools();
+
       // Prepare API request with tools
       const apiRequest: any = {
         model: this.model,
         max_tokens: this.maxTokens,
         system: toolRound === 0 ? this.systemPrompt : undefined,
         messages: this.conversationHistory,
-        tools: toolDefinitions,
+        tools: enabledTools,
       };
 
       this.trace('API_REQUEST', {
@@ -115,6 +119,11 @@ export class ToolUsingAgent extends BaseAgent {
         });
 
         try {
+          // Check if tool is still enabled before executing
+          if (!isToolEnabled(toolUse.name)) {
+            throw new Error(`Tool '${toolUse.name}' is currently disabled`);
+          }
+
           const result = executeTool(toolUse.name, toolUse.input);
 
           this.trace('TOOL_RESULT', {

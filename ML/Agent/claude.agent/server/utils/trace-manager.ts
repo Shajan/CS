@@ -17,14 +17,10 @@ class TraceManager {
 
   /**
    * Add a new SSE client
+   * Note: History is not sent here - clients should fetch it via /history endpoint
    */
   addClient(res: Response): void {
     this.clients.add(res);
-
-    // Send existing trace history to new client
-    this.traceHistory.forEach((trace) => {
-      this.sendToClient(res, trace);
-    });
   }
 
   /**

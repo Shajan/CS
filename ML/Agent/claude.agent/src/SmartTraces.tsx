@@ -48,7 +48,20 @@ interface SmartTracesProps {
 function SmartTraces({ traces, onClear }: SmartTracesProps) {
   const [conversationFlow, setConversationFlow] = useState<ConversationFlow[]>([])
   const [autoScroll, setAutoScroll] = useState(true)
+  const [collapsedItems, setCollapsedItems] = useState<Set<number>>(new Set())
   const tracesEndRef = useRef<HTMLDivElement>(null)
+
+  const toggleCollapse = (index: number) => {
+    setCollapsedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        newSet.add(index)
+      }
+      return newSet
+    })
+  }
 
   // Process traces into conversation flow
   useEffect(() => {
@@ -75,24 +88,19 @@ function SmartTraces({ traces, onClear }: SmartTracesProps) {
           },
         })
       } else if (trace.category === 'API_RESPONSE') {
-        // Find the corresponding API call to add duration
+        // Find the corresponding API call and attach response metadata to it
         const lastApiCall = [...flow].reverse().find(f => f.type === 'api_call')
-        if (lastApiCall && trace.data.duration_ms) {
+        if (lastApiCall) {
           lastApiCall.apiMetadata!.duration = trace.data.duration_ms
-        }
-
-        flow.push({
-          timestamp: trace.timestamp,
-          type: 'response',
-          responseMetadata: {
+          lastApiCall.responseMetadata = {
             id: trace.data.id,
             model: trace.data.model,
             stopReason: trace.data.stop_reason,
             inputTokens: trace.data.usage?.input_tokens || 0,
             outputTokens: trace.data.usage?.output_tokens || 0,
             duration: trace.data.duration_ms || 0,
-          },
-        })
+          }
+        }
       } else if (trace.category === 'ASSISTANT_RESPONSE') {
         flow.push({
           timestamp: trace.timestamp,
@@ -152,6 +160,85 @@ function SmartTraces({ traces, onClear }: SmartTracesProps) {
     })
   }
 
+  const getRelativeTime = (timestamp: string): string => {
+    const now = new Date()
+    const date = new Date(timestamp)
+    const diffMs = now.getTime() - date.getTime()
+    const diffSec = Math.floor(diffMs / 1000)
+    const diffMin = Math.floor(diffSec / 60)
+    const diffHour = Math.floor(diffMin / 60)
+    const diffDay = Math.floor(diffHour / 24)
+
+    if (diffSec < 10) return 'just now'
+    if (diffSec < 60) return `${diffSec}s ago`
+    if (diffMin < 60) return `${diffMin}m ago`
+    if (diffHour < 24) return `${diffHour}h ago`
+    if (diffDay === 1) return 'yesterday'
+    if (diffDay < 7) return `${diffDay}d ago`
+    return date.toLocaleDateString()
+  }
+
+  const highlightJSON = (json: string): JSX.Element => {
+    // Simple JSON syntax highlighting
+    const parts = json.split(/("(?:[^"\\]|\\.)*")/g)
+
+    return (
+      <>
+        {parts.map((part, i) => {
+          if (i % 2 === 1) {
+            // This is a quoted string
+            if (part.match(/^"[^"]*":$/)) {
+              // It's a key
+              return <span key={i} className="json-key">{part}</span>
+            } else {
+              // It's a value
+              return <span key={i} className="json-string">{part}</span>
+            }
+          } else {
+            // Check for numbers, booleans, null
+            return part.split(/\b/).map((word, j) => {
+              if (word.match(/^-?\d+\.?\d*$/)) {
+                return <span key={`${i}-${j}`} className="json-number">{word}</span>
+              } else if (word === 'true' || word === 'false') {
+                return <span key={`${i}-${j}`} className="json-boolean">{word}</span>
+              } else if (word === 'null') {
+                return <span key={`${i}-${j}`} className="json-null">{word}</span>
+              }
+              return word
+            })
+          }
+        })}
+      </>
+    )
+  }
+
+  const calculateCost = (inputTokens: number, outputTokens: number, model: string): string => {
+    // Pricing per million tokens (as of Jan 2025)
+    const pricing: Record<string, { input: number; output: number }> = {
+      'claude-sonnet-4-5-20250929': { input: 3.00, output: 15.00 },
+      'claude-opus-4-5': { input: 15.00, output: 75.00 },
+      'claude-3-5-sonnet': { input: 3.00, output: 15.00 },
+      'claude-3-opus': { input: 15.00, output: 75.00 },
+    }
+
+    // Find matching pricing
+    const modelKey = Object.keys(pricing).find(key => model.includes(key)) || 'claude-sonnet-4-5-20250929'
+    const rates = pricing[modelKey]
+
+    const inputCost = (inputTokens / 1_000_000) * rates.input
+    const outputCost = (outputTokens / 1_000_000) * rates.output
+    const totalCost = inputCost + outputCost
+
+    // Format cost with appropriate precision
+    if (totalCost < 0.0001) {
+      return `<$0.0001`
+    } else if (totalCost < 0.01) {
+      return `$${totalCost.toFixed(4)}`
+    } else {
+      return `$${totalCost.toFixed(3)}`
+    }
+  }
+
   return (
     <div className="smart-traces-container">
       <div className="smart-traces-header">
@@ -184,125 +271,77 @@ function SmartTraces({ traces, onClear }: SmartTracesProps) {
         ) : (
           conversationFlow.map((item, idx) => (
             <div key={idx} className={`flow-item flow-${item.type}`}>
-              <div className="flow-timestamp">{formatTime(item.timestamp)}</div>
+              <div className="flow-timestamp" title={formatTime(item.timestamp)}>
+                {getRelativeTime(item.timestamp)}
+              </div>
 
               {item.type === 'user' && item.userMessage && (
-                <div className="flow-card user-message">
-                  <div className="flow-card-header">
-                    <span className="flow-icon">👤</span>
-                    <span className="flow-label">User Message</span>
-                  </div>
-                  <div className="flow-content">
-                    {formatText(item.userMessage)}
-                  </div>
+                <div className="flow-row user-message">
+                  <div className="flow-label-col">USER</div>
+                  <div className="flow-content-col">{formatText(item.userMessage)}</div>
                 </div>
               )}
 
               {item.type === 'api_call' && item.apiMetadata && (
-                <div className="flow-card api-call">
-                  <div className="flow-card-header">
-                    <span className="flow-icon">🔄</span>
-                    <span className="flow-label">API Request</span>
+                <div className="flow-row api-call">
+                  <div className="flow-label-col collapsible" onClick={() => toggleCollapse(idx)}>
+                    API {collapsedItems.has(idx) ? '›' : '∨'}
                   </div>
-                  <div className="flow-metadata">
-                    <div className="metadata-item">
-                      <span className="metadata-label">Model:</span>
-                      <span className="metadata-value">{item.apiMetadata.model}</span>
+                  <div className="flow-content-col">
+                    <div className="api-summary">
+                      {item.responseMetadata && (
+                        <>
+                          <span className="inline-metric">{item.responseMetadata.inputTokens}in</span>
+                          <span className="inline-metric">{item.responseMetadata.outputTokens}out</span>
+                          <span className="inline-metric">{item.responseMetadata.duration}ms</span>
+                          <span className="inline-metric inline-cost">{calculateCost(item.responseMetadata.inputTokens, item.responseMetadata.outputTokens, item.responseMetadata.model)}</span>
+                        </>
+                      )}
                     </div>
-                    <div className="metadata-item">
-                      <span className="metadata-label">Max Tokens:</span>
-                      <span className="metadata-value">{item.apiMetadata.maxTokens}</span>
-                    </div>
-                    {item.apiMetadata.duration && (
-                      <div className="metadata-item">
-                        <span className="metadata-label">Duration:</span>
-                        <span className="metadata-value">{item.apiMetadata.duration}ms</span>
+                    {!collapsedItems.has(idx) && (
+                      <div className="api-details">
+                        model: {item.apiMetadata.model} | max_tokens: {item.apiMetadata.maxTokens}
+                        {item.responseMetadata && ` | stop: ${item.responseMetadata.stopReason}`}
                       </div>
                     )}
                   </div>
                 </div>
               )}
 
-              {item.type === 'response' && (item.responseMetadata || item.assistantMessage) && (
-                <div className="flow-card assistant-response">
-                  {item.responseMetadata && (
-                    <>
-                      <div className="flow-card-header">
-                        <span className="flow-icon">📊</span>
-                        <span className="flow-label">API Response Metrics</span>
-                      </div>
-                      <div className="flow-metrics">
-                        <div className="metric">
-                          <div className="metric-value">{item.responseMetadata.inputTokens}</div>
-                          <div className="metric-label">Input Tokens</div>
-                        </div>
-                        <div className="metric">
-                          <div className="metric-value">{item.responseMetadata.outputTokens}</div>
-                          <div className="metric-label">Output Tokens</div>
-                        </div>
-                        <div className="metric">
-                          <div className="metric-value">{item.responseMetadata.duration}ms</div>
-                          <div className="metric-label">Duration</div>
-                        </div>
-                        <div className="metric">
-                          <div className="metric-value">{item.responseMetadata.stopReason}</div>
-                          <div className="metric-label">Stop Reason</div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {item.assistantMessage && (
-                    <>
-                      <div className="flow-card-header">
-                        <span className="flow-icon">🤖</span>
-                        <span className="flow-label">Assistant Response</span>
-                      </div>
-                      <div className="flow-content">
-                        {formatText(item.assistantMessage)}
-                      </div>
-                    </>
-                  )}
+              {item.type === 'response' && item.assistantMessage && (
+                <div className="flow-row assistant-response">
+                  <div className="flow-label-col">ASSISTANT</div>
+                  <div className="flow-content-col">{formatText(item.assistantMessage)}</div>
                 </div>
               )}
 
               {item.type === 'tool_call' && item.toolCall && (
-                <div className="flow-card tool-call">
-                  <div className="flow-card-header">
-                    <span className="flow-icon">🔧</span>
-                    <span className="flow-label">Tool Call: {item.toolCall.toolName}</span>
+                <div className="flow-row tool-call">
+                  <div className="flow-label-col collapsible" onClick={() => toggleCollapse(idx)}>
+                    {item.toolCall.toolName} {collapsedItems.has(idx) ? '›' : '∨'}
                   </div>
-                  <div className="flow-content">
-                    <div className="tool-info">
-                      <div className="tool-info-row">
-                        <span className="tool-info-label">Tool:</span>
-                        <span className="tool-info-value">{item.toolCall.toolName}</span>
-                      </div>
-                      <div className="tool-info-row">
-                        <span className="tool-info-label">Input:</span>
-                      </div>
-                      <pre className="tool-data">{JSON.stringify(item.toolCall.toolInput, null, 2)}</pre>
-                    </div>
+                  <div className="flow-content-col">
+                    {!collapsedItems.has(idx) && (
+                      <pre className="tool-data">{highlightJSON(JSON.stringify(item.toolCall.toolInput, null, 2))}</pre>
+                    )}
                   </div>
                 </div>
               )}
 
               {item.type === 'tool_result' && item.toolResult && (
-                <div className={`flow-card tool-result ${item.toolResult.success ? 'success' : 'error'}`}>
-                  <div className="flow-card-header">
-                    <span className="flow-icon">{item.toolResult.success ? '✅' : '❌'}</span>
-                    <span className="flow-label">
-                      Tool Result: {item.toolResult.toolName}
-                      {item.toolResult.success ? ' (Success)' : ' (Error)'}
-                    </span>
+                <div className={`flow-row tool-result ${item.toolResult.success ? 'success' : 'error'}`}>
+                  <div className="flow-label-col collapsible" onClick={() => toggleCollapse(idx)}>
+                    → {item.toolResult.success ? '' : 'ERR '}{collapsedItems.has(idx) ? '›' : '∨'}
                   </div>
-                  <div className="flow-content">
-                    {item.toolResult.success ? (
-                      <pre className="tool-data">{JSON.stringify(item.toolResult.result, null, 2)}</pre>
-                    ) : (
-                      <div className="tool-error">
-                        <strong>Error:</strong> {item.toolResult.error}
-                      </div>
+                  <div className="flow-content-col">
+                    {!collapsedItems.has(idx) && (
+                      <>
+                        {item.toolResult.success ? (
+                          <pre className="tool-data">{highlightJSON(JSON.stringify(item.toolResult.result, null, 2))}</pre>
+                        ) : (
+                          <span className="tool-error">{item.toolResult.error}</span>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
