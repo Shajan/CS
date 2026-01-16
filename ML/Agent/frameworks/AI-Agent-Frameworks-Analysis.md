@@ -4,44 +4,81 @@
 
 The AI agents market has exploded from $5.40 billion in 2024 to $7.63 billion in 2025, with projections reaching $50.31 billion by 2030. Gartner predicts that 40% of enterprise applications will embed AI agents by the end of 2026, up from less than 5% in 2025.
 
-## Major Agent Frameworks (Claude Agent SDK Alternatives)
+## Major Agent Frameworks (Priority Order)
 
-### 1. **LangChain / LangGraph**
+### 1. **Claude Agent SDK** (Anthropic)
+- **Introduced**: September 2025
+- **Strengths**:
+  - Battle-tested agent infrastructure with automatic context management
+  - Streaming sessions by default (persistent, interruptible)
+  - Built-in session resumption and automatic compression
+  - Prioritizes robustness, security, and scalability
+  - Best-in-class for production environments requiring governance
+  - Production agents that safely read/write files, run commands, follow permissions
+- **Best for**: Production agents touching real systems with session continuity needs
+- **Use case**: "Agents that touch real systems belong in Claude Agent SDK"
+- **Status**: Industry-leading for production safety and governance
+
+### 2. **OpenAI Agents SDK**
+- **Latest version**: 0.6.6 (January 15, 2026)
+- **Description**: Lightweight, production-ready framework (upgraded from Swarm)
+- **Key Features**:
+  - **Agents**: LLMs with instructions and tools
+  - **Handoffs**: Coordinate and delegate between multiple agents
+  - **Guardrails**: Run input validations in parallel, early failure detection
+  - **Sessions**: Automatic conversation history management
+  - **Function Tools**: Python functions → tools with auto schema generation
+  - **Tracing**: Built-in visualization, debugging, and monitoring
+- **Provider Support**: Provider-agnostic (OpenAI Responses, Chat Completions, 100+ LLMs)
+- **Best for**: Multi-agent workflows with strong observability and validation needs
+- **Use cases**: Customer support, multi-step research, content generation, code review
+- **Status**: OpenAI's official production agent framework (Assistants API deprecated Aug 2026)
+
+### 3. **Google ADK (Agent Development Kit)**
+- **Latest releases**: TypeScript 0.2.0, Go 0.3.0, Java 0.5.0 (January 2026)
+- **Description**: Open-source, code-first framework optimized for Gemini ecosystem
+- **Key Features**:
+  - **Model-agnostic**: Works with any model, optimized for Gemini (3 Pro, 3 Flash, 2.5 Pro)
+  - **Multi-language**: Python, TypeScript, Go, Java support
+  - **Interactions API**: Unified interface for raw models and managed agents (beta)
+  - **Native state management**: Built for complex agentic loops
+  - **Vertex AI integration**: Direct deployment to Google Cloud
+  - **Agent-to-agent callbacks**: Advanced multi-agent coordination
+- **Strengths**: Feels like classic software development, enterprise-grade runtime
+- **Best for**: Teams in Google Cloud ecosystem, Gemini-first architecture
+- **Use case**: Production agents requiring Google Cloud integration and Gemini capabilities
+- **Status**: Google's official agent framework with full Vertex AI support
+
+### 4. **LangChain / LangGraph**
 - **Most widely adopted framework** for building LLM-powered applications
 - **Strengths**: Massive ecosystem with integrations for vector DBs, retrievers, loaders; vendor-agnostic (works with OpenAI, Anthropic, local models)
 - **Best for**: RAG pipelines, data-heavy retrieval, orchestrating heterogeneous models and data sources
 - **LangGraph**: Production-ready orchestration with graph-based workflows, state management, time-travel debugging
 - **Use case**: Data-heavy retrieval with diverse infrastructure
 
-### 2. **AutoGen (Microsoft)**
+### 5. **AutoGen (Microsoft)**
 - Event-driven multi-agent framework with robust recipes
 - **Strengths**: Multi-agent collaboration, optional Studio UI for prototyping
 - **Best for**: Complex multi-agent systems requiring event-driven architecture
 - **Growing rapidly** in adoption alongside LangChain
 
-### 3. **CrewAI**
+### 6. **CrewAI**
 - Human-readable multi-agent "crews" with roles, tasks, tools, and memory
 - **Strengths**: Role-based design, SOP-style workflows, easy to understand
 - **Best for**: Teams needing intuitive multi-agent orchestration
 - **Recommendation**: Good balance of capability and approachability for teams starting agent development
 
-### 4. **LlamaIndex**
+### 7. **LlamaIndex**
 - Started as RAG solution, evolved to include agent capabilities
 - **Strengths**: Best-in-class tooling for indexing data, chunking text, bridging LLMs with knowledge bases
 - **Best for**: Agents that act over documents, knowledge workers over data
 - **Use case**: Agentic Document Workflows for end-to-end doc automation
 
-### 5. **AutoGPT**
+### 8. **AutoGPT**
 - One of the first frameworks demonstrating truly autonomous AI agents
 - **Strengths**: 167,000+ GitHub stars, pioneered autonomous goal-pursuit through iterative planning
 - **Best for**: Truly autonomous agents with minimal human intervention
 - **Status**: Still significant player in 2025
-
-### 6. **OpenAI Responses API + AgentKit**
-- **Note**: OpenAI is deprecating Assistants API (sunset date: August 26, 2026)
-- **Strengths**: First-party SDK for OpenAI ecosystem, built-in web search, file search, computer use
-- **Best for**: Teams fully committed to OpenAI ecosystem
-- **Limitation**: Vendor lock-in to OpenAI
 
 ## Claude Agent SDK Positioning
 
