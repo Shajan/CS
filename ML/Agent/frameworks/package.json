@@ -1,0 +1,38 @@
+{
+  "name": "multi-framework-agent-system",
+  "version": "1.0.0",
+  "description": "Multi-framework AI agent testing system with unified interface",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "common",
+    "implementations/*",
+    "ui",
+    "cli"
+  ],
+  "scripts": {
+    "dev": "pnpm --filter common dev & pnpm --filter ui dev",
+    "dev:api": "pnpm --filter common dev",
+    "dev:ui": "pnpm --filter ui dev",
+    "dev:cli": "pnpm --filter cli dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean && rm -rf node_modules"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "claude",
+    "langchain",
+    "crewai",
+    "autogen",
+    "llamaindex"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2"
+  }
+}

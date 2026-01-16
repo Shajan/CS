@@ -485,12 +485,51 @@ Results saved to benchmark-2026-01-15.json
 
 ## 6. UI Specifications
 
+### 6.0 Design Principles
+
+**Core Philosophy**: Simple, elegant, and unobtrusive. The UI should get out of the way and let users focus on the conversation and results.
+
+#### Visual Design
+- **Minimalism**: Remove unnecessary elements. Every component must justify its presence.
+- **Whitespace**: Use generous spacing to let content breathe. Avoid visual clutter.
+- **Typography**: Clear hierarchy with minimal font sizes and weights. No excessive styling.
+- **Colors**: Subdued palette. Use color sparingly for emphasis, not decoration.
+- **Density**: Information should be scannable. Compact but not cramped.
+
+#### Component Guidelines
+- **No Badge Soup**: Capabilities should be subtle text, not colorful pills/badges
+- **Flat Hierarchy**: Avoid excessive nesting, borders, and shadows
+- **Context Over Chrome**: Show relevant info contextually, not upfront
+- **Progressive Disclosure**: Hide details until needed (collapsible sections, hover states)
+- **No Emoji Overload**: Use emojis sparingly for critical visual cues only
+
+#### Interaction Patterns
+- **Instant Feedback**: No unnecessary confirmation dialogs
+- **Smart Defaults**: Remember user preferences, pre-fill where sensible
+- **Keyboard Friendly**: All actions accessible via keyboard
+- **Mobile Considerate**: Responsive without being "mobile-first" at desktop's expense
+
+#### Screen Real Estate
+- **Headers**: Minimal. Title + essential nav only.
+- **Sidebars**: Avoid unless absolutely necessary
+- **Footers**: Show metadata inline with content, not in separate panels
+- **Modals**: Use sparingly. Prefer inline expansion.
+
+#### Anti-Patterns to Avoid
+- ❌ Large decorative headers with subtitles
+- ❌ Badge/pill components for every capability
+- ❌ Excessive borders, cards, and panels
+- ❌ Redundant labels ("Session ID: [session]" → just show the session)
+- ❌ Welcome screens that take up the whole viewport
+- ❌ Brightly colored error banners (unless critical)
+
 ### 6.1 Components
 
 #### FrameworkSelector Component
-- Dropdown showing all available frameworks
-- Display framework name and description
-- Show capabilities badges (tools, streaming, etc.)
+- Inline dropdown (not a separate component)
+- Show framework name only in dropdown
+- Display description as subtle text below selector (optional)
+- Show capabilities as plain comma-separated text (e.g., "tools, streaming, multi-modal")
 - Remember last selection in localStorage
 
 #### Chat Component (Enhanced)
