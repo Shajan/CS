@@ -1,0 +1,27 @@
+{
+  "name": "claude-agent",
+  "displayName": "Claude Agent SDK",
+  "version": "1.0.0",
+  "description": "Anthropic's official Claude Agent SDK with tool support",
+  "enabled": true,
+  "requiresApiKey": true,
+  "envVars": ["ANTHROPIC_API_KEY"],
+  "defaultConfig": {
+    "model": "claude-sonnet-4-5-20250929",
+    "maxTokens": 1024,
+    "temperature": 1.0
+  },
+  "capabilities": {
+    "supportsStreaming": false,
+    "supportsTools": true,
+    "supportsMultiModal": true,
+    "supportsMultiAgent": false,
+    "supportsMemory": false,
+    "maxContextLength": 200000,
+    "supportedModels": [
+      "claude-sonnet-4-5-20250929",
+      "claude-opus-4-5-20251101",
+      "claude-3-5-sonnet-20241022"
+    ]
+  }
+}

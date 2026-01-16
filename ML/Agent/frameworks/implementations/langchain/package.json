@@ -1,0 +1,21 @@
+{
+  "name": "@agent-system/langchain-adapter",
+  "version": "1.0.0",
+  "description": "LangChain adapter for multi-framework agent system",
+  "type": "module",
+  "main": "dist/adapter.js",
+  "types": "dist/adapter.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest"
+  },
+  "dependencies": {
+    "@langchain/core": "^1.1.15",
+    "@langchain/openai": "^1.2.2",
+    "langchain": "^0.3.11"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "langchain",
+  "displayName": "LangChain",
+  "version": "1.0.0",
+  "description": "Popular Python/JS framework for building LLM applications with chains and agents",
+  "capabilities": {
+    "supportsStreaming": true,
+    "supportsTools": true,
+    "supportsMultiModal": true,
+    "supportsMultiAgent": false,
+    "supportsMemory": true,
+    "maxContextLength": 128000,
+    "supportedModels": [
+      "gpt-4",
+      "gpt-4-turbo",
+      "gpt-3.5-turbo"
+    ]
+  },
+  "defaultConfig": {
+    "model": "gpt-4-turbo",
+    "temperature": 0.7,
+    "maxTokens": 4096
+  }
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"web-fetch.d.ts","sourceRoot":"","sources":["web-fetch.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAKH,MAAM,WAAW,aAAa;IAC5B,GAAG,EAAE,MAAM,CAAC;IACZ,MAAM,EAAE,MAAM,CAAC;CAChB;AAED,wBAAgB,QAAQ,CAAC,KAAK,EAAE,aAAa,GAAG,OAAO,CAAC;IAAE,OAAO,EAAE,MAAM,CAAC;IAAC,GAAG,EAAE,MAAM,CAAA;CAAE,CAAC,CA4CxF;AAED,eAAO,MAAM,sBAAsB;;;;;;;;;;;;;;;;;CAiBlC,CAAC"}
