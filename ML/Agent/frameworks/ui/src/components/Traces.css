@@ -277,19 +277,7 @@
   color: white;
 }
 
-.raw-logs-content {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 1rem;
-  border-radius: 4px;
-  overflow-x: auto;
-  max-height: calc(100vh - 300px);
-  overflow-y: auto;
-  font-size: 0.8rem;
-  line-height: 1.5;
-  font-family: 'Courier New', monospace;
-  color: var(--text);
-  margin: 0;
-}
+/* raw-logs-content is now handled by JSONViewer component */
 
 .traces-controls {
   display: flex;

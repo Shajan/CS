@@ -1,0 +1,101 @@
+.json-viewer {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  background: var(--surface);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  color: var(--text);
+}
+
+.json-line {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  user-select: text;
+  padding: 1px 0;
+}
+
+.json-expandable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.json-expandable:hover {
+  background: rgba(100, 108, 255, 0.1);
+}
+
+.json-arrow {
+  display: inline-block;
+  width: 14px;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  margin-right: 4px;
+  user-select: none;
+}
+
+.json-key {
+  color: #8ab4f8;
+  font-weight: 500;
+}
+
+.json-colon {
+  color: var(--text-secondary);
+  margin: 0 4px;
+}
+
+.json-string {
+  color: #81c995;
+}
+
+.json-number {
+  color: #ffa859;
+}
+
+.json-boolean {
+  color: #c58af9;
+  font-weight: 500;
+}
+
+.json-null {
+  color: #f28b82;
+  font-style: italic;
+}
+
+.json-bracket,
+.json-brace {
+  color: var(--text);
+  font-weight: bold;
+}
+
+.json-comma {
+  color: var(--text-secondary);
+}
+
+.json-preview {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.75rem;
+}
+
+/* Scrollbar styling */
+.json-viewer::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.json-viewer::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.json-viewer::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.json-viewer::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}

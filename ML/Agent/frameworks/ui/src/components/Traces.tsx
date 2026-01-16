@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getTraces } from '../services/api';
 import SmartTraces from './SmartTraces';
+import JSONViewer from './JSONViewer';
 import './Traces.css';
 
 interface TracesProps {
@@ -138,9 +139,7 @@ export default function Traces({ initialSessionId = '' }: TracesProps) {
               <button onClick={handleClearTraces} className="clear-button">Clear</button>
             </div>
           </div>
-          <pre className="raw-logs-content">
-            {JSON.stringify(traces, null, 2)}
-          </pre>
+          <JSONViewer data={traces} defaultExpanded={false} />
         </div>
       )}
 
