@@ -136,12 +136,8 @@ export async function getFrameworkInfo(name: string): Promise<FrameworkInfo> {
 /**
  * Get trace events for a session
  */
-export async function getTraces(
-  sessionId: string,
-  framework?: string
-): Promise<any[]> {
+export async function getTraces(sessionId: string): Promise<any[]> {
   const params = new URLSearchParams({ sessionId });
-  if (framework) params.append('framework', framework);
 
   const response = await fetch(`${API_BASE_URL}/api/traces?${params}`);
 

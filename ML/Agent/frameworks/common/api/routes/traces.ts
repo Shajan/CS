@@ -4,26 +4,22 @@ import { traceStorage } from '../../storage/trace-storage.js';
 const router = Router();
 
 /**
- * GET /api/traces?sessionId=xxx&framework=xxx
+ * GET /api/traces?sessionId=xxx
  * Get trace events for a session
  */
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { sessionId, framework } = req.query;
+    const { sessionId } = req.query;
 
     if (!sessionId || typeof sessionId !== 'string') {
       res.status(400).json({ error: 'SessionId query parameter is required' });
       return;
     }
 
-    const traces = traceStorage.getTraces(
-      sessionId,
-      framework as string | undefined
-    );
+    const traces = traceStorage.getTraces(sessionId);
 
     res.json({
       sessionId,
-      framework: framework || 'all',
       traces,
       count: traces.length,
     });
@@ -37,24 +33,23 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 /**
- * DELETE /api/traces?sessionId=xxx&framework=xxx
+ * DELETE /api/traces?sessionId=xxx
  * Clear trace events for a session
  */
 router.delete('/', async (req: Request, res: Response) => {
   try {
-    const { sessionId, framework } = req.query;
+    const { sessionId } = req.query;
 
     if (!sessionId || typeof sessionId !== 'string') {
       res.status(400).json({ error: 'SessionId query parameter is required' });
       return;
     }
 
-    traceStorage.clearTraces(sessionId, framework as string | undefined);
+    traceStorage.clearTraces(sessionId);
 
     res.json({
       success: true,
       sessionId,
-      framework: framework || 'all',
     });
   } catch (error) {
     console.error('Error in DELETE /api/traces:', error);

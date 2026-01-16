@@ -5,20 +5,19 @@ import './Traces.css';
 
 interface TracesProps {
   initialSessionId?: string;
-  initialFramework?: string;
+  initialFramework?: string; // Kept for compatibility but not used
 }
 
 type ViewMode = 'smart' | 'raw';
 
-export default function Traces({ initialSessionId = '', initialFramework = 'claude-agent' }: TracesProps) {
+export default function Traces({ initialSessionId = '' }: TracesProps) {
   const [sessionId, setSessionId] = useState(initialSessionId);
-  const [framework, setFramework] = useState(initialFramework);
   const [traces, setTraces] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>('smart');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadHistoryForSession = async (sid: string, fw: string) => {
+  const loadHistoryForSession = async (sid: string) => {
     if (!sid.trim()) {
       setError('Please enter a session ID');
       return;
@@ -28,7 +27,7 @@ export default function Traces({ initialSessionId = '', initialFramework = 'clau
       setLoading(true);
       setError(null);
 
-      const tracesData = await getTraces(sid, fw);
+      const tracesData = await getTraces(sid);
       setTraces(tracesData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load traces');
@@ -42,17 +41,38 @@ export default function Traces({ initialSessionId = '', initialFramework = 'clau
     setTraces([]);
   };
 
+  const handleCopyJSON = async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(traces, null, 2));
+      // Could add a toast notification here
+    } catch (err) {
+      console.error('Failed to copy JSON:', err);
+    }
+  };
+
+  const handleDownloadJSON = () => {
+    const jsonStr = JSON.stringify(traces, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `traces-${sessionId}-${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   // Auto-load history if session ID is provided
   useEffect(() => {
-    if (initialSessionId && initialFramework) {
+    if (initialSessionId) {
       setSessionId(initialSessionId);
-      setFramework(initialFramework);
-      loadHistoryForSession(initialSessionId, initialFramework);
+      loadHistoryForSession(initialSessionId);
     }
-  }, [initialSessionId, initialFramework]);
+  }, [initialSessionId]);
 
   const loadHistory = async () => {
-    loadHistoryForSession(sessionId, framework);
+    loadHistoryForSession(sessionId);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -76,20 +96,8 @@ export default function Traces({ initialSessionId = '', initialFramework = 'clau
           />
         </div>
 
-        <div className="input-group">
-          <label htmlFor="framework-select">Framework:</label>
-          <select
-            id="framework-select"
-            value={framework}
-            onChange={(e) => setFramework(e.target.value)}
-          >
-            <option value="claude-agent">Claude Agent SDK</option>
-            <option value="langchain">LangChain</option>
-          </select>
-        </div>
-
         <button onClick={loadHistory} disabled={loading || !sessionId.trim()}>
-          {loading ? 'Loading...' : 'Load History'}
+          {loading ? 'Loading...' : 'Load Traces'}
         </button>
       </div>
 
@@ -124,7 +132,11 @@ export default function Traces({ initialSessionId = '', initialFramework = 'clau
         <div className="raw-logs">
           <div className="raw-logs-header">
             <h3>Raw Trace Events ({traces.length})</h3>
-            <button onClick={handleClearTraces} className="clear-button">Clear</button>
+            <div className="raw-logs-actions">
+              <button onClick={handleCopyJSON} className="action-button">Copy JSON</button>
+              <button onClick={handleDownloadJSON} className="action-button">Download JSON</button>
+              <button onClick={handleClearTraces} className="clear-button">Clear</button>
+            </div>
           </div>
           <pre className="raw-logs-content">
             {JSON.stringify(traces, null, 2)}
@@ -136,8 +148,8 @@ export default function Traces({ initialSessionId = '', initialFramework = 'clau
         <div className="empty-state">
           <p>Enter a session ID above to view conversation data</p>
           <div className="example-hint">
-            <strong>Tip:</strong> Session IDs are shown in the Chat tab when you send messages.
-            They look like: <code>session-1737073891234</code>
+            <strong>Tip:</strong> Session IDs are generated automatically when you start a conversation.
+            Check your browser's network tab or console to find them. They look like: <code>session-1737073891234</code>
           </div>
         </div>
       )}

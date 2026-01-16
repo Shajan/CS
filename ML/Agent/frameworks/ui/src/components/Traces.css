@@ -254,6 +254,29 @@
   color: var(--text);
 }
 
+.raw-logs-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action-button {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.action-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
 .raw-logs-content {
   background: rgba(0, 0, 0, 0.3);
   padding: 1rem;
