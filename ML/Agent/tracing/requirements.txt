@@ -1,0 +1,15 @@
+langchain>=0.3.14,<0.4
+langchain-community>=0.3.14
+langchain-openai>=0.3.1,<0.4
+langchain-chroma>=0.2.1,<0.3
+langsmith<0.3,>=0.1.17
+langgraph>=0.2.60,<0.3
+openai>=1.59.9,<2
+python-dotenv>=1.1.1
+tiktoken>=0.8.0
+deepeval>=3.8.9
+setuptools<81
+click<8.2
+guardrails-ai @ git+https://github.com/guardrails-ai/guardrails.git@v0.6.0
+presidio-analyzer>=2.2
+presidio-anonymizer>=2.2
